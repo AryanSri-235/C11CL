@@ -1,0 +1,291 @@
+<?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+if (!isset($_SESSION['password'])) {
+    header('location:login.php');
+    exit();
+}
+
+include 'db.php'; 
+
+$success_flag = false;
+$new_id = 0;
+$error_msg = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publish_post'])) {
+    
+    $created_by = $_SESSION['name'] ?? 'Admin'; 
+    $created_at = date('Y-m-d H:i:s');
+
+    // Data Collection
+    $title = $_POST['title'];
+    $slug = $_POST['slug'];
+    $short_desc = $_POST['short_desc'];
+    $content = $_POST['content']; 
+    $category = $_POST['category'];
+    $tags = $_POST['tags'];
+    $author = $_POST['author_name'];
+    
+    $meta_title = $_POST['meta_title'];
+    $meta_desc = $_POST['meta_desc'];
+    $focus_keyword = $_POST['focus_keyword'];
+    $canonical_url = $_POST['canonical_url'];
+    $robots = $_POST['robots'];
+    $schema_markup = $_POST['schema_markup'];
+
+    $og_title = $_POST['og_title'];
+    $og_desc = $_POST['og_desc'];
+
+    $status = $_POST['status'];
+    $publish_date = !empty($_POST['publish_date']) ? $_POST['publish_date'] : $created_at;
+    $allow_comments = isset($_POST['allow_comments']) ? 1 : 0;
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
+
+    function uploadFile($fileKey) {
+        if (!empty($_FILES[$fileKey]['name'])) {
+            $folder = 'uploads/';
+            if (!is_dir($folder)) mkdir($folder, 0777, true);
+            $path = $folder . time() . '_' . basename($_FILES[$fileKey]['name']);
+            move_uploaded_file($_FILES[$fileKey]['tmp_name'], $path);
+            return $path;
+        }
+        return '';
+    }
+
+    $featured_img = uploadFile('featured_img');
+    $og_img = uploadFile('og_img');
+
+    // Database Insert (23 Columns)
+    $sql = "INSERT INTO blog (title, slug, short_desc, content, category, tags, author, created_by, created_at, meta_title, meta_desc, focus_keyword, canonical_url, robots, schema_markup, og_title, og_desc, featured_img, og_img, status, publish_date, allow_comments, is_featured) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("sssssssssssssssssssssss", 
+        $title, $slug, $short_desc, $content, $category, $tags, $author, $created_by, $created_at, 
+        $meta_title, $meta_desc, $focus_keyword, $canonical_url, $robots, $schema_markup,
+        $og_title, $og_desc, $featured_img, $og_img, $status, $publish_date, $allow_comments, $is_featured
+    );
+
+    if ($stmt->execute()) {
+        $success_flag = true;
+        $new_id = $con->insert_id;
+    } else {
+        $error_msg = $stmt->error;
+    }
+}
+include 'head.php';
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+<div class="page-wrapper">
+    <div class="page-content">
+        <h5 class="mb-4 text-uppercase fw-bold text-primary">📝 Add New Professional Blog</h5>
+        
+        <form id="blogForm" method="POST">
+            
+            <div class="card border-top border-0 border-4 border-primary shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h6 class="card-title text-primary mb-3">Primary Information</h6>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Blog Title*</label>
+                            <input type="text" name="title" id="blog_title" class="form-control" placeholder="e.g., How to Prepare for C11CL Cricket Trials 2026" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Slug (SEO URL)</label>
+                            <input type="text" name="slug" id="blog_slug" class="form-control bg-light" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Author Display Name</label>
+                            <input type="text" name="author_name" class="form-control" value="<?php echo $_SESSION['name']; ?>" placeholder="e.g., Coach Sharma">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Category</label>
+                            <select name="category" class="form-select">
+                                <option>C11CL News</option>
+                                <option>Cricket Tips</option>
+                                <option>Trials Update</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tags</label>
+                            <input type="text" name="tags" class="form-control" placeholder="cricket, trials, selection, india">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Short Introduction</label>
+                            <textarea name="short_desc" class="form-control" rows="2" placeholder="Brief summary of the blog for the home page listing..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Blog Content*</label>
+                            <textarea name="content" id="editor"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Featured Main Image</label>
+                            <input type="file" name="featured_img" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-top border-0 border-4 border-success shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h6 class="card-title text-success mb-3">SEO Optimization (Google Ranking)</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Meta Title</label>
+                            <input type="text" name="meta_title" class="form-control" placeholder="Max 60 chars: e.g. Top 10 Cricket Trials in India | C11CL">
+                            <small class="text-muted italic">Guide: Keyword starting mein rakhein.</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Focus Keyword</label>
+                            <input type="text" name="focus_keyword" class="form-control" placeholder="e.g. Cricket Trials India">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Meta Description</label>
+                            <textarea name="meta_desc" class="form-control" rows="2" placeholder="Max 160 chars: Enter a summary that makes people click on your Google link."></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Canonical URL</label>
+                            <input type="url" name="canonical_url" class="form-control" placeholder="Full link of the blog">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Robots Policy</label>
+                            <select name="robots" class="form-select">
+                                <option value="index, follow">Index, Follow (Recommended)</option>
+                                <option value="noindex, follow">No-Index (Private)</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Schema Markup (JSON-LD)</label>
+                            <textarea name="schema_markup" class="form-control" rows="2" placeholder='Paste Google Schema JSON code here...'></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card border-top border-0 border-4 border-info shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="card-title text-info mb-3">Social Media Preview (OG)</h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Social Title</label>
+                                    <input type="text" name="og_title" class="form-control" placeholder="Catchy title for WhatsApp/FB">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Social Description</label>
+                                    <textarea name="og_desc" class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Social Image (OG Image)</label>
+                                    <input type="file" name="og_img" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-top border-0 border-4 border-warning shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="card-title text-warning mb-3">Publish Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Status</label>
+                                <select name="status" class="form-select">
+                                    <option value="Published">Published</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Scheduled">Scheduled</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Publish Date</label>
+                                <input type="datetime-local" name="publish_date" class="form-control">
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" name="allow_comments" id="c1" checked>
+                                <label class="form-check-label" for="c1">Allow Comments</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_featured" id="f1">
+                                <label class="form-check-label" for="f1">Home Slider Featured</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center my-5">
+                <button type="submit" name="publish_post" id="submitBtn" class="btn btn-primary btn-lg px-5 shadow">
+                    <span id="btnText">🚀 Publish Blog Now</span>
+                    <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .ck-editor__editable { min-height: 350px !important; border-bottom-left-radius: 8px !important; border-bottom-right-radius: 8px !important; }
+    .card { border-radius: 12px; }
+    .form-label { color: #444; }
+</style>
+
+<script>
+    let myEditor;
+
+    // 1. CKEditor Initialization
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo' ]
+        })
+        .then(editor => { myEditor = editor; })
+        .catch(err => { console.error(err); });
+
+    // 2. Slug Auto Gen
+    document.getElementById('blog_title').addEventListener('input', function() {
+        let slug = this.value.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+        document.getElementById('blog_slug').value = slug;
+    });
+
+    // 3. Form Submit Progress
+    document.getElementById('blogForm').addEventListener('submit', function(e) {
+        if(myEditor.getData().trim() === '') {
+            Swal.fire('Wait!', 'Content is empty.', 'warning');
+            e.preventDefault();
+            return false;
+        }
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('btnText').innerText = "Uploading to Server...";
+        document.getElementById('btnSpinner').style.display = "inline-block";
+    });
+
+    // 4. Success Alert with Preview
+    <?php if($success_flag): ?>
+        Swal.fire({
+            title: 'Successfully Published! ✨',
+            html: 'Your blog is now live on the website.',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Preview Post 👁️',
+            cancelButtonText: 'Back to List',
+            confirmButtonColor: '#28a745'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.open('../blog-details.php?id=<?php echo $new_id; ?>', '_blank');
+            }
+            window.location.href='blog.php';
+        });
+    <?php endif; ?>
+
+    <?php if(!empty($error_msg)): ?>
+        Swal.fire('Execution Error', '<?php echo addslashes($error_msg); ?>', 'error');
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('btnText').innerText = "🚀 Publish Blog Now";
+    <?php endif; ?>
+</script>
+
+<?php include 'foot.php'; ?>

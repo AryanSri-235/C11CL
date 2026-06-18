@@ -1,0 +1,24 @@
+RewriteEngine On
+RewriteBase /
+
+# 1. URL se index.php ko hatao (Redirect index.php to root)
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
+RewriteRule ^(.*)index\.php$ /$1 [R=301,L]
+
+# 2. Files aur Directories jo exist karti hain (images, admin, etc.) unhe mat chhedo
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# 3. .php extension ko hide karo (about.php -> /about)
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# 4. .html extension ko hide karo (page.html -> /page)
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+# 5. DYNAMIC BLOG SLUGS (Sabse important)
+# Agar upar wala koi file match nahi hota, toh ise blog slug maano
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ news/index.php?slug=$1 [L,QSA]

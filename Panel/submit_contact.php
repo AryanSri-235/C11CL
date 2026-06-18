@@ -1,0 +1,31 @@
+<?php
+header('Content-Type: application/json'); // JSON response ke liye
+include "db.php"; 
+
+// AJAX mein $_POST['submit'] nahi milta, isliye request method check karenge
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // Security ke liye data clean karein
+    $name = $con->real_escape_string($_POST['name']);
+    $email = $con->real_escape_string($_POST['email']);
+    $phone = $con->real_escape_string($_POST['phone']);
+    $subject = $con->real_escape_string($_POST['subject']);
+    $message = $con->real_escape_string($_POST['message']);
+
+    $sql = "INSERT INTO contact_queries (name, email, phone, subject, message)
+            VALUES ('$name', '$email', '$phone', '$subject', '$message')";
+
+    if ($con->query($sql) === TRUE) {
+       echo json_encode([
+    "status" => "success", 
+    "message" => "Message received! We will get back to you shortly."
+]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Database error: " . $con->error]);
+    }
+    
+    $con->close();
+} else {
+    echo json_encode(["status" => "error", "message" => "Invalid Request"]);
+}
+?>

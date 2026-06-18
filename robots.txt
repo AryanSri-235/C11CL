@@ -1,0 +1,25 @@
+User-agent: *
+Disallow: /cgi-bin/
+Disallow: /Panel/login.php
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: googlebot-image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Adsbot-Google
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+User-agent: AhrefsBot
+Allow: /
+
+
+Sitemap: https://c11cl.com/sitemap.xml
