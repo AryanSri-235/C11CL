@@ -3151,8 +3151,7 @@
 	<link data-minify="1" rel='stylesheet' id='happy-icons-css'
 		href='<?php echo BASE_URL; ?>wp-content/cache/min/1/wp-content/plugins/happy-elementor-addons/assets/fonts/style.minb70c.css?ver=1771070144'
 		media='all' />
-	<link rel='stylesheet' id='chaty-front-css-css'
-		href='<?php echo BASE_URL; ?>wp-content/plugins/chaty/css/chaty-front.mina7d3.css?ver=3.5.11768552451' media='all' />
+	wp-content/plugins/chaty/css/chaty-front.mina7d3.css?ver=3.5.11768552451' media='all' />
 	<link rel='stylesheet' id='elementor-post-247-css'
 		href='<?php echo BASE_URL; ?>wp-content/uploads/elementor/css/post-2472e88.css?ver=1770644315' media='all' />
 	<link data-minify="1" rel='stylesheet' id='font-awesome-5-all-css'

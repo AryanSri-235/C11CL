@@ -30,7 +30,7 @@ if ($result->num_rows > 0) {
     $ref      = $row['ref'];
     $regCount = $row['regCount'];
     $status   = $row['status'];
-    $date     = date('Y-m-d H:i:s', strtotime($row['date']));
+    $date     = date('Y-m-d H:i:s', strtotime($row['date'] ?? ''));
     $date1    = date('Y-m-d H:i:s', strtotime('-20 seconds'));
     
 // Payment amount fixed to ₹1

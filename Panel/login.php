@@ -37,17 +37,14 @@ if (isset($_POST['login'])) {
     // Role based redirection logic
     switch ($_SESSION['status']) {
         case 'developer':
-            header('location: blog_list.php');
+        case 'admin':
+            header('location: dashboard.php');
             break;
         case 'sale-leader':
             header('location: phase1data_user.php');
             break;
-        case 'admin':
-            // Agar superadmin ko bhi blog list par bhejna hai toh yahan add kar sakte hain
-            header('location: blog_list.php'); 
-            break;
         default:
-            header('location: phase1data.php');
+            header('location: dashboard.php');
             break;
     }
     exit(); // Header ke baad hamesha exit() lagana best practice hai

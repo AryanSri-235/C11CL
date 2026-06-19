@@ -88,7 +88,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 :root {--latepoint-brand-primary:#1d7bff;--latepoint-body-color:#1f222b;--latepoint-headings-color:#14161d;--latepoint-color-text-faded:#7c85a3;--latepoint-timeslot-selected-color:var(--latepoint-brand-primary);--latepoint-calendar-weekday-label-color:var(--latepoint-headings-color);--latepoint-calendar-weekday-label-bg:#fff;--latepoint-side-panel-bg:#fff;--latepoint-summary-panel-bg:#fff;--latepoint-border-radius:0px;--latepoint-border-radius-sm:0px;--latepoint-border-radius-md:0px;--latepoint-border-radius-lg:0px;}
 /*# sourceURL=latepoint-main-front-inline-css */
 </style>
-<link rel='stylesheet' id='chaty-front-css-css' href='../wp-content/plugins/chaty/css/chaty-front.mina7d3.css?ver=3.5.11768552451' media='all' />
+
 <link rel='stylesheet' id='elementor-frontend-css' href='../wp-content/plugins/elementor/assets/css/frontend.min5be5.css?ver=3.35.3' media='all' />
 
 <link rel='stylesheet' id='elementor-post-247-css' href='../wp-content/uploads/elementor/css/post-2472e88.css?ver=1770644315' media='all' />
@@ -695,9 +695,9 @@ var starter_templates_zip_preview = {"AstColorPaletteVarPrefix":"--ast-global-co
 </script>
 <script data-minify="1" src="../wp-content/cache/min/1/wp-content/plugins/elementskit-lite/widgets/init/assets/js/widget-scriptsbe33.js?ver=1771070146" id="ekit-widget-scripts-js"></script>
 
-<script defer src="../wp-content/plugins/chaty/js/cht-front-script.mina7d3.js?ver=3.5.11768552451" id="chaty-front-end-js"></script>
-<script src="../wp-content/plugins/chaty/admin/assets/js/picmo-umd.min9d52.js?ver=3.5.1" id="chaty-picmo-js-js"></script>
-<script src="../wp-content/plugins/chaty/admin/assets/js/picmo-latest-umd.min9d52.js?ver=3.5.1" id="chaty-picmo-latest-js-js"></script>
+
+
+
 <script src="../wp-content/plugins/happy-elementor-addons/assets/js/extension-reading-progress-bar.minb645.js?ver=3.20.8" id="happy-reading-progress-bar-js"></script>
 <script src="../wp-content/plugins/elementor/assets/js/webpack.runtime.min5be5.js?ver=3.35.3" id="elementor-webpack-runtime-js"></script>
 <script src="../wp-content/plugins/elementor/assets/js/frontend-modules.min5be5.js?ver=3.35.3" id="elementor-frontend-modules-js"></script>

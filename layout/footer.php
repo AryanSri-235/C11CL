@@ -17,17 +17,17 @@
 
 /* ---- MAIN FOOTER BODY ---- */
 #c11-site-footer .c11f-main {
-    background: #1a1a1a !important;
+    background: #000000  !important;
     padding: 52px 0 36px !important;
     width: 100% !important;
 }
 #c11-site-footer .c11f-inner {
-    max-width: 1240px !important;
+    max-width: 1400px  !important;
     margin: 0 auto !important;
     padding: 0 24px !important;
     display: grid !important;
-    grid-template-columns: 220px 1fr 1fr 1fr !important;
-    gap: 40px !important;
+   grid-template-columns: 250px 1fr 1fr 1fr !important;
+gap: 70px !important;
     align-items: start !important;
 }
 
@@ -77,8 +77,8 @@
 #c11-site-footer .c11f-col-title {
     color: #ffffff !important;
     font-family: 'Poppins', sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
+    font-size: 15px !important;
+font-weight: 800 !important;
     letter-spacing: 1.5px !important;
     text-transform: uppercase !important;
     margin-bottom: 18px !important;
@@ -149,10 +149,10 @@
 /* ---- BOTTOM BAR ---- */
 #c11-site-footer .c11f-bottom {
     background: #dc2618 !important;
-    padding: 13px 0 !important;
+    padding: 18px 0 !important;
 }
 #c11-site-footer .c11f-bottom-inner {
-    max-width: 1240px !important;
+    max-width: 1400px  !important;
     margin: 0 auto !important;
     padding: 0 24px !important;
     display: flex !important;
@@ -189,36 +189,134 @@
     font-size: 12px !important;
 }
 
-/* ---- CHAT BUTTON (Chaty-style) ---- */
-.c11-chat-btn {
+/* ---- CUSTOM CHATY WIDGET (Multi-channel) ---- */
+#c11-connect-widget {
     position: fixed !important;
     bottom: 24px !important;
     right: 24px !important;
-    z-index: 99999 !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    height: auto !important;
+    z-index: 999999 !important;
     display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
-    justify-content: center !important;
+    gap: 12px !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* Trigger Button */
+.c11-widget-trigger {
     width: 54px !important;
     height: 54px !important;
     background: #dc2618 !important;
     border-radius: 50% !important;
-    box-shadow: 0 4px 20px rgba(220, 38, 24, 0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
     cursor: pointer !important;
-    text-decoration: none !important;
-    transition: transform 0.25s, box-shadow 0.25s !important;
-    animation: c11ChatPulse 2.5s infinite !important;
+    box-shadow: 0 4px 20px rgba(220, 38, 24, 0.5) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+    outline: none !important;
+    animation: c11WidgetPulse 2.5s infinite !important;
 }
-.c11-chat-btn:hover {
-    transform: scale(1.1) !important;
+.c11-widget-trigger:hover {
+    transform: scale(1.08) !important;
     box-shadow: 0 6px 28px rgba(220, 38, 24, 0.7) !important;
     animation: none !important;
 }
-.c11-chat-btn svg {
-    width: 26px !important;
-    height: 26px !important;
-    fill: #ffffff !important;
+.c11-widget-trigger i {
+    font-size: 22px !important;
+    transition: transform 0.3s ease !important;
 }
-@keyframes c11ChatPulse {
+
+/* Channels Container (Pill) */
+.c11-widget-channels {
+    background: #1e1e1e !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 30px !important;
+    padding: 12px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(20px) scale(0.9) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    pointer-events: none !important;
+}
+
+#c11-connect-widget.c11-widget-open .c11-widget-channels {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) scale(1) !important;
+    pointer-events: auto !important;
+}
+
+#c11-connect-widget.c11-widget-open .c11-widget-trigger {
+    display: none !important;
+}
+
+/* Individual Channel Icons */
+.c11-channel-btn {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    font-size: 18px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    position: relative !important;
+    border: none !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+}
+.c11-channel-btn:hover {
+    transform: scale(1.1) !important;
+}
+
+/* Channel Backgrounds */
+.c11-channel-btn.youtube { background: #ff0000 !important; box-shadow: 0 3px 10px rgba(255, 0, 0, 0.3) !important; }
+.c11-channel-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important; box-shadow: 0 3px 10px rgba(220, 39, 67, 0.3) !important; }
+.c11-channel-btn.email { background: #ff4757 !important; box-shadow: 0 3px 10px rgba(255, 71, 87, 0.3) !important; }
+.c11-channel-btn.whatsapp { background: #25d366 !important; box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3) !important; }
+.c11-channel-btn.call { background: #007aff !important; box-shadow: 0 3px 10px rgba(0, 122, 255, 0.3) !important; }
+.c11-channel-btn.close-btn { background: #dc2618 !important; box-shadow: 0 3px 10px rgba(220, 38, 24, 0.3) !important; }
+
+/* Tooltip on hover */
+.c11-channel-btn::after {
+    content: attr(data-tooltip) !important;
+    position: absolute !important;
+    right: 56px !important;
+    top: 50% !important;
+    transform: translateY(-50%) scale(0.8) !important;
+    background: #1e1e1e !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+    pointer-events: none !important;
+}
+.c11-channel-btn:hover::after {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-50%) scale(1) !important;
+}
+
+@keyframes c11WidgetPulse {
     0%, 100% { box-shadow: 0 4px 20px rgba(220,38,24,0.5); }
     50%       { box-shadow: 0 4px 28px rgba(220,38,24,0.85), 0 0 0 8px rgba(220,38,24,0.12); }
 }
@@ -226,7 +324,7 @@
 /* ---- RESPONSIVE ---- */
 @media (max-width: 1024px) {
     #c11-site-footer .c11f-inner {
-        grid-template-columns: 200px 1fr 1fr 1fr !important;
+        grid-template-columns: 200px 1fr 1fr !important;
         gap: 28px !important;
     }
 }
@@ -281,20 +379,7 @@
                 </div>
             </div>
 
-            <!-- Col 2: Quick Links -->
-            <div class="c11f-col">
-                <div class="c11f-col-title">Quick Links</div>
-                <ul class="c11f-links">
-                    <li><a href="<?php echo BASE_URL; ?>about-us/">About us</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>contact-us/">Contact Us</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>gallery/">Gallery</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>insta-feed/">Insta Feed</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>selection-process/">Selection Process</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>who-can-register/">Who Can Register</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 3: Useful Links -->
+            <!-- Col 2: Useful Links -->
             <div class="c11f-col">
                 <div class="c11f-col-title">Useful Links</div>
                 <ul class="c11f-links">
@@ -307,8 +392,18 @@
                 </ul>
             </div>
 
-            <!-- Col 4: Subscribe -->
+            <!-- Col 3: Quick Links + Subscribe stacked (matches live site right column) -->
             <div class="c11f-col">
+                <div class="c11f-col-title">Quick Links</div>
+                <ul class="c11f-links" style="margin-bottom:32px!important;">
+                    <li><a href="<?php echo BASE_URL; ?>about-us/">About us</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>contact-us/">Contact Us</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>gallery/">Gallery</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>insta-feed/">Insta Feed</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>selection-process/">Selection Process</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>who-can-register/">Who Can Register</a></li>
+                </ul>
+
                 <div class="c11f-col-title">Subscribe Now</div>
                 <p class="c11f-sub-text">Don't miss our future updates! Get Subscribed Today!</p>
                 <form class="c11f-sub-form" method="POST" action="<?php echo BASE_URL; ?>Panel/email_submit.php">
@@ -336,10 +431,233 @@
 
 </div><!-- /#c11-site-footer -->
 
-<!-- CHAT BUTTON — matches live site (red circular Chaty-style) -->
-<a class="c11-chat-btn" href="https://wa.me/919599505213" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp" title="Chat with us">
-    <!-- WhatsApp / chat bubble icon -->
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.48-8.45zm-8.477 18.3h-.004c-1.774 0-3.513-.476-5.031-1.378l-.361-.214-3.741.976.997-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.884 9.884zm5.43-7.403c-.297-.149-1.758-.867-2.031-.967-.272-.099-.47-.148-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-    </svg>
-</a>
+<!-- MULTI-CHANNEL CONNECT WIDGET -->
+<div class="c11-chat-widget-wrapper">
+    
+    <div class="chat-channels-vertical-flyout">
+        <a href="https://www.youtube.com/@C11CLOfficial" target="_blank" rel="noopener" class="chat-channel-item youtube" aria-label="Subscribe on YouTube" title="YouTube">
+            <i class="bi bi-youtube"></i>
+        </a>
+        <a href="https://www.instagram.com/c11cl_official/" target="_blank" rel="noopener" class="chat-channel-item instagram" aria-label="Follow on Instagram" title="Instagram">
+            <i class="bi bi-instagram"></i>
+        </a>
+        <a href="mailto:info@c11cl.com?subject=Cricket%20Trials%20Enquiry" class="chat-channel-item email" aria-label="Send Email" title="Email">
+            <i class="bi bi-envelope-fill"></i>
+        </a>
+        <a href="https://wa.me/919599505213?text=Hi%20C11CL,%20I%20have%20an%20enquiry%20regarding%20the%20cricket%20trials." target="_blank" rel="noopener" class="chat-channel-item whatsapp" aria-label="WhatsApp Chat" title="WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+        </a>
+        <a href="tel:+919599505213" class="chat-channel-item call" aria-label="Call Support" title="Call Us">
+            <i class="bi bi-telephone-fill"></i>
+        </a>
+    </div>
+
+    <button class="chat-trigger-badge" onclick="toggleChatWidget()" aria-label="Toggle Custom Support Options">
+        <i class="bi bi-chat-dots-fill main-icon"></i>
+        <i class="bi bi-x-lg close-icon"></i>
+        <span class="chat-pulse-ring"></span>
+    </button>
+</div>
+
+<style>
+    /* ================= CORE POSITIONING ROOT ================= */
+    .c11-chat-widget-wrapper {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* ================= PRIMARY CHAT BUTTON STYLES ================= */
+    .chat-trigger-badge {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #F2281F, #BA0F07);
+        border: none;
+        border-radius: 50%;
+        color: #ffffff;
+        font-size: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(242, 40, 31, 0.4);
+        position: relative;
+        z-index: 10;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        outline: none;
+    }
+    
+    .chat-trigger-badge .close-icon {
+        display: none;
+        font-size: 22px;
+    }
+
+    /* Dynamic Pulse Ring Effect */
+    .chat-trigger-badge .chat-pulse-ring {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        border: 2px solid #F2281F;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: chatWidgetPulse 2s infinite ease-out;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* ================= VERTICAL PORTRAIT CHANNELS PANEL ================= */
+    .chat-channels-vertical-flyout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: absolute;
+        bottom: 75px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.8);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: rgba(10, 13, 18, 0.88);
+        padding: 12px 10px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ================= HOVER INTERACTION TRIGGER ENGINE (DESKTOP) ================= */
+    @media (min-width: 992px) {
+        .c11-chat-widget-wrapper:hover .chat-channels-vertical-flyout {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .c11-chat-widget-wrapper:hover .chat-trigger-badge {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #FF3B30, #D6110A);
+            box-shadow: 0 10px 30px rgba(242, 40, 31, 0.6);
+        }
+        .c11-chat-widget-wrapper:hover .chat-trigger-badge .main-icon { display: none; }
+        .c11-chat-widget-wrapper:hover .chat-trigger-badge .close-icon { display: block; }
+        .c11-chat-widget-wrapper:hover .chat-trigger-badge .chat-pulse-ring { display: none; }
+    }
+
+    /* ================= ACTIVE STATE TRIGGER ENGINE (MOBILE / CLICK) ================= */
+    .c11-chat-widget-wrapper.active-widget .chat-channels-vertical-flyout {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
+    .c11-chat-widget-wrapper.active-widget .chat-trigger-badge {
+        background: linear-gradient(135deg, #FF3B30, #D6110A);
+    }
+    .c11-chat-widget-wrapper.active-widget .chat-trigger-badge .main-icon { display: none; }
+    .c11-chat-widget-wrapper.active-widget .chat-trigger-badge .close-icon { display: block; }
+    .c11-chat-widget-wrapper.active-widget .chat-trigger-badge .chat-pulse-ring { display: none; }
+
+    /* ================= INDEPENDENT ICON ITEM STYLES ================= */
+    .chat-channel-item {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #ffffff !important;
+        font-size: 19px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        position: relative;
+    }
+
+    .chat-channel-item:hover {
+        transform: scale(1.15);
+    }
+
+    /* Tooltip styling */
+    .chat-channel-item::after {
+        content: attr(title);
+        position: absolute;
+        right: 55px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #111;
+        color: #fff;
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s;
+        font-family: Poppins, sans-serif;
+    }
+    .chat-channel-item:hover::after {
+        opacity: 1;
+    }
+
+    /* Brand Colors Definition Mapping */
+    .chat-channel-item.call { background: #34b7f1; }
+    .chat-channel-item.whatsapp { background: #25D366; }
+    .chat-channel-item.email { background: #ea4335; }
+    .chat-channel-item.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+    .chat-channel-item.youtube { background: #ff0000; }
+
+    /* ================= SYSTEM KEYFRAME ANIMATIONS ================= */
+    @keyframes chatWidgetPulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    /* ================= MOBILE VIEWBREAK ADJUSTMENTS ================= */
+    @media (max-width: 768px) {
+        .c11-chat-widget-wrapper {
+            bottom: 25px;
+            right: 25px;
+            gap: 10px;
+        }
+        .chat-trigger-badge {
+            width: 54px;
+            height: 54px;
+            font-size: 22px;
+        }
+        .chat-trigger-badge .close-icon { font-size: 18px; }
+        .chat-channels-vertical-flyout {
+            bottom: 65px;
+            padding: 10px 8px;
+            gap: 10px;
+        }
+        .chat-channel-item {
+            width: 40px;
+            height: 40px;
+            font-size: 17px;
+        }
+        .chat-channel-item::after {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+    function toggleChatWidget() {
+        const widgetContainer = document.querySelector('.c11-chat-widget-wrapper');
+        if (widgetContainer) {
+            widgetContainer.classList.toggle('active-widget');
+        }
+    }
+
+    // Auto close menu context drawer when user touches overlay areas outside container target limits
+    window.addEventListener('click', function(event) {
+        const widgetWrapper = document.querySelector('.c11-chat-widget-wrapper');
+        if (widgetWrapper && !widgetWrapper.contains(event.target)) {
+            widgetWrapper.classList.remove('active-widget');
+        }
+    });
+</script>

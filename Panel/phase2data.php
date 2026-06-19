@@ -103,9 +103,20 @@ if (!empty($ageGroupFilter)) {
     $filterNotice[] = "Age Group: <strong>" . htmlspecialchars($ageGroupFilter) . "</strong>";
     $filterApplied = true;
 }
+$mailFilter = $_POST['mail_status'] ?? '';
+if (!empty($mailFilter)) {
+    if ($mailFilter === 'sent') {
+        $sql .= " AND mailsent = 1";
+        $filterNotice[] = "Mail: <strong>Sent</strong>";
+    } elseif ($mailFilter === 'not_sent') {
+        $sql .= " AND (mailsent = 0 OR mailsent IS NULL)";
+        $filterNotice[] = "Mail: <strong>Not Sent</strong>";
+    }
+    $filterApplied = true;
+}
 
 $sql .= " ORDER BY created_at DESC LIMIT 2000";
-$result = $con->query($sql);
+$result = $con ? $con->query($sql) : null;
 ?>
 
 <style>
@@ -187,7 +198,7 @@ $result = $con->query($sql);
                 <select name="state" style="flex: 1 1 150px; padding: 5px;">
                     <option value="">All States</option>
                     <?php
-                    $stateRes = $con->query("SELECT DISTINCT state FROM `register-second` WHERE state!='' ORDER BY state");
+                    $stateRes = $con ? $con->query("SELECT DISTINCT state FROM `register-second` WHERE state!='' ORDER BY state") : null;
                     if ($stateRes) {
                         while ($s = $stateRes->fetch_assoc()) {
                             $sel = ($s['state'] === $stateFilter) ? 'selected' : '';
@@ -198,15 +209,20 @@ $result = $con->query($sql);
                 </select>
 
                 <select name="status" style="flex: 1 1 150px; padding: 5px;">
-                    <option value="">All Status</option>
-                    <option value="Success" <?= $statusFilter == 'Success' ? 'selected' : '' ?>>Success</option>
-                    <option value="Pending" <?= $statusFilter == 'Pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="">All Payments</option>
+                    <option value="Success" <?= $statusFilter == 'Success' ? 'selected' : '' ?>>Paid (Success)</option>
+                    <option value="Pending" <?= $statusFilter == 'Pending' ? 'selected' : '' ?>>Unpaid (Pending)</option>
+                </select>
+                <select name="mail_status" style="flex: 1 1 150px; padding: 5px;">
+                    <option value="">All Mail Status</option>
+                    <option value="sent" <?= $mailFilter == 'sent' ? 'selected' : '' ?>>Mail Sent</option>
+                    <option value="not_sent" <?= $mailFilter == 'not_sent' ? 'selected' : '' ?>>Mail Not Sent</option>
                 </select>
                 
                 <select name="age_group" style="flex: 1 1 150px; padding: 5px;">
                     <option value="">All Age Groups</option>
                     <?php
-                    $ageRes = $con->query("SELECT DISTINCT `age` as ag FROM `register-second` WHERE `age`!='' ORDER BY `age`");
+                    $ageRes = $con ? $con->query("SELECT DISTINCT `age` as ag FROM `register-second` WHERE `age`!='' ORDER BY `age`") : null;
                     if ($ageRes) {
                         while ($a = $ageRes->fetch_assoc()) {
                             $ageValue = htmlspecialchars($a['ag']);
@@ -326,7 +342,6 @@ $result = $con->query($sql);
                             if (isset($ageRes)) $ageRes->close();
                             if (isset($stateRes)) $stateRes->close();
                             if (isset($result)) $result->close();
-                            $con->close();
                             ?>
                         </tbody>
                     </table>

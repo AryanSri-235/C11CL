@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
     // $discount = $row['coupon'];
     $regCount = $row['regCount'];
     $status = $row['status'];
-    $date = date('Y-m-d H:i:s', strtotime($row['date']));
+    $date = date('Y-m-d H:i:s', strtotime($row['date'] ?? ''));
     $date1 = date('Y-m-d H:i:s', strtotime('-20 seconds'));
     
     
@@ -84,7 +84,14 @@ $orderData = [
     'payment_capture' => 1 // auto capture
 ];
 
-$razorpayOrder = $api->order->create($orderData);
+try {
+    $razorpayOrder = $api->order->create($orderData);
+} catch (Exception $e) {
+    echo "<h2>Razorpay Error</h2>";
+    echo "<p>Failed to create Razorpay order: " . htmlspecialchars($e->getMessage()) . "</p>";
+    echo "<p>Please ensure your API credentials (Key ID and Secret) are correct and active in <code>config.php</code>.</p>";
+    exit();
+}
 
 $razorpayOrderId = $razorpayOrder['id'];
 

@@ -6,7 +6,9 @@ if (!isset($_SESSION['password'])) {
 
 switch ($_SESSION['status']) {
 					case 'admin':
-						header('location: profile.php');
+					case 'superadmin':
+					case 'developer':
+						header('location: dashboard.php');
 						break;
 					default:
 						header('location: profile.php');

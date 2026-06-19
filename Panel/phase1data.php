@@ -183,10 +183,21 @@ if (!empty($searchText)) {
 if (!empty($stateFilter)) { $sql .= " AND state = '".$con->real_escape_string($stateFilter)."'"; $filterNotice[] = "State: $stateFilter"; $filterApplied = true; }
 if (!empty($playerFilter)) { $sql .= " AND player = '".$con->real_escape_string($playerFilter)."'"; $filterNotice[] = "Role: $playerFilter"; $filterApplied = true; }
 if (!empty($statusFilter)) { $sql .= " AND status = '".$con->real_escape_string($statusFilter)."'"; $filterNotice[] = "Status: $statusFilter"; $filterApplied = true; }
+$mailFilter = $_POST['mail_status'] ?? '';
+if (!empty($mailFilter)) {
+    if ($mailFilter === 'sent') {
+        $sql .= " AND mailsent = 1";
+        $filterNotice[] = "Mail: Sent";
+    } elseif ($mailFilter === 'not_sent') {
+        $sql .= " AND (mailsent = 0 OR mailsent IS NULL)";
+        $filterNotice[] = "Mail: Not Sent";
+    }
+    $filterApplied = true;
+}
 
 // Smart Sorting: Greatest of Update or Created At
 $sql .= " ORDER BY GREATEST(COALESCE(`up`, '1000-01-01 00:00:00'), `created_at`) DESC LIMIT 3000";
-$result = $con->query($sql);
+$result = $con ? $con->query($sql) : null;
 
 $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketkeeper/Batsman'=>'WK'];
 
@@ -207,8 +218,10 @@ $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketke
                 <select name="state" class="f-field">
                     <option value="">📍 State</option>
                     <?php
-                    $stateRes = $con->query("SELECT DISTINCT state FROM register WHERE state != '' ORDER BY state");
-                    while ($s = $stateRes->fetch_assoc()) { echo "<option value='{$s['state']}' ".($s['state']==$stateFilter?'selected':'').">{$s['state']}</option>"; }
+                    $stateRes = $con ? $con->query("SELECT DISTINCT state FROM register WHERE state != '' ORDER BY state") : null;
+                    if ($stateRes) {
+                        while ($s = $stateRes->fetch_assoc()) { echo "<option value='{$s['state']}' ".($s['state']==$stateFilter?'selected':'').">{$s['state']}</option>"; }
+                    }
                     ?>
                 </select>
                 <select name="player" class="f-field">
@@ -222,9 +235,14 @@ $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketke
             ?>
                 </select>
                  <select name="status" class="f-field">
-                    <option value="">All Statuses</option>
-            <option value="Success" <?= $statusFilter == 'Success' ? 'selected' : '' ?>>Success</option>
-            <option value="Pending" <?= $statusFilter == 'Pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="">All Payments</option>
+            <option value="Success" <?= $statusFilter == 'Success' ? 'selected' : '' ?>>Paid (Success)</option>
+            <option value="Pending" <?= $statusFilter == 'Pending' ? 'selected' : '' ?>>Unpaid (Pending)</option>
+                </select>
+                <select name="mail_status" class="f-field">
+                    <option value="">All Mail Status</option>
+                    <option value="sent" <?= $mailFilter == 'sent' ? 'selected' : '' ?>>Mail Sent</option>
+                    <option value="not_sent" <?= $mailFilter == 'not_sent' ? 'selected' : '' ?>>Mail Not Sent</option>
                 </select>
                 <button type="submit" class="btn-apply">Apply</button>
                 <?php if ($filterApplied): ?> <a href="<?= $_SERVER['PHP_SELF'] ?>" class="btn-clear">Clear</a> <?php endif; ?>
@@ -383,7 +401,6 @@ echo "<tr $rowStyle>
 } else {
     echo "<tr><td colspan='14' style='text-align:center;'>No Results Found</td></tr>";
 }
-$con->close();
 ?>
 
                         <!-- PHP code block to render rows goes here -->

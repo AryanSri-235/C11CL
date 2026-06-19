@@ -85,7 +85,17 @@ $_SESSION['last-active'] = time();
 <?php
 // Check if the session has a status and if it's 'admin' or 'superadmin'
 if (isset($_SESSION['status'])) {
-    // Forms Data section for admin
+    // Master Dashboard
+    if ($_SESSION['status'] == 'admin' || $_SESSION['status'] == 'superadmin' || $_SESSION['status'] == 'developer') {
+        echo "
+        <li>
+            <a href='dashboard.php'>
+                <div class='parent-icon'><i class='bx bx-home-circle'></i></div>
+                <div class='menu-title'>Master Dashboard</div>
+            </a>
+        </li>
+        ";
+    }
 
 // For Phase 1 - only admin can see
 if ($_SESSION['status'] == 'admin' || $_SESSION['status'] == 'superadmin') {
@@ -654,7 +664,6 @@ WHERE history.logout = 'Active'";
 						} else {
 							echo "Currently No Active User(s)";
 						}
-						$con->close();
 						?>
 
 					</div>

@@ -119,6 +119,16 @@
         .snake-card { width: 85%; padding: 15px; }
         .road-bg-icon { display: none; }
     }
+    .fee-badge {
+        display: inline-block !important;
+        background: #ffd800 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        padding: 4px 10px !important;
+        border-radius: 4px !important;
+        margin-top: 8px !important;
+        font-size: 13px !important;
+    }
 </style>
 
 <section class="snake-section">
@@ -134,7 +144,7 @@
         <div class="snake-card">
             <div class="step-num">STAGE 01</div>
             <h4>Open Trials</h4>
-           <p>Open trials will be conducted across 23+ states in India. Showcase your talent in a 3-over performance at your nearest city selection camp.<br> Registration Fee: ₹1850.</p>
+           <p>Open trials will be conducted across 23+ states in India. Showcase your talent in a 3-over performance at your nearest city selection camp.<br><span class="fee-badge">Registration Fee: ₹1850</span></p>
         </div>
         <div class="snake-point"><i class="fa-solid fa-check"></i></div>
     </div>
@@ -143,7 +153,7 @@
         <div class="snake-card">
             <div class="step-num">STAGE 02</div>
             <h4>State Matches</h4>
-           <p>Selected players from the trials will form state teams to compete in league matches, designed to test their skills under real match pressure.<br> League Participation Fee: ₹8999.</p>
+           <p>Selected players from the trials will form state teams to compete in league matches, designed to test their skills under real match pressure.<br><span class="fee-badge">League Participation Fee: ₹8999</span></p>
         </div>
         <div class="snake-point"><i class="fa-solid fa-medal"></i></div>
     </div>

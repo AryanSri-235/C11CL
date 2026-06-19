@@ -7,7 +7,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include 'db.php';
+include_once 'db.php';
 
 if (!$con) {
     die('<p style="color:red;font-family:monospace">❌ Cannot connect to database. Check Aiven IP allowlist.</p>');
@@ -35,6 +35,7 @@ $tables['register'] = "CREATE TABLE IF NOT EXISTS `register` (
     `source`     VARCHAR(100) DEFAULT 'Website',
     `created_at` DATETIME     DEFAULT NULL,
     `up`         DATETIME     DEFAULT NULL,
+    `date`       DATETIME     DEFAULT NULL,
     `regCount`   INT(5)       DEFAULT 1,
     `status`     VARCHAR(50)  DEFAULT 'Pending',
     `mailsent`   TINYINT(1)   DEFAULT 0,
@@ -74,6 +75,7 @@ $tables['register-second'] = "CREATE TABLE IF NOT EXISTS `register-second` (
     `amount`     DECIMAL(10,2) DEFAULT NULL,
     `created_at` DATETIME     DEFAULT NULL,
     `up`         DATETIME     DEFAULT NULL,
+    `date`       DATETIME     DEFAULT NULL,
     `mailsent`   TINYINT(1)   DEFAULT 0,
     `wasent`     TINYINT(1)   DEFAULT 0,
     `regCount`   INT(5)       DEFAULT 1,
