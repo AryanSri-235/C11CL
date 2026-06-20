@@ -37,7 +37,7 @@ if(isset($_POST['submit'])){
         $rowCheck = $resultCheck->fetch_assoc();
         $reg = $rowCheck['reg'];
         if($rowCheck['status'] == 'Pending') {
-            $con->query("UPDATE register SET age = '$age', player = '$player', up = '$date', date = '$date', state = '$state', city = '$city', ref = '$ref', source = '$source' WHERE reg = '$reg'");
+            $con->query("UPDATE register SET age = '$age', player = '$player', up = '$date', state = '$state', city = '$city', ref = '$ref', source = '$source' WHERE reg = '$reg'");
         }
     } else {
         // 3. Generate New Registration No
@@ -47,8 +47,8 @@ if(isset($_POST['submit'])){
         $reg = "C11CL" . date("dmy") . sprintf('%05d', $count);
 
         // 4. Insert New Lead
-        $sqlInsert = "INSERT INTO register (name, reg, age, mobile, email, player, state, city, ref, created_at, up, date, regCount, source, status) 
-                      VALUES ('$name', '$reg', '$age', '$mobile', '$email', '$player', '$state', '$city', '$ref', '$date', '$date', '$date', 1, '$source', 'Pending')";
+        $sqlInsert = "INSERT INTO register (name, reg, age, mobile, email, player, state, city, ref, created_at, up, regCount, source, status) 
+                      VALUES ('$name', '$reg', '$age', '$mobile', '$email', '$player', '$state', '$city', '$ref', '$date', '$date', 1, '$source', 'Pending')";
         $con->query($sqlInsert);
     }
 
@@ -115,56 +115,33 @@ if(isset($_POST['submit'])){
             </form>
         </div>
     <?php else: ?>
-<div id="redirect-container">
-    <div style="font-size:60px;margin-bottom:10px;">✅</div>
+        <div id="redirect-container">
+            <div style="font-size: 50px; margin-bottom: 10px;">✅</div>
+            <span class="loader-text">Registration Successful!</span>
+            <p class="status-msg">Your details have been saved. You will be redirected to the homepage shortly.</p>
+            
+            <div class="progress-container">
+                <div id="bar"></div>
+            </div>
+            
+            <p style="font-size: 12px; color: #94a3b8;">Redirecting to homepage in 3 seconds...</p>
+        </div>
 
-    <span class="loader-text">Registration Successful!</span>
-
-    <p class="status-msg">
-        Thank you for registering with C11CL.
-        Your registration has been submitted successfully.
-    </p>
-
-    <div class="progress-container">
-        <div id="bar"></div>
-    </div>
-
-    <p id="countdown" style="font-size:14px;color:#64748b;">
-        Redirecting to homepage in 3 seconds...
-    </p>
-</div>
-
-<script>
-    // Progress Bar
-    let width = 0;
-    const bar = document.getElementById('bar');
-
-    const progress = setInterval(() => {
-        width += 1;
-        bar.style.width = width + '%';
-
-        if (width >= 100) {
-            clearInterval(progress);
-        }
-    }, 30);
-
-    // Countdown
-    let seconds = 3;
-    const countdown = document.getElementById("countdown");
-
-    const timer = setInterval(() => {
-        seconds--;
-
-        if (seconds > 0) {
-            countdown.innerHTML =
-                `Redirecting to homepage in ${seconds} second${seconds > 1 ? 's' : ''}...`;
-        } else {
-            clearInterval(timer);
-            window.location.href = "/";
-        }
-    }, 1000);
-</script>
-<?php endif; ?>
+        <script>
+            // Progress Bar and Auto Redirect logic
+            let width = 0;
+            const bar = document.getElementById('bar');
+            const interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    window.location.href = "/";
+                } else {
+                    width += 1; 
+                    bar.style.width = width + '%';
+                }
+            }, 30); // 30ms * 100 = 3000ms (3 seconds)
+        </script>
+    <?php endif; ?>
 </div>
 
 <noscript>

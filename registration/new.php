@@ -3884,12 +3884,8 @@
             </p>
 
             <button type="submit" class="btn-submit-c11">
-                REGISTER NOW (PROCEED TO PAYMENT)
+                REGISTER NOW
             </button>
-            
-            <p style="text-align:center; font-size:12px; margin-top:15px; font-weight:700; color:var(--c11-red);">
-                🚩 Special Offer: Save ₹350 Today! (Total: ₹1500)
-            </p>
         </form>
     </div>
 

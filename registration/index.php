@@ -3820,7 +3820,7 @@
         <div class="spinner"></div>
         <div class="loader-text">
             Your form has been submitted successfully.<br>
-            The payment process is starting now...
+            Redirecting, please wait...
         </div>
     </div>
 
@@ -3908,7 +3908,7 @@
                 border: none; border-radius: 50px; box-shadow: 0 6px 12px rgba(33, 150, 243, 0.3); cursor: pointer;
                 transition: all 0.3s ease; letter-spacing: 0.5px;"
                 class="btn-submit registersubmit">
-               <div class="submittext"><b>SUBMIT AND PAY FEES &#8377; 1850</b></div>
+               <div class="submittext"><b>REGISTER NOW</b></div>
             </button>
         </div>
     </form>
