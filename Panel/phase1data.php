@@ -7,41 +7,6 @@ if (!isset($_SESSION['password'])) {
     exit();
 }
 
-/* 🔐 Role check */
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'superadmin') {
-
-    $currentStatus = $_SESSION['status'] ?? 'Unknown';
-
-    echo "
-    <div style='
-        margin: 80px auto;
-        max-width: 500px;
-        padding: 25px;
-        border-radius: 10px;
-        background: #fff3cd;
-        border: 1px solid #ffeeba;
-        color: #856404;
-        font-family: Arial;
-        text-align: center;
-    '>
-        <h3>Access Denied 🚫</h3>
-        <p>
-            Aapka status <strong>{$currentStatus}</strong> hai.<br>
-            Aapko is page ka access nahi hai.
-        </p>
-        <a href='dashboard.php' style='
-            display:inline-block;
-            margin-top:15px;
-            padding:8px 15px;
-            background:#0f172a;
-            color:#fff;
-            text-decoration:none;
-            border-radius:5px;
-        '>Go Back</a>
-    </div>";
-    exit();
-}
-
 include 'head.php';
 include 'db.php';
 
@@ -78,69 +43,60 @@ ini_set('display_errors', 1);
 .modal-background {
     backdrop-filter: blur(5px);
 }
+.profile-details-card {
+    border: 2px solid #22c55e;
+    background-color: #f0fdf4;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.08);
+}
+.profile-details-card.pending {
+    border: 2px solid #f59e0b;
+    background-color: #fffbeb;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+}
+.profile-details-table {
+    width: 100%;
+    margin-bottom: 0;
+}
+.profile-details-table td {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 13.5px;
+}
+.profile-details-table tr:last-child td {
+    border-bottom: none;
+}
+.profile-details-label {
+    font-weight: 700;
+    color: #475569;
+    width: 40%;
+}
+.profile-details-value {
+    color: #1e293b;
+    font-weight: 500;
+}
+.btn-download-passport {
+    background-color: #15803d;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+.btn-download-passport:hover {
+    background-color: #166534;
+    color: #fff;
+}
 </style>
+<?php
 
-<!-- Page Wrapper -->
-<div class="page-wrapper">
-    <div class="page-content">
-       <div class="page-breadcrumb d-flex align-items-center" style="margin-bottom: 10px; background: #fff; padding: 5px 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
-    <div class="breadcrumb-title" style="border-right: 2px solid #e2e8f0; padding-right: 10px; font-weight: 700; font-size: 13px; color: #475569; text-transform: uppercase;">
-        Submission
-    </div>
-    <div class="ps-2" style="flex-grow: 1;">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb" style="margin-bottom: 0; padding: 0; background: transparent; display: flex; align-items: center; list-style: none; gap: 8px;">
-                <li class="breadcrumb-item" style="display: flex; align-items: center;">
-                    <a href="dashboard.php" style="color: #2563eb; text-decoration: none; font-size: 16px;">
-                        <i class="bx bx-home-alt"></i>
-                    </a>
-                </li>
-                <li style="color: #94a3b8; font-size: 12px;">/</li>
-                <li class="breadcrumb-item active" aria-current="page" style="color: #64748b; font-size: 13px; font-weight: 600; white-space: nowrap;">
-                    Player Registrations
-                </li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<style>
-    .filter-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #e0e0e0; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .f-grid { display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; }
-    .f-field { height: 35px; padding: 5px 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; outline: none; flex: 1; min-width: 0; }
-    .f-search { flex: 2; }
-    .btn-apply { background: #007bff; color: #fff; border: none; padding: 0 15px; height: 35px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-    .btn-clear { background: #dc3545; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 12px; }
-    
-   
-
-    @media (max-width: 1100px) { .f-grid { flex-wrap: wrap; } .f-field { flex: 1 1 30%; } .f-search { flex: 1 1 100%; } }
-</style>
-        
-        <hr />
-        <!-- Table Card -->
-        <div class="card bg">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="datatable-buttons" class="table table-striped table-bordered">
-                   <thead>
-    <tr>
-        <th class="text-center" style="width:40px;">#</th>
-        <th>Player Info</th>
-        <th>Age</th>
-        <th>Reg. Code</th>
-        <th>Role</th>
-        <th>Mobile</th>
-        <th>Timing</th>
-        <th>Mail</th>
-        <th>Location</th>
-        <th>Ref</th>
-        <th>Attem</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-</thead>
-                        <tbody>
-                         <?php
 // --- Logic: Filters & Sorting ---
 $datef = $_POST['datef'] ?? '';
 $datel = $_POST['datel'] ?? '';
@@ -162,27 +118,24 @@ if (!empty($quick_filter)) {
 }
 
 $sql = "SELECT * FROM register WHERE 1";
+$params = [];
+$types = "";
 
-if (!empty($datef)) { $sql .= " AND DATE(`date`) >= '$datef'"; if(!$quick_filter) $filterNotice[] = "From $datef"; $filterApplied = true; }
-if (!empty($datel)) { $sql .= " AND DATE(`date`) <= '$datel'"; if(!$quick_filter) $filterNotice[] = "To $datel"; $filterApplied = true; }
+if (!empty($datef)) { $sql .= " AND DATE(`date`) >= ?"; $params[] = $datef; if(!$quick_filter) $filterNotice[] = "From $datef"; $filterApplied = true; }
+if (!empty($datel)) { $sql .= " AND DATE(`date`) <= ?"; $params[] = $datel; if(!$quick_filter) $filterNotice[] = "To $datel"; $filterApplied = true; }
 
 if (!empty($searchText)) {
-    $escapedSearch = $con->real_escape_string($searchText);
-    $sql .= " AND (
-        name LIKE '%$escapedSearch%' OR
-        reg LIKE '%$escapedSearch%' OR
-        email LIKE '%$escapedSearch%' OR
-        mobile LIKE '%$escapedSearch%' OR
-        state LIKE '%$escapedSearch%' OR
-        ref LIKE '%$escapedSearch%' OR
-        player LIKE '%$escapedSearch%'
-    )";
+    $sql .= " AND (name LIKE ? OR reg LIKE ? OR email LIKE ? OR mobile LIKE ? OR state LIKE ? OR ref LIKE ? OR player LIKE ?)";
+    $like = "%$searchText%";
+    for ($i = 0; $i < 7; $i++) {
+        $params[] = $like;
+    }
     $filterNotice[] = "Search: " . htmlspecialchars($searchText);
     $filterApplied = true;
 }
-if (!empty($stateFilter)) { $sql .= " AND state = '".$con->real_escape_string($stateFilter)."'"; $filterNotice[] = "State: $stateFilter"; $filterApplied = true; }
-if (!empty($playerFilter)) { $sql .= " AND player = '".$con->real_escape_string($playerFilter)."'"; $filterNotice[] = "Role: $playerFilter"; $filterApplied = true; }
-if (!empty($statusFilter)) { $sql .= " AND status = '".$con->real_escape_string($statusFilter)."'"; $filterNotice[] = "Status: $statusFilter"; $filterApplied = true; }
+if (!empty($stateFilter)) { $sql .= " AND state = ?"; $params[] = $stateFilter; $filterNotice[] = "State: $stateFilter"; $filterApplied = true; }
+if (!empty($playerFilter)) { $sql .= " AND player = ?"; $params[] = $playerFilter; $filterNotice[] = "Role: $playerFilter"; $filterApplied = true; }
+if (!empty($statusFilter)) { $sql .= " AND status = ?"; $params[] = $statusFilter; $filterNotice[] = "Status: $statusFilter"; $filterApplied = true; }
 $mailFilter = $_POST['mail_status'] ?? '';
 if (!empty($mailFilter)) {
     if ($mailFilter === 'sent') {
@@ -197,15 +150,72 @@ if (!empty($mailFilter)) {
 
 // Smart Sorting: Greatest of Update or Created At
 $sql .= " ORDER BY GREATEST(COALESCE(`up`, '1000-01-01 00:00:00'), `created_at`) DESC LIMIT 3000";
-$result = $con ? $con->query($sql) : null;
+
+$rows = [];
+if ($con) {
+    $stmt = $con->prepare($sql);
+    if ($stmt) {
+        if (count($params) > 0) {
+            $types = str_repeat("s", count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $res = $stmt->get_result();
+        while ($r = $res->fetch_assoc()) {
+            $rows[] = $r;
+        }
+    }
+}
 
 $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketkeeper/Batsman'=>'WK'];
-
 ?>
 
- <div class="filter-card">
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="page-content">
+        <!-- Breadcrumb -->
+        <div class="page-breadcrumb d-flex align-items-center mb-3" style="background: #fff; padding: 5px 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div class="breadcrumb-title" style="border-right: 2px solid #e2e8f0; padding-right: 10px; font-weight: 700; font-size: 13px; color: #475569; text-transform: uppercase;">
+                Submission
+            </div>
+            <div class="ps-2" style="flex-grow: 1;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="margin-bottom: 0; padding: 0; background: transparent; display: flex; align-items: center; list-style: none; gap: 8px;">
+                        <li class="breadcrumb-item" style="display: flex; align-items: center;">
+                            <a href="dashboard.php" style="color: #2563eb; text-decoration: none; font-size: 16px;">
+                                <i class="bx bx-home-alt"></i>
+                            </a>
+                        </li>
+                        <li style="color: #94a3b8; font-size: 12px;">/</li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: #64748b; font-size: 13px; font-weight: 600; white-space: nowrap;">
+                            Player Registrations
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="mb-0 text-dark fw-bold">Data Metrics Matrix</h4>
+            <span class="badge bg-primary text-white" style="font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 20px;">
+                Query Count: <?= count($rows) ?> Records Found
+            </span>
+        </div>
+
+        <style>
+            .filter-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #e0e0e0; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+            .f-grid { display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; }
+            .f-field { height: 35px; padding: 5px 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; outline: none; flex: 1; min-width: 0; }
+            .f-search { flex: 2; }
+            .btn-apply { background: #007bff; color: #fff; border: none; padding: 0 15px; height: 35px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+            .btn-clear { background: #dc3545; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 12px; }
+            @media (max-width: 1100px) { .f-grid { flex-wrap: wrap; } .f-field { flex: 1 1 30%; } .f-search { flex: 1 1 100%; } }
+        </style>
+
+        <!-- Filter Card outside table structure -->
+        <div class="filter-card">
             <form method="post" class="f-grid">
-                <input type="text" name="universal" class="f-field f-search" placeholder="🔍 Search Player..." value="<?= $searchText ?>">
+                <input type="text" name="universal" class="f-field f-search" placeholder="🔍 Search Player..." value="<?= htmlspecialchars($searchText) ?>">
                 <select name="quick_filter" class="f-field" onchange="this.form.submit()" style="background:#f1f5f9; font-weight:bold;">
                     <option value="">⏱️ Quick Range</option>
                     <option value="today" <?= $quick_filter == 'today' ? 'selected' : '' ?>>Today</option>
@@ -213,8 +223,8 @@ $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketke
                     <option value="this_week" <?= $quick_filter == 'this_week' ? 'selected' : '' ?>>This Week</option>
                     <option value="this_month" <?= $quick_filter == 'this_month' ? 'selected' : '' ?>>This Month</option>
                 </select>
-                <input type="date" name="datef" class="f-field" value="<?= $datef ?>">
-                <input type="date" name="datel" class="f-field" value="<?= $datel ?>">
+                <input type="date" name="datef" class="f-field" value="<?= htmlspecialchars($datef) ?>">
+                <input type="date" name="datel" class="f-field" value="<?= htmlspecialchars($datel) ?>">
                 <select name="state" class="f-field">
                     <option value="">📍 State</option>
                     <?php
@@ -227,17 +237,17 @@ $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketke
                 <select name="player" class="f-field">
                     <option value="">🏏 Role</option>
                      <?php
-            $roles = ["Batsman", "Bowler", "All Rounder", "Wicketkeeper/Batsman"];
-            foreach ($roles as $role) {
-                $sel = ($role === $playerFilter) ? 'selected' : '';
-                echo "<option value=\"$role\" $sel>$role</option>";
-            }
-            ?>
+                     $roles = ["Batsman", "Bowler", "All Rounder", "Wicketkeeper/Batsman"];
+                     foreach ($roles as $role) {
+                         $sel = ($role === $playerFilter) ? 'selected' : '';
+                         echo "<option value=\"$role\" $sel>$role</option>";
+                     }
+                     ?>
                 </select>
-                 <select name="status" class="f-field">
+                <select name="status" class="f-field">
                     <option value="">All Payments</option>
-            <option value="Success" <?= $statusFilter == 'Success' ? 'selected' : '' ?>>Paid (Success)</option>
-            <option value="Pending" <?= $statusFilter == 'Pending' ? 'selected' : '' ?>>Unpaid (Pending)</option>
+                    <option value="Success" <?= $statusFilter == 'Success' ? 'selected' : '' ?>>Paid (Success)</option>
+                    <option value="Pending" <?= $statusFilter == 'Pending' ? 'selected' : '' ?>>Unpaid (Pending)</option>
                 </select>
                 <select name="mail_status" class="f-field">
                     <option value="">All Mail Status</option>
@@ -247,42 +257,48 @@ $roleShorts = ['Batsman'=>'BAT', 'Bowler'=>'BWL', 'All Rounder'=>'AR', 'Wicketke
                 <button type="submit" class="btn-apply">Apply</button>
                 <?php if ($filterApplied): ?> <a href="<?= $_SERVER['PHP_SELF'] ?>" class="btn-clear">Clear</a> <?php endif; ?>
                 <button type="button" onclick="exportToExcel()" class="btn-export" style="background:#16a34a; color:#fff; border:none; padding:0 15px; height:35px; border-radius:5px; font-weight:bold; cursor:pointer; margin-left:5px;">
-    <i class='bx bx-spreadsheet'></i> Excel Export
-</button>
+                    <i class='bx bx-spreadsheet'></i> Excel Export
+                </button>
             </form>
         </div>
 
+        <?php if (!empty($filterNotice)): ?>
+            <div class="alert alert-light border mb-3 py-2" style="font-size:12px;">Active Filters: <?= implode(' &nbsp;|&nbsp; ', $filterNotice) ?></div>
+        <?php endif; ?>
 
-<!-- Filter Applied Notice -->
-<?php if (!empty($filterNotice)): ?>
-    <div class="alert alert-info"><?= implode(' &nbsp;|&nbsp; ', $filterNotice) ?></div>
-<?php endif; ?>
+        <!-- Table Card -->
+        <div class="card bg">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width:40px;">#</th>
+                                <th>Player Details</th>
+                                <th>Age</th>
+                                <th>Registration ID</th>
+                                <th>Role</th>
+                                <th>Phone No</th>
+                                <th>Timing (Form Filled)</th>
+                                <th>Mail</th>
+                                <th>Location</th>
+                                <th>Reference</th>
+                                <th>Attempts</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $count = 0;
+                        if (count($rows) > 0) {
+                            foreach ($rows as $row) {
+                                $isSuccess = $row['status'] === 'Success';
+                                $shortRole = $roleShorts[$row['player']] ?? $row['player'];
+                                $regCount = $row['regCount'] ?? 0;
 
-<!-- Table Rows -->
-<?php
-if ($result && $result->num_rows > 0) {
-    $count = 0;
-    while ($row = $result->fetch_assoc()) {
-        $shortRole = $roleShorts[$row['player']] ?? $row['player'];
-
-// Status Button and Action Buttons
-$statusButton = '';
-$actionButtons = '';
-$isSuccess = $row['status'] === 'Success';
-
-if ($isSuccess) {
-    $statusButton = '<button class="btn btn-success btn-sm" disabled>Success</button>';
-} else {
-    $statusButton = '<a href="../send.php?id=' . $row['id'] . '" class="btn btn-warning btn-sm" onclick="return confirm(\'Are you sure you want to mark this as Success?\')">Mark Success</a>';
-    $actionButtons = '<button class="btn btn-danger btn-sm delete-btn" data-id="' . $row['id'] . '">Delete</button>';
-}
-// loop ke andar...
-$isSuccess = $row['status'] === 'Success';
-$shortRole = $roleShorts[$row['player']] ?? $row['player'];
-$regCount = $row['regCount'] ?? 0;
-
-// 1. Success Row Highlight
-$rowStyle = $isSuccess ? "style='background-color: #dcfce7 !important;'" : "";
+                                // 1. Success Row Highlight
+                                $rowStyle = $isSuccess ? "style='background-color: #dcfce7 !important;'" : "";
 
 // 2. Updated State Color Logic with Diverse Palette
 $stateColors = [
@@ -469,20 +485,15 @@ echo "<tr $rowStyle>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Main logic for opening the view modal (unchanged)
+    // Main logic for opening the view modal (premium UI design styling applied)
     document.querySelectorAll('.openModal').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const data = JSON.parse(this.dataset.details);
 
-            // ... (View Modal HTML generation logic remains here) ...
-
             const isSuccess = data.status === 'Success';
-            const modalStyle = isSuccess
-                ? 'background-color:#e6ffe6; border: 2px solid #28a745; padding:15px; border-radius:10px;'
-                : '';
+            const cardClass = isSuccess ? 'profile-details-card' : 'profile-details-card pending';
 
-            let html = `<div style="${modalStyle}"><table class="table table-bordered">`;
             const datetime = data.created_at ?? '';
             let formattedDate = '', formattedTime = '';
 
@@ -492,34 +503,85 @@ document.addEventListener('DOMContentLoaded', function() {
                 formattedTime = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
             }
 
-            html += `<tr><th>Reg. Code</th><td><span style="font-weight:bold; font-size:16px; color:#007bff;">${data.reg ?? ''}</span></td></tr>`;
-            html += `<tr><th>Name</th><td>${data.name ?? ''}</td></tr>`;
-            html += `<tr><th>Age</th><td>${data.age ?? ''}</td></tr>`;
-            html += `<tr><th>Role</th><td>${data.player ?? ''}</td></tr>`;
-            html += `<tr><th>Registration Date</th><td>${formattedDate} at ${formattedTime}</td></tr>`;
-            html += `<tr><th>Payment Date</th><td>${data.date ?? ''}</td></tr>`;
-            html += `<tr><th>Email</th><td>${data.email ?? ''}</td></tr>`;
-            html += `<tr><th>Mobile</th><td>${data.mobile ?? ''}</td></tr>`;
-            html += `<tr><th>Mail Sent</th><td>${data.mailsent == 1 ? 'Yes' : 'No'}</td></tr>`;
-            html += `<tr><th>State</th><td>${data.state ?? ''}</td></tr>`;
-            html += `<tr><th>City</th><td>${data.city ?? ''}</td></tr>`;
-            html += `<tr><th>Reference</th><td>${data.ref ?? ''}</td></tr>`;
-            html += `<tr><th>Source</th><td>${data.source ?? ''}</td></tr>`;
-            html += `<tr><th>Status</th><td><strong style="color: ${isSuccess ? 'green' : 'red'}">${data.status ?? ''}</strong></td></tr>`;
-            html += '</table>';
-
-            html += `<div class="text-end mt-3">`;
+            let html = `
+            <div class="${cardClass}">
+                <table class="profile-details-table">
+                    <tr>
+                        <td class="profile-details-label">Reg. Code</td>
+                        <td class="profile-details-value">
+                            <span style="font-family: monospace; font-weight: 700; color: #2563eb; background: #eff6ff; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe;">
+                                ${data.reg ?? ''}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Name</td>
+                        <td class="profile-details-value" style="font-weight: 700; color: #0f172a;">${data.name ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Age</td>
+                        <td class="profile-details-value">${data.age ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Role</td>
+                        <td class="profile-details-value">${data.player ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Registration Date</td>
+                        <td class="profile-details-value">${formattedDate} at ${formattedTime}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Email Address</td>
+                        <td class="profile-details-value">${data.email ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Mobile Channel</td>
+                        <td class="profile-details-value" style="font-family: monospace; font-weight: 700;">${data.mobile ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Mail Sent</td>
+                        <td class="profile-details-value">
+                            ${data.mailsent == 1 
+                                ? '<span style="color: #16a34a; font-weight: 700;">Yes</span>' 
+                                : '<span style="color: #dc2626; font-weight: 700;">No</span>'}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">State Boundary</td>
+                        <td class="profile-details-value">${data.state ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">City Region</td>
+                        <td class="profile-details-value">${data.city ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Reference</td>
+                        <td class="profile-details-value" style="font-weight: 700; color: #2563eb;">${data.ref ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td class="profile-details-label">Status State</td>
+                        <td class="profile-details-value">
+                            ${isSuccess 
+                                ? '<span style="background-color: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; border: 1px solid #bbf7d0;">Success</span>' 
+                                : '<span style="background-color: #fef3c7; color: #b45309; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; border: 1px solid #fde68a;">Pending</span>'}
+                        </td>
+                    </tr>
+                </table>
+                <div class="text-end mt-4">`;
 
             if (isSuccess) {
-                html += `<a href="../pdf1.php?reg=${encodeURIComponent(data.reg)}" target="_blank" class="btn btn-success me-2">
-                            <i class="bx bxs-file-pdf"></i> Download PDF
-                          </a>`;
+                html += `
+                <a href="../pdf1.php?reg=${encodeURIComponent(data.reg)}" target="_blank" class="btn-download-passport me-2">
+                    <i class="bx bxs-file-pdf" style="font-size: 18px;"></i> Download PDF Passport
+                </a>`;
             }
 
-            html += `<button class="btn btn-warning" id="editButton">
-                        <i class="bx bxs-edit"></i> Edit
-                      </button>`;
-            html += `</div></div>`;
+            html += `
+                <button class="btn btn-warning" id="editButton" style="font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 8px;">
+                    <i class="bx bxs-edit" style="font-size: 18px;"></i> Edit Details
+                </button>
+                </div>
+            </div>`;
 
             document.getElementById('modalContent').innerHTML = html;
             const playerModal = new bootstrap.Modal(document.getElementById('playerModal'));
