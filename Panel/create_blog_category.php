@@ -3,7 +3,7 @@ session_start();
 
 // Check if the session exists
 if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+    header('location:../index.php');
     exit();
 }
 

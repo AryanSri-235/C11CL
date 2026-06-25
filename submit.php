@@ -11,51 +11,81 @@ if(isset($_POST['submit'])){
     include "db.php";
 
     // 1. Data Processing
-    $name = ucwords(strtolower($_POST['name']));
-    $age = $_POST['age'];
+    $name   = ucwords(strtolower($_POST['name']));
+    $age    = $_POST['age'];
     $mobile = $_POST['phone'];
-    $email = $_POST['email'];
+    $email  = $_POST['email'];
     $player = $_POST['speciality'];
-    $state = $_POST['state'];
-    $city = $_POST['city'];
-    $ref = (strpos($_POST['ref'], '@') !== false) ? '' : $_POST['ref'];
-    $source = $_POST['source'];
+    $state  = $_POST['state'];
+    $city   = $_POST['city'];
+    $rawRef = isset($_POST['ref']) ? $_POST['ref'] : '';
+    $ref    = (strpos($rawRef, '@') !== false) ? '' : $rawRef;
+    $source = isset($_POST['source']) ? $_POST['source'] : 'Website';
 
     // Mobile Formatting
     $mobile = str_replace('+', '', $mobile);
     if (substr($mobile, 0, 1) === '0') { $mobile = substr($mobile, 1); }
     if ((substr($mobile, 0, 2) === '91') && (strlen($mobile) >= 12)) { $mobile = substr($mobile, 2); }
 
+    // Validate 10 digits
+    if (!preg_match('/^[0-9]{10}$/', $mobile)) {
+        if (isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['status' => 'error', 'message' => 'Mobile number must be exactly 10 digits.']);
+            exit;
+        } else {
+            echo "<script>alert('Mobile number must be exactly 10 digits.'); window.history.back();</script>";
+            exit;
+        }
+    }
+
     date_default_timezone_set("Asia/Kolkata");
     $date = date('Y-m-d H:i:s');
 
-    // 2. Check if already exists
-    $sqlCheck = "SELECT reg, status FROM register WHERE name = '$name' AND mobile = '$mobile' AND email = '$email' ORDER BY id DESC LIMIT 1";
-    $resultCheck = $con->query($sqlCheck);
+    // Generate a local reg ID as fallback (used even if DB is down)
+    $reg = "C11CL" . date("dmy") . sprintf('%05d', rand(1, 99999));
 
-    if ($resultCheck->num_rows > 0) {
-        $rowCheck = $resultCheck->fetch_assoc();
-        $reg = $rowCheck['reg'];
-        if($rowCheck['status'] == 'Pending') {
-            $con->query("UPDATE register SET age = '$age', player = '$player', up = '$date', state = '$state', city = '$city', ref = '$ref', source = '$source' WHERE reg = '$reg'");
+    // 2. DB operations — only run if connection succeeded
+    if ($con) {
+        // Check if already exists
+        $sqlCheck = "SELECT reg, status FROM register WHERE name = '$name' AND mobile = '$mobile' AND email = '$email' ORDER BY id DESC LIMIT 1";
+        $resultCheck = $con->query($sqlCheck);
+
+        if ($resultCheck && $resultCheck->num_rows > 0) {
+            $rowCheck = $resultCheck->fetch_assoc();
+            $reg = $rowCheck['reg'];
+            if($rowCheck['status'] == 'Pending') {
+                $con->query("UPDATE register SET age = '$age', player = '$player', up = '$date', state = '$state', city = '$city', ref = '$ref', source = '$source' WHERE reg = '$reg'");
+            }
+        } else {
+            // Generate New Registration No from DB sequence
+            $sqlLast = "SELECT reg FROM register ORDER BY id DESC LIMIT 1";
+            $resLast = $con->query($sqlLast);
+            $count   = ($resLast && $resLast->num_rows > 0) ? (int)substr($resLast->fetch_assoc()["reg"], -5) + 1 : 1;
+            $reg     = "C11CL" . date("dmy") . sprintf('%05d', $count);
+
+            // Insert New Lead
+            $sqlInsert = "INSERT INTO register (name, reg, age, mobile, email, player, state, city, ref, created_at, up, regCount, source, status) 
+                          VALUES ('$name', '$reg', '$age', '$mobile', '$email', '$player', '$state', '$city', '$ref', '$date', '$date', 1, '$source', 'Pending')";
+            $con->query($sqlInsert);
         }
-    } else {
-        // 3. Generate New Registration No
-        $sqlLast = "SELECT reg FROM register ORDER BY id DESC LIMIT 1";
-        $resLast = $con->query($sqlLast);
-        $count = ($resLast->num_rows > 0) ? (int)substr($resLast->fetch_assoc()["reg"], -5) + 1 : 1;
-        $reg = "C11CL" . date("dmy") . sprintf('%05d', $count);
-
-        // 4. Insert New Lead
-        $sqlInsert = "INSERT INTO register (name, reg, age, mobile, email, player, state, city, ref, created_at, up, regCount, source, status) 
-                      VALUES ('$name', '$reg', '$age', '$mobile', '$email', '$player', '$state', '$city', '$ref', '$date', '$date', 1, '$source', 'Pending')";
-        $con->query($sqlInsert);
+        $con->close();
     }
 
     $_SESSION['payreg'] = $reg;
     $registrationID = $reg;
-    $showLoader = true; // Ye trigger karega loading screen ko
-    $con->close();
+    
+    if (isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Registration Successful! Your ID is ' . $reg,
+            'reg' => $reg
+        ]);
+        exit;
+    }
+    
+    $showLoader = true; // Triggers the success + redirect screen
 }
 ?>
 

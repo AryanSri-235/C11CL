@@ -217,7 +217,7 @@ if (isset($_GET['logout']) && isset($_SESSION['uname'])) {
                 
         unset($_SESSION['uname']);
         unset($_SESSION['password']);
-        header('location: login.php');
+        header('location:../index.php');
         exit();
     }
 }

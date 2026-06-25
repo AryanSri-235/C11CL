@@ -2,27 +2,47 @@
 include "db.php"; // DB connection
 
 if (isset($_POST['submit'])) {
-    $name = $_POST['name'];
-    $phone = $_POST['phone'];
-    $reg = $_POST['reg'];
+    $name = $_POST['name'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $reg = $_POST['reg'] ?? '';
 
-    // First verify phone and reg_id in registered_names table
-    $checkSql = "SELECT * FROM register WHERE phone = '$phone' AND reg = '$reg'";
-    $result = $conn->query($checkSql);
-
-    if ($result->num_rows > 0) {
-        // Validated - Now insert into submissions table or any other action
-        $insertSql = "INSERT INTO verified_submissions (name, phone, reg) VALUES ('$name', '$phone', '$reg')";
-        if ($con->query($insertSql) === TRUE) {
-            header("Location: ../payments?status=success");
-            exit();
+    // First verify phone and reg_id securely
+    $checkSql = "SELECT * FROM register WHERE phone = ? AND reg = ?";
+    $stmt = $con->prepare($checkSql);
+    if ($stmt) {
+        $stmt->bind_param('ss', $phone, $reg);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result && $result->num_rows > 0) {
+            $stmt->close();
+            // Validated - Now insert into verified_submissions table securely
+            $insertSql = "INSERT INTO verified_submissions (name, phone, reg) VALUES (?, ?, ?)";
+            $insertStmt = $con->prepare($insertSql);
+            if ($insertStmt) {
+                $insertStmt->bind_param('sss', $name, $phone, $reg);
+                if ($insertStmt->execute()) {
+                    $insertStmt->close();
+                    $con->close();
+                    header("Location: ../payments?status=success");
+                    exit();
+                } else {
+                    echo "Insert Error: " . $insertStmt->error;
+                    $insertStmt->close();
+                }
+            } else {
+                echo "SQL Preparation Error on insert.";
+            }
         } else {
-            echo "Insert Error: " . $con->error;
+            if ($stmt) {
+                $stmt->close();
+            }
+            $con->close();
+            header("Location: ../payments?status=invalid");
+            exit();
         }
     } else {
-        // Not matched
-        header("Location: ../payments?status=invalid");
-        exit();
+        echo "SQL Preparation Error on check.";
     }
 
     $con->close();

@@ -939,7 +939,7 @@
     <div class="c11-form-row">
         <div class="c11-form-group">
             <label>Phone Number *</label>
-            <input type="tel" id="formPhone" required placeholder="Enter contact number" style="color: #000000 !important; font-weight: 500;">
+            <input type="tel" id="formPhone" required placeholder="Enter contact number" minlength="10" maxlength="10" pattern="[0-9]{10}" style="color: #000000 !important; font-weight: 500;">
         </div>
         <div class="c11-form-group">
             <label>Email Address *</label>
@@ -986,6 +986,12 @@
    function handleC11FormSubmitEngine(event) {
     event.preventDefault();
     
+    var phoneVal = document.getElementById('formPhone').value.trim();
+    if (!/^\d{10}$/.test(phoneVal)) {
+        alert('Please enter a valid 10-digit phone number.');
+        return;
+    }
+    
     var formElement = document.getElementById('c11SponsorForm');
     var loaderOverlay = document.getElementById('formLoaderOverlay');
     var progressBar = document.getElementById('formLinearProgressBar');
@@ -1016,7 +1022,7 @@
     }, 100);
 
     // Using absolute dynamic routing URL to bypass folder drops
-    fetch('https://c11cl.com/sponsorship/submit-inquiry.php', {
+    fetch('<?php echo BASE_URL; ?>sponsorship/submit-inquiry.php', {
         method: 'POST',
         body: formDataPayload
     })

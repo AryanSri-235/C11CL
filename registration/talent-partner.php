@@ -3892,13 +3892,13 @@
                 <h3>PARTNERSHIP APPLICATION</h3>
                 <p>Tell us about your Academy</p>
             </div>
-            <form action="#" method="POST">
+            <form id="talentPartnerForm" action="submit-partner.php" method="POST">
                 <div class="input-row">
                     <input type="text" name="a_name" class="custom-input" placeholder="Academy Name" required>
                     <input type="text" name="o_name" class="custom-input" placeholder="Owner Name" required>
                 </div>
                 <div class="input-row">
-                    <input type="tel" name="phone" class="custom-input" placeholder="Contact Number" required>
+                    <input type="tel" name="phone" class="custom-input" placeholder="Contact Number" minlength="10" maxlength="10" pattern="[0-9]{10}" required>
                     <input type="text" name="location" class="custom-input" placeholder="City / State" required>
                 </div>
                 <div class="input-row">
@@ -3926,6 +3926,75 @@
 		
 		
 		
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tpForm = document.getElementById('talentPartnerForm');
+    if (tpForm) {
+        tpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = tpForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SUBMITTING...';
+            
+            const formData = new FormData(tpForm);
+            
+            const phoneVal = formData.get('phone').trim();
+            if (!/^\d{10}$/.test(phoneVal)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Contact Number',
+                    text: 'Contact number must be exactly 10 digits.',
+                    confirmButtonColor: '#CC0000'
+                });
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
+            }
+            
+            fetch(tpForm.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Application Received! 🤝',
+                        text: data.message || 'Thank you for partnering with C11CL.',
+                        confirmButtonColor: '#CC0000'
+                    }).then(function() {
+                        window.location.href = '<?php echo BASE_URL; ?>';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Failed',
+                        text: data.message || 'Please try again.',
+                        confirmButtonColor: '#CC0000'
+                    });
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Something went wrong. Please check your internet connection.',
+                    confirmButtonColor: '#CC0000'
+                });
+            });
+        });
+    }
+});
+</script>
 		<?php include "../foot.php"; ?>
 	</div><!-- #page -->
 	<script type="speculationrules">

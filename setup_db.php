@@ -171,8 +171,82 @@ $tables['founding_owner_inquiries'] = "CREATE TABLE IF NOT EXISTS `founding_owne
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+// -------------------------------------------------------
+// Table 8: abandoned_leads
+// -------------------------------------------------------
+$tables['abandoned_leads'] = "CREATE TABLE IF NOT EXISTS `abandoned_leads` (
+    `id`            INT(11) NOT NULL AUTO_INCREMENT,
+    `name`          VARCHAR(255) DEFAULT NULL,
+    `email`         VARCHAR(255) DEFAULT NULL,
+    `mobile`        VARCHAR(20)  DEFAULT NULL,
+    `player`        VARCHAR(100) DEFAULT NULL,
+    `state`         VARCHAR(100) DEFAULT NULL,
+    `city`          VARCHAR(100) DEFAULT NULL,
+    `dob`           DATE         DEFAULT NULL,
+    `dress_size`    VARCHAR(20)  DEFAULT NULL,
+    `current_stage` VARCHAR(100) DEFAULT NULL,
+    `attempts`      INT(11)      DEFAULT 1,
+    `created_at`    DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+// -------------------------------------------------------
+// Table 9: contact_queries
+// -------------------------------------------------------
+$tables['contact_queries'] = "CREATE TABLE IF NOT EXISTS `contact_queries` (
+    `id`         INT(11) NOT NULL AUTO_INCREMENT,
+    `name`       VARCHAR(255) DEFAULT NULL,
+    `email`      VARCHAR(255) DEFAULT NULL,
+    `phone`      VARCHAR(20)  DEFAULT NULL,
+    `subject`    VARCHAR(255) DEFAULT NULL,
+    `message`    TEXT         DEFAULT NULL,
+    `created_at` DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+// -------------------------------------------------------
+// Table 10: email_subscriptions
+// -------------------------------------------------------
+$tables['email_subscriptions'] = "CREATE TABLE IF NOT EXISTS `email_subscriptions` (
+    `id`            INT(11) NOT NULL AUTO_INCREMENT,
+    `email`         VARCHAR(255) DEFAULT NULL,
+    `subscribed_at` DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+// -------------------------------------------------------
+// Table 11: academy_partners
+// -------------------------------------------------------
+$tables['academy_partners'] = "CREATE TABLE IF NOT EXISTS `academy_partners` (
+    `id`              INT(11) NOT NULL AUTO_INCREMENT,
+    `academy_name`    VARCHAR(255) DEFAULT NULL,
+    `owner_name`      VARCHAR(255) DEFAULT NULL,
+    `phone`           VARCHAR(20)  DEFAULT NULL,
+    `location`        VARCHAR(255) DEFAULT NULL,
+    `coach_name`      VARCHAR(255) DEFAULT NULL,
+    `active_players`  VARCHAR(100) DEFAULT NULL,
+    `years_operation` VARCHAR(100) DEFAULT NULL,
+    `registration_no` VARCHAR(100) DEFAULT NULL,
+    `created_at`      DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+// -------------------------------------------------------
+// Table 12: job_applications
+// -------------------------------------------------------
+$tables['job_applications'] = "CREATE TABLE IF NOT EXISTS `job_applications` (
+    `id`           INT(11) NOT NULL AUTO_INCREMENT,
+    `name`         VARCHAR(255) DEFAULT NULL,
+    `email`        VARCHAR(255) DEFAULT NULL,
+    `phone`        VARCHAR(20)  DEFAULT NULL,
+    `position`     VARCHAR(255) DEFAULT NULL,
+    `cover_letter` TEXT         DEFAULT NULL,
+    `cv_file`      VARCHAR(255) DEFAULT NULL,
+    `submitted_at` DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
 // -------------------------------------------------------
 // Run each CREATE TABLE

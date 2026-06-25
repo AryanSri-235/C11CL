@@ -1,4 +1,15 @@
 <?php
+// Secure against unauthorized browser execution
+if (php_sapi_name() !== 'cli') {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (!isset($_SESSION['password']) || !isset($_SESSION['uname'])) {
+        http_response_code(403);
+        exit("Unauthorized access.");
+    }
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

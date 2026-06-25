@@ -1,302 +1,473 @@
 <?php
-session_start();
-if(isset($_SESSION['uname'])){
-	include 'db.php';
-	$sql = "SELECT * FROM user WHERE username = '{$_SESSION['uname']}' ";
-	$result = $con->query($sql);
-	if ($result->num_rows > 0) {
-	  while($row = $result->fetch_assoc()) {
-		$id = $row["id"];
-				$name = $row["name"];
-				$username = $row["username"];
-				$password = $row["password"];
-				$number = $row["number"];
-				$email = $row["email"];
-				$role = $row["role"];
-				$status = $row["status"];
-				$fb = $row["fb"];
-				$insta = $row["insta"];
-				$ref = $row["ref"];
-				$picture = $row["picture"]; 
-	  }
-	} else {
-	  echo "0 results";
-	}
-	$con->close();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-///////////////////////////////////////////////////////
+include 'db.php';
 
-if (isset($_POST['delete'])) {
-    include 'db.php';
-    $id = $_POST['id'];
-    $sql = "DELETE FROM user WHERE id = '$id' ";
-
-    if ($con->query($sql) === TRUE) {
-        $_SESSION['delete-acc'] = "Record deleted successfully";
-        header('location:profile.php');
-    } else {
-        echo "Error deleting record: " . $con->error;
-    }
-    $con->close();
+// Strict Authentication Check
+if (!isset($_SESSION['uname'])) {
+    header('location:../index.php');
+    exit();
 }
 
+// Check database connection - fallback to mock mode if offline
+$is_mock_mode = !$con;
 
-if (isset($_POST["updateaccount"])) {
-    include 'db.php';
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $password = $_POST['password'];
-    $number = $_POST['number'];
-	$email = $_POST['email'];
-	$role = $_POST['role'];
-    $fb = $_POST['fb'];
-    $insta = $_POST['insta'];
-
-	$sql = "UPDATE user SET name='$name', password='$password', number='$number',email='$email', role='$role',status='$status',fb='$fb',insta='$insta', ref='$ref',picture='$picture' WHERE id= '$id' ";
-
-if ($con->query($sql) === TRUE) {
-  $updated = "Record updated successfully";
+if ($is_mock_mode) {
+    $id = 1;
+    $name = $_SESSION['profile_name'] ?? "Aman Rai";
+    $number = $_SESSION['profile_number'] ?? "1234567890";
+    $email = $_SESSION['profile_email'] ?? "amanrai7830@gmail.com";
+    $role = $_SESSION['role'] ?? "Staff Member";
+    $status = $_SESSION['role'] ?? "Staff Member";
+    $fb = $_SESSION['profile_fb'] ?? "https://facebook.com";
+    $insta = $_SESSION['profile_insta'] ?? "https://instagram.com";
+    $ref = $_SESSION['profile_ref'] ?? "C11CL999";
+    $picture = $_SESSION['picture'] ?? "";
+    $dob = $_SESSION['profile_dob'] ?? "N/A";
+    $address = $_SESSION['profile_address'] ?? "N/A";
+    $aadhar = $_SESSION['profile_aadhar'] ?? "4532 9876 1100";
+    $bank_registry = $_SESSION['profile_bank_registry'] ?? "N/A";
+    $account_no = $_SESSION['profile_account_no'] ?? "N/A";
+    $ifsc = $_SESSION['profile_ifsc'] ?? "N/A";
+    $present_days = $_SESSION['profile_present_days'] ?? 17;
+    $blood_group = $_SESSION['profile_blood_group'] ?? "N/A";
+    $salary_bracket = $_SESSION['profile_salary_bracket'] ?? "XXXXXX";
 } else {
-  echo "Error updating record: " . $con->error;
+    // 1. Dynamic Table Patching (Alters table if columns do not exist)
+    $colsCheck = $con->query("SHOW COLUMNS FROM `user` LIKE 'dob'");
+    if ($colsCheck && $colsCheck->num_rows == 0) {
+        $con->query("ALTER TABLE `user` ADD `dob` VARCHAR(50) DEFAULT 'N/A'");
+        $con->query("ALTER TABLE `user` ADD `address` TEXT DEFAULT NULL");
+        $con->query("ALTER TABLE `user` ADD `aadhar` VARCHAR(50) DEFAULT 'N/A'");
+        $con->query("ALTER TABLE `user` ADD `bank_registry` VARCHAR(100) DEFAULT 'N/A'");
+        $con->query("ALTER TABLE `user` ADD `account_no` VARCHAR(50) DEFAULT 'N/A'");
+        $con->query("ALTER TABLE `user` ADD `ifsc` VARCHAR(50) DEFAULT 'N/A'");
+        $con->query("ALTER TABLE `user` ADD `present_days` INT DEFAULT 17");
+        $con->query("ALTER TABLE `user` ADD `blood_group` VARCHAR(10) DEFAULT 'N/A'");
+        $con->query("ALTER TABLE `user` ADD `salary_bracket` VARCHAR(50) DEFAULT 'XXXXXX'");
+    }
+
+    // Fetch Logged-in User Data securely
+    $userSql = "SELECT * FROM user WHERE username = ?";
+    $stmt = $con->prepare($userSql);
+    $username = $_SESSION['uname'];
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $userData = $result->fetch_assoc();
+    $stmt->close();
+
+    if (!$userData) {
+        die("User details not found.");
+    }
+
+    $id = $userData["id"];
+    $name = $userData["name"];
+    $number = $userData["number"];
+    $email = $userData["email"];
+    $role = $userData["role"];
+    $status = $userData["status"];
+    $fb = $userData["fb"];
+    $insta = $userData["insta"];
+    $ref = $userData["ref"];
+    $picture = $userData["picture"];
+    $dob = $userData["dob"] ?? 'N/A';
+    $address = $userData["address"] ?? 'N/A';
+    $aadhar = $userData["aadhar"] ?? 'N/A';
+    $bank_registry = $userData["bank_registry"] ?? 'N/A';
+    $account_no = $userData["account_no"] ?? 'N/A';
+    $ifsc = $userData["ifsc"] ?? 'N/A';
+    $present_days = $userData["present_days"] ?? 17;
+    $blood_group = $userData["blood_group"] ?? 'N/A';
+    $salary_bracket = $userData["salary_bracket"] ?? 'XXXXXX';
 }
 
-$con->close();
+$updatedMessage = '';
+$errorMessage = '';
+
+// Process update request securely
+if (isset($_POST['update_profile_fields'])) {
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $number = $_POST['number'] ?? '';
+    $dob = $_POST['dob'] ?? '';
+    $address = $_POST['address'] ?? '';
+    $aadhar = $_POST['aadhar'] ?? '';
+    $bank_registry = $_POST['bank_registry'] ?? '';
+    $account_no = $_POST['account_no'] ?? '';
+    $ifsc = $_POST['ifsc'] ?? '';
+    $present_days = intval($_POST['present_days'] ?? 17);
+    $blood_group = $_POST['blood_group'] ?? '';
+    $salary_bracket = $_POST['salary_bracket'] ?? '';
+    $fb = $_POST['fb'] ?? '';
+    $insta = $_POST['insta'] ?? '';
+    
+    // Handle image upload if a file was selected
+    $picturePath = $picture;
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] == UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        $filename = time() . '_' . basename($_FILES['profile_pic']['name']);
+        $targetFile = $uploadDir . $filename;
+        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $targetFile)) {
+            $picturePath = $targetFile;
+            $_SESSION['picture'] = $picturePath; // Update session
+        }
+    }
+    
+    if ($is_mock_mode) {
+        $_SESSION['profile_name'] = $name;
+        $_SESSION['profile_email'] = $email;
+        $_SESSION['profile_number'] = $number;
+        $_SESSION['profile_dob'] = $dob;
+        $_SESSION['profile_address'] = $address;
+        $_SESSION['profile_aadhar'] = $aadhar;
+        $_SESSION['profile_bank_registry'] = $bank_registry;
+        $_SESSION['profile_account_no'] = $account_no;
+        $_SESSION['profile_ifsc'] = $ifsc;
+        $_SESSION['profile_present_days'] = $present_days;
+        $_SESSION['profile_blood_group'] = $blood_group;
+        $_SESSION['profile_salary_bracket'] = $salary_bracket;
+        $_SESSION['profile_fb'] = $fb;
+        $_SESSION['profile_insta'] = $insta;
+        
+        $updatedMessage = "Profile fields updated successfully (Sandbox Mock mode)!";
+        $picture = $picturePath;
+    } else {
+        $updateSql = "UPDATE user SET name = ?, email = ?, number = ?, dob = ?, address = ?, aadhar = ?, bank_registry = ?, account_no = ?, ifsc = ?, present_days = ?, blood_group = ?, salary_bracket = ?, fb = ?, insta = ?, picture = ? WHERE id = ?";
+        $updateStmt = $con->prepare($updateSql);
+        if ($updateStmt) {
+            $updateStmt->bind_param('sssssssssisssssi', $name, $email, $number, $dob, $address, $aadhar, $bank_registry, $account_no, $ifsc, $present_days, $blood_group, $salary_bracket, $fb, $insta, $picturePath, $id);
+            if ($updateStmt->execute()) {
+                $updatedMessage = "Profile fields updated successfully!";
+                $picture = $picturePath;
+            } else {
+                $errorMessage = "Error updating profile details: " . $updateStmt->error;
+            }
+            $updateStmt->close();
+        }
+    }
 }
 ?>
 
-<?php include 'head.php';?>
+<?php include 'head.php'; ?>
 
-<!--end header -->
 <!--start page wrapper -->
 <div class="page-wrapper">
-	<div class="page-content">
-		<!--breadcrumb-->
-		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-			<div class="breadcrumb-title pe-3">User</div>
-			<div class="ps-3">
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb mb-0 p-0">
-						<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-						</li>
-						<li class="breadcrumb-item active" aria-current="page">User Profile</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
-		<!--end breadcrumb-->
-		<div class="container">
-			<div class="main-body">
-				<div class="row">
-					<div class="col-lg-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="d-flex flex-column align-items-center text-center">
-									<img src="<?php echo isset($picture) ? $picture : "No name"; ?>" alt="Admin"
-										class="rounded-circle p-1 bg-primary" width="110">
-									<div class="mt-3">
-										<h4>
-											<?php echo isset($username) ? $username : "No username"; ?>
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">User</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item active" aria-current="page">User Profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!--end breadcrumb-->
 
-										</h4>
-										<p class="text-secondary mb-1">
-											<?php echo isset($name) ? $name : "No name"; ?>
-										</p>
-										<button class="btn btn-primary"><a style=" color: white; "
-												href="mail.php">Mail</a></button>
-										<button class="btn btn-outline-primary"><a 
-												href="message.php">Message</a></button>
-									</div>
-								</div>
-								<hr class="my-4" />
-								<ul class="list-group list-group-flush">
-									<li
-										class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-										<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-												stroke-linecap="round" stroke-linejoin="round"
-												class="feather feather-globe me-2 icon-inline">
-												<circle cx="12" cy="12" r="10"></circle>
-												<line x1="2" y1="12" x2="22" y2="12"></line>
-												<path
-													d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
-												</path>
-											</svg>Authority</h6>
-										<span class="text-secondary"><?php echo isset($role) ? $role : "No name"; ?></span>
-									</li>
-									<li
-										class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-										<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-												stroke-linecap="round" stroke-linejoin="round"
-												class="feather feather-github me-2 icon-inline">
-												<path
-													d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
-												</path>
-											</svg>Ref Code</h6>
-										<span class="text-secondary"><?php echo isset($ref) ? $ref : "No name"; ?></span>
-									</li>
-									<li
-										class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-										<h6 class="mb-0">
-											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-												stroke-linecap="round" stroke-linejoin="round"
-												class="feather feather-whatsapp me-2 icon-inline text-info">
-												<path
-													d="M19.5 2.5a17.4 17.4 0 0 0-12.3 5.1 16.8 16.8 0 0 0-5.2 12.1 17.4 17.4 0 0 0 5.1 12.3L1 24l3.6-.9a17.4 17.4 0 0 0 8.6 2.2h.2c9.6 0 17.4-7.8 17.4-17.4s-7.8-17.3-17.4-17.3zm-7.7 26.2l-.8.4-3.9 1.1a1.5 1.5 0 0 1-2-.9L7 24.3l-1.6-5.1a1.6 1.6 0 0 1 1.1-2.1l.1 0 .9-.2c.6-.1 1.1.1 1.5.6l2.5 2.6 4.7-3.4a1.5 1.5 0 0 1 2.3.6l2 6.7a1.5 1.5 0 0 1-1.1 1.9l-.2 0h0">
-												</path>
-											</svg>
-											WhatsApp
-										</h6>
-										<span class="text-secondary"><?php echo isset($number) ? $number : "No name"; ?></span>
-									</li>
+        <?php if (!empty($updatedMessage)): ?>
+            <div class="alert alert-success border-0 bg-success alert-dismissible fade show py-2">
+                <div class="d-flex align-items-center">
+                    <div class="font-35 text-white"><i class="bx bxs-check-circle"></i></div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-white">Success</h6>
+                        <div class="text-white"><?php echo htmlspecialchars($updatedMessage); ?></div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-									<li
-										class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-										<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-												stroke-linecap="round" stroke-linejoin="round"
-												class="feather feather-instagram me-2 icon-inline text-danger">
-												<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-												<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-												<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-											</svg>Instagram</h6>
-										<span class="text-secondary"><?php echo isset($insta) ? $insta : "No name"; ?></span>
-									</li>
-									<li
-										class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-										<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-												stroke-linecap="round" stroke-linejoin="round"
-												class="feather feather-facebook me-2 icon-inline text-primary">
-												<path
-													d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z">
-												</path>
-											</svg>Facebook</h6>
-										<span class="text-secondary"><?php echo isset($fb) ? $fb : "No name"; ?></span>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-8">
-						<div class="card">
-							<?php 
-							if(isset($updated)){
-								echo '<h6 class="text-success">'. $updated .'</h6>';
-							}
-							?>
-							<form method="POST">
-							<div class="card-body">
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Full Name</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-									<input type="hidden" name="id" value="<?php echo $id; ?>" />
-									<input type="text" class="form-control" name="name" value="<?php echo $name; ?>" />
+        <?php if (!empty($errorMessage)): ?>
+            <div class="alert alert-danger border-0 bg-danger alert-dismissible fade show py-2">
+                <div class="d-flex align-items-center">
+                    <div class="font-35 text-white"><i class="bx bxs-error-circle"></i></div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-white">Error</h6>
+                        <div class="text-white"><?php echo htmlspecialchars($errorMessage); ?></div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Email</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="email" class="form-control" value="<?php echo $email; ?>" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Phone</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="number" class="form-control" value="<?php echo $number; ?>" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Password</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="password" class="form-control" value="<?php echo $password; ?>" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Authority</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="role" class="form-control" value="<?php echo $role; ?>" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Facebook ID</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="fb" class="form-control" value="<?php echo $fb; ?>" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Instagram ID</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="insta" class="form-control" value="<?php echo $insta; ?>" />
-									</div>
-								</div>
-							
-								<div class="row">
-									<div class="col-sm-3"></div>
-									<div class="col-sm-9 text-secondary">
-										<button type="submit" name="updateaccount" class="btn btn-primary w-md">Update Account</button>
-									</div>
-								</div>
-							</div>
-							</form>
-						</div>
-						
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="card">
-									<div class="card-body">
-										<h5 class="d-flex align-items-center mb-3">Status</h5>
-										<p>Number of Registration </p>
-											<p>7894 </p>
-										<div class="progress mb-3" style="height: 5px">
-											<div class="progress-bar bg-primary" role="progressbar" style="width: 80%"
-												aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-										</div>
-										<p>W</p>
-										<div class="progress mb-3" style="height: 5px">
-											<div class="progress-bar bg-danger" role="progressbar" style="width: 72%"
-												aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-										</div>
-										<p>O</p>
-										<div class="progress mb-3" style="height: 5px">
-											<div class="progress-bar bg-success" role="progressbar" style="width: 89%"
-												aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-										</div>
-										<p>M</p>
-										<div class="progress mb-3" style="height: 5px">
-											<div class="progress-bar bg-warning" role="progressbar" style="width: 55%"
-												aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-										</div>
-										<p>B</p>
-										<div class="progress" style="height: 5px">
-											<div class="progress-bar bg-info" role="progressbar" style="width: 66%"
-												aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="container">
+            <div class="main-body">
+                <div class="row">
+                    <!-- Profile Card -->
+                    <div class="col-12 mb-4">
+                        <div class="card overflow-hidden shadow-sm" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.08);">
+                            <!-- Purple Banner -->
+                            <div class="profile-banner-header" style="background: linear-gradient(135deg, #7e57c2 0%, #6200ea 100%); height: 180px; position: relative;"></div>
+                            
+                            <!-- Profile Header Content -->
+                            <div class="card-body text-center position-relative pb-4" style="margin-top: -60px;">
+                                <div class="d-inline-block position-relative mb-3">
+                                    <img src="<?php echo !empty($picture) ? htmlspecialchars($picture) : 'assets/images/avatars/avatar-1.png'; ?>" 
+                                         alt="User Profile" 
+                                         class="rounded-circle p-1 bg-white" 
+                                         width="120" height="120"
+                                         style="object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.15); width: 120px; height: 120px;">
+                                    <a href="javascript:;" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow" 
+                                       style="width: 32px; height: 32px; border: 2px solid #fff;"
+                                       data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                        <i class="bx bx-camera" style="font-size: 1.05rem;"></i>
+                                    </a>
+                                </div>
+                                
+                                <h4 class="mb-1 fw-bold text-dark"><?php echo htmlspecialchars($name); ?></h4>
+                                <p class="text-muted mb-3" style="font-size: 0.95rem; font-weight: 500;">
+                                    <?php echo !empty($status) ? htmlspecialchars($status) : 'Staff Member'; ?>
+                                </p>
+                                
+                                <button class="btn btn-primary px-4 py-2" 
+                                        style="border-radius: 20px; font-weight: 600; font-size: 0.9rem;"
+                                        data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                    🖊️ EDIT PROFILE FIELDS
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="col-12 mb-4">
+                        <div class="row g-3">
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="card shadow-sm h-100" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                                    <div class="card-body py-3 px-4 d-flex flex-column justify-content-center align-items-center text-center">
+                                        <p class="text-muted mb-1 fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">SALARY BRACKET</p>
+                                        <h3 class="mb-0 text-dark fw-bold d-flex align-items-center justify-content-center">
+                                            <span id="salaryBracketVal" style="font-size: 1.4rem;">XXXXXX</span>
+                                            <i class="bx bx-show ms-2 text-primary" id="toggleSalaryBtn" style="cursor: pointer; font-size: 1.25rem;"></i>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="card shadow-sm h-100" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                                    <div class="card-body py-3 px-4 d-flex flex-column justify-content-center align-items-center text-center">
+                                        <p class="text-muted mb-1 fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">PRESENT DAYS (MONTH)</p>
+                                        <h3 class="mb-0 text-success fw-bold" style="font-size: 1.5rem;"><?php echo htmlspecialchars($present_days); ?></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="card shadow-sm h-100" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                                    <div class="card-body py-3 px-4 d-flex flex-column justify-content-center align-items-center text-center">
+                                        <p class="text-muted mb-1 fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">BLOOD GROUP</p>
+                                        <h3 class="mb-0 text-danger fw-bold" style="font-size: 1.5rem;"><?php echo htmlspecialchars($blood_group); ?></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="card shadow-sm h-100" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                                    <div class="card-body py-3 px-4 d-flex flex-column justify-content-center align-items-center text-center">
+                                        <p class="text-muted mb-1 fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">JOINING DATE</p>
+                                        <h3 class="mb-0 text-secondary fw-bold" style="font-size: 1.5rem;">N/A</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal & Official Details -->
+                    <div class="col-lg-6 col-12 mb-4">
+                        <div class="card shadow-sm h-100" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                            <div class="card-header bg-transparent border-0 d-flex align-items-center gap-2 pt-4 px-4">
+                                <i class="bx bx-user text-primary" style="font-size: 1.45rem;"></i>
+                                <h5 class="mb-0 fw-bold text-dark" style="letter-spacing: 0.5px; font-size: 1rem;">PERSONAL DETAILS</h5>
+                            </div>
+                            <div class="card-body px-4 pb-4">
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Full Name</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($name); ?></p>
+                                </div>
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Email Address</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($email); ?></p>
+                                </div>
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Mobile Number</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($number); ?></p>
+                                </div>
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Date of Birth</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($dob); ?></p>
+                                </div>
+                                <div class="mb-0">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Current Address</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($address); ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-12 mb-4">
+                        <div class="card shadow-sm h-100" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                            <div class="card-header bg-transparent border-0 d-flex align-items-center gap-2 pt-4 px-4">
+                                <i class="bx bx-folder-open text-primary" style="font-size: 1.45rem;"></i>
+                                <h5 class="mb-0 fw-bold text-dark" style="letter-spacing: 0.5px; font-size: 1rem;">OFFICIAL DETAILS</h5>
+                            </div>
+                            <div class="card-body px-4 pb-4">
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Identity (Aadhar)</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;" id="aadharDisplayContainer">
+                                        <span id="aadharVal">[Aadhar Redacted]</span>
+                                        <i class="bx bx-show ms-2 text-primary" id="toggleAadharBtn" style="cursor: pointer;"></i>
+                                    </p>
+                                </div>
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Bank Registry</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($bank_registry); ?></p>
+                                </div>
+                                <div class="mb-3 border-bottom pb-2">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">Account No</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($account_no); ?></p>
+                                </div>
+                                <div class="mb-0">
+                                    <p class="text-muted mb-0" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 600;">IFSC Code</p>
+                                    <p class="text-dark mb-0 fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($ifsc); ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end row -->
+            </div>
+        </div>
+    </div>
 </div>
 <!--end page wrapper -->
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none; background: #ffffff;">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-dark" id="editProfileModalLabel">🖊️ Edit Profile Fields</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Profile Picture</label>
+                            <input type="file" name="profile_pic" class="form-control">
+                            <small class="text-muted">Upload a new image to update your avatar</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Full Name</label>
+                            <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($name); ?>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Email Address</label>
+                            <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Mobile Number</label>
+                            <input type="text" name="number" class="form-control" value="<?php echo htmlspecialchars($number); ?>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Date of Birth</label>
+                            <input type="text" name="dob" class="form-control" value="<?php echo htmlspecialchars($dob); ?>">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Current Address</label>
+                            <textarea name="address" class="form-control" rows="2"><?php echo htmlspecialchars($address); ?></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Identity (Aadhar)</label>
+                            <input type="text" name="aadhar" class="form-control" value="<?php echo htmlspecialchars($aadhar); ?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Bank Registry</label>
+                            <input type="text" name="bank_registry" class="form-control" value="<?php echo htmlspecialchars($bank_registry); ?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Account No</label>
+                            <input type="text" name="account_no" class="form-control" value="<?php echo htmlspecialchars($account_no); ?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">IFSC Code</label>
+                            <input type="text" name="ifsc" class="form-control" value="<?php echo htmlspecialchars($ifsc); ?>">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Present Days (Month)</label>
+                            <input type="number" name="present_days" class="form-control" value="<?php echo htmlspecialchars($present_days); ?>">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Blood Group</label>
+                            <input type="text" name="blood_group" class="form-control" value="<?php echo htmlspecialchars($blood_group); ?>">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Salary Bracket</label>
+                            <input type="text" name="salary_bracket" class="form-control" value="<?php echo htmlspecialchars($salary_bracket); ?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Facebook Link</label>
+                            <input type="text" name="fb" class="form-control" value="<?php echo htmlspecialchars($fb); ?>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Instagram Link</label>
+                            <input type="text" name="insta" class="form-control" value="<?php echo htmlspecialchars($insta); ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="update_profile_fields" class="btn btn-primary px-4">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle Salary Bracket
+    var toggleSalaryBtn = document.getElementById('toggleSalaryBtn');
+    if (toggleSalaryBtn) {
+        toggleSalaryBtn.addEventListener('click', function() {
+            var salarySpan = document.getElementById('salaryBracketVal');
+            var currentVal = salarySpan.innerText;
+            var actualSalary = '<?php echo addslashes($salary_bracket); ?>';
+            if (currentVal === 'XXXXXX') {
+                salarySpan.innerText = actualSalary;
+                this.classList.remove('bx-show');
+                this.classList.add('bx-hide');
+            } else {
+                salarySpan.innerText = 'XXXXXX';
+                this.classList.remove('bx-hide');
+                this.classList.add('bx-show');
+            }
+        });
+    }
+
+    // Toggle Aadhar
+    var toggleAadharBtn = document.getElementById('toggleAadharBtn');
+    if (toggleAadharBtn) {
+        toggleAadharBtn.addEventListener('click', function() {
+            var aadharSpan = document.getElementById('aadharVal');
+            var currentVal = aadharSpan.innerText;
+            var actualAadhar = '<?php echo addslashes($aadhar); ?>';
+            if (currentVal === '[Aadhar Redacted]') {
+                aadharSpan.innerText = actualAadhar;
+                this.classList.remove('bx-show');
+                this.classList.add('bx-hide');
+            } else {
+                aadharSpan.innerText = '[Aadhar Redacted]';
+                this.classList.remove('bx-hide');
+                this.classList.add('bx-show');
+            }
+        });
+    }
+});
+</script>
+
 <?php include 'foot.php'; ?>

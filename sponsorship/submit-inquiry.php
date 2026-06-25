@@ -46,6 +46,16 @@ if (empty($name) || empty($brand_name) || empty($phone) || empty($email) || empt
     exit;
 }
 
+// Phone 10-digit validation check
+$phone_digits = preg_replace('/[^0-9]/', '', $phone);
+if (strlen($phone_digits) !== 10) {
+    echo json_encode(['status' => 'error', 'message' => 'Phone number must be exactly 10 digits.']);
+    if ($con) {
+        $con->close();
+    }
+    exit;
+}
+
 // Query mapping schema setup safely
 $sql_insert_query = "INSERT INTO founding_owner_inquiries (player_name, user_designation, brand_company_name, contact_phone, contact_email, user_location, chosen_package, brand_brief) 
                      VALUES ('$name', '$designation', '$brand_name', '$phone', '$email', '$location', '$package', '$description')";

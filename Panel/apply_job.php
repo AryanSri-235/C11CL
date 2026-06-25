@@ -3,12 +3,16 @@ header('Content-Type: application/json');
 include "db.php"; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // Data Sanitize karein
-    $name = $con->real_escape_string($_POST['name']);
-    $email = $con->real_escape_string($_POST['email']);
-    $phone = $con->real_escape_string($_POST['phone']); // Phone field added
-    $position = $con->real_escape_string($_POST['position']);
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $phone = trim($_POST['phone'] ?? '');
+    $position = $_POST['position'] ?? '';
+    
+    // Validate phone number (exactly 10 digits)
+    if (!preg_match('/^[0-9]{10}$/', $phone)) {
+        echo json_encode(["status" => "error", "message" => "Phone number must be exactly 10 digits."]);
+        exit();
+    }
     
     // Check if CV is uploaded
     if (isset($_FILES['cv']) && $_FILES['cv']['error'] === 0) {
@@ -24,18 +28,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (move_uploaded_file($temp_name, $target_file)) {
-            // Database Query with Phone
-            $sql = "INSERT INTO job_applications (name, email, phone, position, cv_file)
-                    VALUES ('$name', '$email', '$phone', '$position', '$unique_file_name')";
-
-            if ($con->query($sql) === TRUE) {
-                // Success Message as per your request
-                echo json_encode([
-                    "status" => "success", 
-                    "message" => "Application submitted! If your CV is shortlisted, our team will contact you."
-                ]);
+            $stmt = $con->prepare("INSERT INTO job_applications (name, email, phone, position, cv_file) VALUES (?, ?, ?, ?, ?)");
+            if ($stmt) {
+                $stmt->bind_param('sssss', $name, $email, $phone, $position, $unique_file_name);
+                if ($stmt->execute()) {
+                    echo json_encode([
+                        "status" => "success", 
+                        "message" => "Application submitted! If your CV is shortlisted, our team will contact you."
+                    ]);
+                } else {
+                    echo json_encode(["status" => "error", "message" => "Database Error: " . $stmt->error]);
+                }
+                $stmt->close();
             } else {
-                echo json_encode(["status" => "error", "message" => "Database Error: " . $con->error]);
+                echo json_encode(["status" => "error", "message" => "SQL Preparation Error."]);
             }
         } else {
             echo json_encode(["status" => "error", "message" => "File upload failed."]);

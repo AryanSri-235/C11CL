@@ -1,4 +1,4 @@
-composer.lock
+scomposer.lock
 phpunit.xml
 vendor/
 reports/

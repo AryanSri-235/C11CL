@@ -1,16 +1,11 @@
 <?php
+$is_backend_script = true;
+include 'head.php';
+
 // Ensure this script is accessed via a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405); // Method Not Allowed
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
-    exit();
-}
-
-// Start session and check for authentication, as in your main file
-session_start();
-if (!isset($_SESSION['password'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access.']);
     exit();
 }
 
@@ -24,7 +19,7 @@ if (!filter_var($id, FILTER_VALIDATE_INT)) {
     exit();
 }
 
-// Prepare and execute the DELETE statement
+// Prepare and execute the DELETE statement securely
 $sql = "DELETE FROM register WHERE id = ? AND status != 'Success'";
 $stmt = $con->prepare($sql);
 if ($stmt === false) {
@@ -33,14 +28,10 @@ if ($stmt === false) {
 }
 
 $stmt->bind_param("i", $id);
-$stmt->execute();
-
-// Check if the deletion was successful
-if ($stmt->affected_rows > 0) {
+if ($stmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
-    // This could mean the ID wasn't found or the status was 'Success'
-    echo json_encode(['success' => false, 'message' => 'Record not found or cannot be deleted.']);
+    echo json_encode(['success' => false, 'message' => 'Record cannot be deleted.']);
 }
 
 $stmt->close();

@@ -514,287 +514,110 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 		</style>
 		</head>
+<body itemtype='https://schema.org/WebPage' itemscope='itemscope' class="wp-singular page-template-default page page-id-1280 wp-custom-logo wp-embed-responsive wp-theme-astra latepoint metaslider-plugin ast-desktop ast-page-builder-template ast-no-sidebar astra-4.12.0 ast-single-post ast-hfb-header elementor-default elementor-kit-247 elementor-page elementor-page-1280">
 
-<body itemtype='https://schema.org/WebPage' itemscope='itemscope' class="wp-singular page-template-default page page-id-1280 wp-custom-logo wp-embed-responsive wp-theme-astra latepoint metaslider-plugin ast-desktop ast-page-builder-template ast-no-sidebar astra-4.12.0 ast-single-post ast-replace-site-logo-transparent ast-inherit-site-logo-transparent ast-hfb-header elementor-default elementor-kit-247 elementor-page elementor-page-1280">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PHSBK2RF"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
 
-<a
-	class="skip-link screen-reader-text"
-	href="#content">
-		Skip to content</a>
-
-<div
-class="hfeed site" id="page">
+<div class="hfeed site" id="page">
 <?php include "../head.php"; ?>
-		<div id="content" class="site-content">
-		<div class="ast-container">
-		
 
-	<div id="primary" class="content-area primary">
+<style>
+.md-page-wrap {
+    font-family: 'Lato', sans-serif;
+    background-color: #f7f7f8;
+    background-image: repeating-linear-gradient(45deg, rgba(0,34,68,0.03) 0px, rgba(0,34,68,0.03) 1px, transparent 1px, transparent 10px);
+    min-height: 60vh;
+    padding: 60px 20px 80px;
+}
+.md-inner { max-width: 900px; margin: 0 auto; }
+.md-hero {
+    background: linear-gradient(135deg, #002244 0%, #003366 100%);
+    border-radius: 12px;
+    padding: 50px 48px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,34,68,0.18);
+}
+.md-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    background: rgba(204,0,0,0.12);
+    border-radius: 50%;
+}
+.md-hero-label { color: #CC0000; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 10px; }
+.md-hero h1 { color: #fff; font-family: 'Heebo', sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; text-transform: uppercase; margin: 0 0 12px; line-height: 1.15; }
+.md-hero h1 span { color: #CC0000; }
+.md-hero-sub { color: rgba(255,255,255,0.72); font-size: 0.95rem; margin: 0; }
+.md-breadcrumb { color: rgba(255,255,255,0.5); font-size: 0.78rem; margin-bottom: 16px; }
+.md-breadcrumb a { color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; }
+.md-breadcrumb span { margin: 0 6px; }
+.md-card { background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,34,68,0.09); margin-bottom: 28px; overflow: hidden; border: 2px solid #bfd1ff !important; transition: border-color 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important; will-change: transform; }
+.md-card:hover { border-color: #dc2618 !important; transform: translateY(-10px) !important; box-shadow: 0 12px 30px rgba(0,34,68,0.15) !important; }
+.md-card-header { display: flex; align-items: center; gap: 14px; padding: 22px 28px 18px; border-bottom: 1px solid #f0f0f0; border-left: 5px solid #002244; }
+.md-card-header.crimson { border-left-color: #CC0000; }
+.md-card-icon { font-size: 1.6rem; }
+.md-card-header h2 { font-family: 'Heebo', sans-serif; font-size: 1.1rem; font-weight: 800; color: #002244; margin: 0; text-transform: uppercase; }
+.md-card-body { padding: 24px 28px; color: #444; font-size: 0.97rem; line-height: 1.75; }
+.md-card-body p { margin: 0 0 14px; }
+.md-card-body p:last-child { margin-bottom: 0; }
+.md-card-body ol, .md-card-body ul { padding-left: 22px; margin: 0; }
+.md-card-body li { margin-bottom: 10px; }
+.md-card-body li strong { color: #002244; }
+.md-card-body a { color: #CC0000; }
+.md-note { background: #fff8f8; border: 1px solid #ffd5d5; border-left: 5px solid #CC0000; border-radius: 8px; padding: 18px 24px; margin-top: 20px; color: #555; font-size: 0.93rem; line-height: 1.7; }
+.md-quote-section { text-align: center; padding: 36px 20px; background: #002244; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,34,68,0.14); }
+.md-quote-section p { color: rgba(255,255,255,0.85); font-size: 1.05rem; font-style: italic; margin: 0; line-height: 1.65; }
+@media (max-width: 600px) {
+    .md-hero { padding: 32px 20px; }
+    .md-card-header, .md-card-body { padding-left: 18px; padding-right: 18px; }
+}
+</style>
 
-		
-					<main id="main" class="site-main">
-				<article
-class="post-1280 page type-page status-publish ast-article-single" id="post-1280" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-	
-				<header class="entry-header ast-no-title ast-header-without-markup">
-							</header> <!-- .entry-header -->
-		
-<div class="entry-content clear"
-	itemprop="text">
-
-	
-			<div data-elementor-type="wp-page" data-elementor-id="1280" class="elementor elementor-1280" data-elementor-settings="{&quot;ha_cmc_init_switcher&quot;:&quot;no&quot;}">
-						<section class="elementor-section elementor-top-section elementor-element elementor-element-744ee475 elementor-section-content-middle envato-kit-141-top-0 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="744ee475" data-element_type="section" data-e-type="section" data-settings="{&quot;_ha_eqh_enable&quot;:false}">
-							<div class="elementor-background-overlay"></div>
-							<div class="elementor-container elementor-column-gap-wide">
-					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-6f95f040" data-id="6f95f040" data-element_type="column" data-e-type="column">
-			<div class="elementor-widget-wrap elementor-element-populated">
-						<div class="elementor-element elementor-element-4c2cc9b1 elementor-invisible elementor-widget elementor-widget-heading" data-id="4c2cc9b1" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;_animation_delay&quot;:50}" data-widget_type="heading.default">
-			<div style="padding: 15px; font-family: 'Poppins', sans-serif; border-left: 5px solid #CC0000; background: #f9f9f9; max-width: 100%;">
-    
-    <!-- Breadcrumb Navigation -->
-    <nav aria-label="breadcrumb" style="font-size: 12px; margin-bottom: 10px; color: #666;">
-        <a href="/" style="color: #002244; text-decoration: none; font-weight: 600;">Home</a> 
-        <span style="color: #ccc; margin: 0 4px;">&raquo;</span> 
-        <span aria-current="page" style="color: #333; font-weight: 600;">Mandatory Documents</span>
-    </nav>
-
-    <!-- Aapka Original Content (Bina kisi change ke) -->
-    <p style="color: #CC0000; font-size: 12px; font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: 1px;">
-        Champions 11 Cricket League
-    </p>
-    
-    <h1 style="color: #002244; font-size: clamp(20px, 6vw, 32px); font-weight: 900; text-transform: uppercase; margin: 5px 0; line-height: 1.1;">
-        Mandatory Documents <span style="color: #CC0000;">Required</span> for Trials
-    </h1>
-
-    <p style="color: #555; font-size: 14px; margin: 0; font-weight: 500;">
-        Carry all original documents for venue verification.
-    </p>
-    
+<div class="md-page-wrap">
+    <div class="md-inner">
+        <div class="md-hero">
+            <div class="md-breadcrumb"><a href="/">Home</a><span>&raquo;</span>Mandatory Documents</div>
+            <p class="md-hero-label">Champions 11 Cricket League</p>
+            <h1>Mandatory Documents <span>Required</span> for Trials</h1>
+            <p class="md-hero-sub">Carry all original documents for venue verification.</p>
+        </div>
+        <div class="md-card">
+            <div class="md-card-header">
+                <span class="md-card-icon">&#128278;</span>
+                <h2>Required Documents</h2>
+            </div>
+            <div class="md-card-body">
+                <p>To ensure smooth participation in the <strong>Champions 11 Cricket League (C11CL) Selection Trials</strong>, all registered players are <strong>required to submit the following documents</strong> both <strong>physically at the trial venue</strong> and <strong>via email at</strong>:<br>&#128231; <strong><a href="mailto:info@c11cl.com">info@c11cl.com</a></strong></p>
+                <ol>
+                    <li><strong>Proof of Date of Birth</strong><ul><li>Issued by a municipal corporation/competent government authority</li><li>Or certificate from school/educational board with clear mention of DOB</li></ul></li>
+                    <li><strong>Payment Receipt</strong><ul><li>Confirmation of trial/registration fee payment</li></ul></li>
+                    <li><strong>Recent Passport-Size Photograph</strong><ul><li>Clear, front-facing, latest colored photograph</li></ul></li>
+                    <li><strong>Valid ID Proof</strong> (any one of the following):<ul><li>Aadhar Card</li><li>School ID Card</li><li>Passport</li><li>Driving License (DL)</li></ul></li>
+                    <li><strong>Contact Number</strong><ul><li>Active mobile number for communication</li></ul></li>
+                    <li><strong>Residential Address with Pin Code</strong><ul><li>Complete and accurate address details</li></ul></li>
+                </ol>
+                <div class="md-note">&#9888;&#65039; <strong>Note:</strong> Participants who fail to submit any of the above documents <strong>will not be allowed</strong> to take part in the selection trials. Make sure to <strong>carry hard copies</strong> of all required documents at the trial venue and <strong>email scanned copies</strong> to <strong><a href="mailto:info@c11cl.com">info@c11cl.com</a></strong> in advance.</div>
+            </div>
+        </div>
+        <div class="md-card">
+            <div class="md-card-header crimson">
+                <span class="md-card-icon">&#128683;</span>
+                <h2>Important Disclaimer</h2>
+            </div>
+            <div class="md-card-body">
+                <p>If there is any <strong>discrepancy in the date of birth</strong> you mentioned in the registration form and the one mentioned in your submitted proof, your entry will be <strong>immediately disqualified</strong>, and the <strong>registration fee will be forfeited</strong>.<br><strong>No refund</strong> will be issued under any circumstances.</p>
+            </div>
+        </div>
+        <div class="md-quote-section">
+            <p>&#8220;Discipline, preparation, and honesty off the field are just as important as performance on it.&#8221;</p>
+        </div>
+    </div>
 </div>
-				<div class="elementor-element elementor-element-49e90b81 elementor-widget-divider--view-line elementor-invisible elementor-widget elementor-widget-divider" data-id="49e90b81" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;_animation_delay&quot;:300}" data-widget_type="divider.default">
-				<div class="elementor-widget-container">
-							<div class="elementor-divider">
-			<span class="elementor-divider-separator">
-						</span>
-		</div>
-						</div>
-				</div>
-				<section class="elementor-section elementor-inner-section elementor-element elementor-element-7701f13d elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="7701f13d" data-element_type="section" data-e-type="section" data-settings="{&quot;_ha_eqh_enable&quot;:false}">
-						<div class="elementor-container elementor-column-gap-no">
-					<div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-1ce131be" data-id="1ce131be" data-element_type="column" data-e-type="column">
-			<div class="elementor-widget-wrap elementor-element-populated">
-						<div class="elementor-element elementor-element-486f8089 elementor-widget elementor-widget-text-editor" data-id="486f8089" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p data-start="221" data-end="475">To ensure smooth participation in the <strong data-start="259" data-end="315">Champions 11 Cricket League (C11CL) Selection Trials</strong>, all registered players are <strong data-start="344" data-end="390">required to submit the following documents</strong> both <strong data-start="396" data-end="429">physically at the trial venue</strong> and <strong data-start="434" data-end="450">via email at</strong>:<br data-start="451" data-end="454" />📧 <strong data-start="457" data-end="475"><a class="cursor-pointer" rel="noopener" data-start="459" data-end="473">info@c11cl.com</a></strong></p><h4 data-start="477" data-end="504">🔖 Required Documents:</h4><ol data-start="505" data-end="1148"><li data-start="505" data-end="684"><p data-start="508" data-end="536"><strong data-start="508" data-end="534">Proof of Date of Birth</strong></p><ul data-start="540" data-end="684"><li data-start="540" data-end="608"><p data-start="542" data-end="608">Issued by a municipal corporation/competent government authority</p></li><li data-start="612" data-end="684"><p data-start="614" data-end="684">Or certificate from school/educational board with clear mention of DOB</p></li></ul></li><li data-start="686" data-end="762"><p data-start="689" data-end="710"><strong data-start="689" data-end="708">Payment Receipt</strong></p><ul data-start="714" data-end="762"><li data-start="714" data-end="762"><p data-start="716" data-end="762">Confirmation of trial/registration fee payment</p></li></ul></li><li data-start="764" data-end="856"><p data-start="767" data-end="804"><strong data-start="767" data-end="802">Recent Passport-Size Photograph</strong></p><ul data-start="808" data-end="856"><li data-start="808" data-end="856"><p data-start="810" data-end="856">Clear, front-facing, latest colored photograph</p></li></ul></li><li data-start="858" data-end="992"><p data-start="861" data-end="909"><strong data-start="861" data-end="879">Valid ID Proof</strong> (any one of the following):</p><ul data-start="913" data-end="992"><li data-start="913" data-end="928"><p data-start="915" data-end="928">Aadhar Card</p></li><li data-start="932" data-end="950"><p data-start="934" data-end="950">School ID Card</p></li><li data-start="954" data-end="966"><p data-start="956" data-end="966">Passport</p></li><li data-start="970" data-end="992"><p data-start="972" data-end="992">Driving License (DL)</p></li></ul></li><li data-start="994" data-end="1061"><p data-start="997" data-end="1017"><strong data-start="997" data-end="1015">Contact Number</strong></p><ul data-start="1021" data-end="1061"><li data-start="1021" data-end="1061"><p data-start="1023" data-end="1061">Active mobile number for communication</p></li></ul></li><li data-start="1063" data-end="1148"><p data-start="1066" data-end="1105"><strong data-start="1066" data-end="1103">Residential Address with Pin Code</strong></p><ul data-start="1109" data-end="1148"><li data-start="1109" data-end="1148"><p data-start="1111" data-end="1148">Complete and accurate address details</p></li></ul></li></ol><blockquote data-start="1150" data-end="1432"><p data-start="1152" data-end="1432">⚠️ <strong data-start="1155" data-end="1164">Note:</strong> Participants who fail to submit any of the above documents <strong data-start="1224" data-end="1247">will not be allowed</strong> to take part in the selection trials. Make sure to <strong data-start="1299" data-end="1320">carry hard copies</strong> of all the required documents at the trial venue and <strong data-start="1374" data-end="1398">email scanned copies</strong> to <strong data-start="1402" data-end="1420"><a class="cursor-pointer" rel="noopener" data-start="1404" data-end="1418">info@c11cl.com</a></strong> in advance.</p></blockquote>								</div>
-				</div>
-					</div>
-		</div>
-					</div>
-		</section>
-				<section class="elementor-section elementor-inner-section elementor-element elementor-element-44fc746 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="44fc746" data-element_type="section" data-e-type="section" data-settings="{&quot;_ha_eqh_enable&quot;:false}">
-						<div class="elementor-container elementor-column-gap-no">
-					<div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-f41b344" data-id="f41b344" data-element_type="column" data-e-type="column">
-			<div class="elementor-widget-wrap elementor-element-populated">
-						<div class="elementor-element elementor-element-6ea7b1b elementor-widget elementor-widget-text-editor" data-id="6ea7b1b" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<h3 style="font-size:20px;" data-start="1439" data-end="1467">🚫 Important Disclaimer:</h3><p data-start="1468" data-end="1759">If there is any <strong data-start="1484" data-end="1520">discrepancy in the date of birth</strong> you mentioned in the registration form and the one mentioned in your submitted proof, your entry will be <strong data-start="1626" data-end="1654">immediately disqualified</strong>, and the <strong data-start="1664" data-end="1702">registration fee will be forfeited</strong>.<br data-start="1703" data-end="1706" /><strong data-start="1706" data-end="1719">No refund</strong> will be issued under any circumstances.</p>								</div>
-				</div>
-				<div class="elementor-element elementor-element-7cd7c5c elementor-widget elementor-widget-heading" data-id="7cd7c5c" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h2 style="font-size:18px;" class="elementor-heading-title elementor-size-default">"Discipline, preparation, and honesty off the field are just as important as performance on it."</h2>				</div>
-				</div>
-					</div>
-		</div>
-					</div>
-		</section>
-					</div>
-		</div>
-					</div>
-		</section>
-				</div>
-		
-	
-	
-</div><!-- .entry-content .clear -->
 
-	
-	
-</article><!-- #post-## -->
-
-			</main><!-- #main -->
-			
-		
-	</div><!-- #primary -->
-
-
-	</div> <!-- ast-container -->
-	</div><!-- #content -->
 <?php include "../foot.php"; ?>
-		
-		
-		</div><!-- #page -->
-<script type="speculationrules">
-{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/astra/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
-</script>
-			<script>
-				;
-				(function($, w) {
-					'use strict';
-					let $window = $(w);
-
-					$(document).ready(function() {
-
-						let isEnable = "";
-						let isEnableLazyMove = "";
-						let speed = isEnableLazyMove ? '0.7' : '0.2';
-
-						if( !isEnable ) {
-							return;
-						}
-
-						if (typeof haCursor == 'undefined' || haCursor == null) {
-							initiateHaCursorObject(speed);
-						}
-
-						setTimeout(function() {
-							let targetCursor = $('.ha-cursor');
-							if (targetCursor) {
-								if (!isEnable) {
-									$('body').removeClass('hm-init-default-cursor-none');
-									$('.ha-cursor').addClass('ha-init-hide');
-								} else {
-									$('body').addClass('hm-init-default-cursor-none');
-									$('.ha-cursor').removeClass('ha-init-hide');
-								}
-							}
-						}, 500);
-
-					});
-
-				}(jQuery, window));
-			</script>
-		
-					<script>
-				const lazyloadRunObserver = () => {
-					const lazyloadBackgrounds = document.querySelectorAll( `.e-con.e-parent:not(.e-lazyloaded)` );
-					const lazyloadBackgroundObserver = new IntersectionObserver( ( entries ) => {
-						entries.forEach( ( entry ) => {
-							if ( entry.isIntersecting ) {
-								let lazyloadBackground = entry.target;
-								if( lazyloadBackground ) {
-									lazyloadBackground.classList.add( 'e-lazyloaded' );
-								}
-								lazyloadBackgroundObserver.unobserve( entry.target );
-							}
-						});
-					}, { rootMargin: '200px 0px 200px 0px' } );
-					lazyloadBackgrounds.forEach( ( lazyloadBackground ) => {
-						lazyloadBackgroundObserver.observe( lazyloadBackground );
-					} );
-				};
-				const events = [
-					'DOMContentLoaded',
-					'elementor/lazyload/observe',
-				];
-				events.forEach( ( event ) => {
-					document.addEventListener( event, lazyloadRunObserver );
-				} );
-			</script>
-			<link rel='stylesheet' id='elementor-post-1240-css' href='../wp-content/uploads/elementor/css/post-12409f0d.css?ver=1770644316' media='all' />
-<link rel='stylesheet' id='widget-icon-list-css' href='../wp-content/plugins/elementor/assets/css/widget-icon-list.min5be5.css?ver=3.35.3' media='all' />
-<link rel='stylesheet' id='widget-image-css' href='../wp-content/plugins/elementor/assets/css/widget-image.min5be5.css?ver=3.35.3' media='all' />
-<link rel='stylesheet' id='e-animation-grow-css' href='../wp-content/plugins/elementor/assets/lib/animations/styles/e-animation-grow.min5be5.css?ver=3.35.3' media='all' />
-<link rel='stylesheet' id='elementor-post-1400-css' href='../wp-content/uploads/elementor/css/post-14009f0d.css?ver=1770644316' media='all' />
-<link data-minify="1" rel='stylesheet' id='elementor-icons-ekiticons-css' href='../wp-content/cache/min/1/wp-content/plugins/elementskit-lite/modules/elementskit-icon-pack/assets/css/ekiticons0bfb.css?ver=1771070145' media='all' />
-<link data-minify="1" rel='stylesheet' id='elementor-gf-local-lato-css' href='../wp-content/cache/min/1/wp-content/uploads/elementor/google-fonts/css/lato0bfb.css?ver=1771070145' media='all' />
-<link data-minify="1" rel='stylesheet' id='elementor-icons-shared-1-css' href='../wp-content/cache/min/1/wp-content/plugins/happy-elementor-addons/assets/fonts/huge-icons/huge-icons.min0bfb.css?ver=1771070145' media='all' />
-<link data-minify="1" rel='stylesheet' id='elementor-icons-huge-icons-css' href='../wp-content/cache/min/1/wp-content/plugins/happy-elementor-addons/assets/fonts/huge-icons/huge-icons.min0bfb.css?ver=1771070145' media='all' />
-<script id="astra-theme-js-js-extra">
-var astra = {"break_point":"921","isRtl":"","is_scroll_to_id":"","is_scroll_to_top":"","is_header_footer_builder_active":"1","responsive_cart_click":"flyout","is_dark_palette":""};
-//# sourceURL=astra-theme-js-js-extra
-</script>
-<script src="../wp-content/themes/astra/assets/js/minified/frontend.minb925.js?ver=4.12.0" id="astra-theme-js-js"></script>
-<script src="../wp-includes/js/dist/dom-ready.min5346.js?ver=f77871ff7694fffea381" id="wp-dom-ready-js"></script>
-<script id="starter-templates-zip-preview-js-extra">
-var starter_templates_zip_preview = {"AstColorPaletteVarPrefix":"--ast-global-color-","AstEleColorPaletteVarPrefix":["ast-global-color-0","ast-global-color-1","ast-global-color-2","ast-global-color-3","ast-global-color-4","ast-global-color-5","ast-global-color-6","ast-global-color-7","ast-global-color-8"]};
-//# sourceURL=starter-templates-zip-preview-js-extra
-</script>
-<script data-minify="1" src="../wp-content/cache/min/1/wp-content/plugins/astra-sites/inc/lib/onboarding/assets/dist/template-preview/mainbe33.js?ver=1771070146" id="starter-templates-zip-preview-js"></script>
-<script data-minify="1" src="../wp-content/cache/min/1/wp-content/plugins/elementskit-lite/libs/framework/assets/js/frontend-scriptbe33.html?ver=1771070146" id="elementskit-framework-js-frontend-js"></script>
-<script id="elementskit-framework-js-frontend-js-after">
-		var elementskit = {
-			resturl: 'https://c11cl.com/wp-json/elementskit/v1/',
-		}
-
-		
-//# sourceURL=elementskit-framework-js-frontend-js-after
-</script>
-<script data-minify="1" src="../wp-content/cache/min/1/wp-content/plugins/elementskit-lite/widgets/init/assets/js/widget-scriptsbe33.js?ver=1771070146" id="ekit-widget-scripts-js"></script>
-
-
-
-
-<script src="../wp-content/plugins/happy-elementor-addons/assets/js/extension-reading-progress-bar.minb645.js?ver=3.20.8" id="happy-reading-progress-bar-js"></script>
-<script src="../wp-content/plugins/elementor/assets/js/webpack.runtime.min5be5.js?ver=3.35.3" id="elementor-webpack-runtime-js"></script>
-<script src="../wp-content/plugins/elementor/assets/js/frontend-modules.min5be5.js?ver=3.35.3" id="elementor-frontend-modules-js"></script>
-<script src="../wp-includes/js/jquery/ui/core.minb37e.js?ver=1.13.3" id="jquery-ui-core-js"></script>
-<script id="elementor-frontend-js-extra">
-var EAELImageMaskingConfig = {"svg_dir_url":"https://c11cl.com/wp-content/plugins/essential-addons-for-elementor-lite/assets/front-end/img/image-masking/svg-shapes/"};
-//# sourceURL=elementor-frontend-js-extra
-</script>
-<script id="elementor-frontend-js-before">
-var elementorFrontendConfig = {"environmentMode":{"edit":false,"wpPreview":false,"isScriptDebug":false},"i18n":{"shareOnFacebook":"Share on Facebook","shareOnTwitter":"Share on Twitter","pinIt":"Pin it","download":"Download","downloadImage":"Download image","fullscreen":"Fullscreen","zoom":"Zoom","share":"Share","playVideo":"Play Video","previous":"Previous","next":"Next","close":"Close","a11yCarouselPrevSlideMessage":"Previous slide","a11yCarouselNextSlideMessage":"Next slide","a11yCarouselFirstSlideMessage":"This is the first slide","a11yCarouselLastSlideMessage":"This is the last slide","a11yCarouselPaginationBulletMessage":"Go to slide"},"is_rtl":false,"breakpoints":{"xs":0,"sm":480,"md":768,"lg":1025,"xl":1440,"xxl":1600},"responsive":{"breakpoints":{"mobile":{"label":"Mobile Portrait","value":767,"default_value":767,"direction":"max","is_enabled":true},"mobile_extra":{"label":"Mobile Landscape","value":880,"default_value":880,"direction":"max","is_enabled":false},"tablet":{"label":"Tablet Portrait","value":1024,"default_value":1024,"direction":"max","is_enabled":true},"tablet_extra":{"label":"Tablet Landscape","value":1200,"default_value":1200,"direction":"max","is_enabled":false},"laptop":{"label":"Laptop","value":1366,"default_value":1366,"direction":"max","is_enabled":false},"widescreen":{"label":"Widescreen","value":2400,"default_value":2400,"direction":"min","is_enabled":false}},"hasCustomBreakpoints":false},"version":"3.35.3","is_static":false,"experimentalFeatures":{"e_font_icon_svg":true,"additional_custom_breakpoints":true,"container":true,"nested-elements":true,"home_screen":true,"global_classes_should_enforce_capabilities":true,"e_variables":true,"cloud-library":true,"e_opt_in_v4_page":true,"e_components":true,"e_interactions":true,"e_editor_one":true,"import-export-customization":true},"urls":{"assets":"https:\/\/c11cl.com\/wp-content\/plugins\/elementor\/assets\/","ajaxurl":"https:\/\/c11cl.com\/wp-admin\/admin-ajax.php","uploadUrl":"https:\/\/c11cl.com\/wp-content\/uploads"},"nonces":{"floatingButtonsClickTracking":"c454c60846"},"swiperClass":"swiper","settings":{"page":{"ha_cmc_init_switcher":"no"},"editorPreferences":[]},"kit":{"active_breakpoints":["viewport_mobile","viewport_tablet"],"global_image_lightbox":"yes","lightbox_enable_counter":"yes","lightbox_enable_fullscreen":"yes","lightbox_enable_zoom":"yes","lightbox_enable_share":"yes","lightbox_title_src":"title","lightbox_description_src":"description","ha_rpb_enable":"no"},"post":{"id":1280,"title":"Mandatory%20Documents%20-%20C11CL","excerpt":"","featuredImage":false}};
-//# sourceURL=elementor-frontend-js-before
-</script>
-<script src="../wp-content/plugins/elementor/assets/js/frontend.min5be5.js?ver=3.35.3" id="elementor-frontend-js"></script>
-<script id="eael-general-js-extra">
-var localize = {"ajaxurl":"https://c11cl.com/wp-admin/admin-ajax.php","nonce":"08e0bbe991","i18n":{"added":"Added ","compare":"Compare","loading":"Loading..."},"eael_translate_text":{"required_text":"is a required field","invalid_text":"Invalid","billing_text":"Billing","shipping_text":"Shipping","fg_mfp_counter_text":"of"},"page_permalink":"https://c11cl.com/mandatory-documents/","cart_redirectition":"","cart_page_url":"","el_breakpoints":{"mobile":{"label":"Mobile Portrait","value":767,"default_value":767,"direction":"max","is_enabled":true},"mobile_extra":{"label":"Mobile Landscape","value":880,"default_value":880,"direction":"max","is_enabled":false},"tablet":{"label":"Tablet Portrait","value":1024,"default_value":1024,"direction":"max","is_enabled":true},"tablet_extra":{"label":"Tablet Landscape","value":1200,"default_value":1200,"direction":"max","is_enabled":false},"laptop":{"label":"Laptop","value":1366,"default_value":1366,"direction":"max","is_enabled":false},"widescreen":{"label":"Widescreen","value":2400,"default_value":2400,"direction":"min","is_enabled":false}}};
-//# sourceURL=eael-general-js-extra
-</script>
-<script src="../wp-content/plugins/essential-addons-for-elementor-lite/assets/front-end/js/view/general.min3a22.js?ver=6.5.10" id="eael-general-js"></script>
-<script id="happy-elementor-addons-js-extra">
-var HappyLocalize = {"ajax_url":"https://c11cl.com/wp-admin/admin-ajax.php","nonce":"36501bb15e","pdf_js_lib":"https://c11cl.com/wp-content/plugins/happy-elementor-addons/assets/vendor/pdfjs/lib"};
-//# sourceURL=happy-elementor-addons-js-extra
-</script>
-<script src="../wp-content/plugins/happy-elementor-addons/assets/js/happy-addons.minb645.js?ver=3.20.8" id="happy-elementor-addons-js"></script>
-<script id="bdt-uikit-js-extra">
-var element_pack_ajax_login_config = {"ajaxurl":"https://c11cl.com/wp-admin/admin-ajax.php","language":"en","loadingmessage":"Sending user info, please wait...","unknownerror":"Unknown error, make sure access is correct!"};
-var ElementPackConfig = {"ajaxurl":"https://c11cl.com/wp-admin/admin-ajax.php","nonce":"688693d431","data_table":{"language":{"lengthMenu":"Show _MENU_ Entries","info":"Showing _START_ to _END_ of _TOTAL_ entries","search":"Search :","paginate":{"previous":"Previous","next":"Next"}}},"contact_form":{"sending_msg":"Sending message please wait...","captcha_nd":"Invisible captcha not defined!","captcha_nr":"Could not get invisible captcha response!"},"mailchimp":{"subscribing":"Subscribing you please wait..."},"search":{"more_result":"More Results","search_result":"SEARCH RESULT","not_found":"not found"},"words_limit":{"read_more":"[read more]","read_less":"[read less]"},"elements_data":{"sections":[],"columns":[],"widgets":[]}};
-//# sourceURL=bdt-uikit-js-extra
-</script>
-<script src="../wp-content/plugins/bdthemes-element-pack-lite/assets/js/bdt-uikit.min4ecf.js?ver=3.21.7" id="bdt-uikit-js"></script>
-<script src="../wp-content/plugins/bdthemes-element-pack-lite/assets/js/common/helper.min7945.js?ver=8.3.19" id="element-pack-helper-js"></script>
-<script src="../wp-content/plugins/elementskit-lite/widgets/init/assets/js/animate-circle.minc480.js?ver=3.7.9" id="animate-circle-js"></script>
-<script id="elementskit-elementor-js-extra">
-var ekit_config = {"ajaxurl":"https://c11cl.com/wp-admin/admin-ajax.php","nonce":"e7b7b06a30"};
-//# sourceURL=elementskit-elementor-js-extra
-</script>
-<script data-minify="1" src="../wp-content/cache/min/1/wp-content/plugins/elementskit-lite/widgets/init/assets/js/elementorbe33.js?ver=1771070146" id="elementskit-elementor-js"></script>
-			<script>
-			/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
-			</script>
-			<script id="wp-emoji-settings" type="application/json">
-{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"https://c11cl.com/wp-includes/js/wp-emoji-release.min.js?ver=6.9.1"}}
-</script>
-<script type="module">
-/*! This file is auto-generated */
-const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoji),r(t.wpemoji)))});
-//# sourceURL=https://c11cl.com/wp-includes/js/wp-emoji-loader.min.js
-</script>
-
-
-
-	</body>
-
-<!-- Mirrored from c11cl.com/mandatory-documents/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 10 Mar 2026 16:53:47 GMT -->
+</div>
+</body>
 </html>
-
-
-<!-- Page cached by LiteSpeed Cache 7.7 on 2026-02-15 00:05:03 -->
-<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me - Debug: cached@1771113903 -->

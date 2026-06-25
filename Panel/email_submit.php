@@ -1,27 +1,36 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
 
-// Check if form submitted
+// We need to return JSON if AJAX is requested
+$is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+
 if (isset($_POST['submit'])) {
     include "db.php"; // your database connection
 
-    $email = $_POST['email'];
+    $email = trim($_POST['email'] ?? '');
 
     // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid email format.";
-        exit();
+        if ($is_ajax) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email format.']);
+            exit();
+        } else {
+            echo "Invalid email format.";
+            exit();
+        }
     }
 
     // Save email to database
     $sql = "INSERT INTO email_subscriptions (email) VALUES ('$email')";
     if ($con->query($sql) === TRUE) {
         // Include PHPMailer files
-        require '../PHPMailer/src/PHPMailer.php';
-        require '../PHPMailer/src/SMTP.php';
-        require '../PHPMailer/src/Exception.php';
+        $phpmailer_dir = file_exists(__DIR__ . '/PHPMailer/src/PHPMailer.php') ? __DIR__ . '/PHPMailer/src' : __DIR__ . '/../PHPMailer/src';
+        require_once $phpmailer_dir . '/PHPMailer.php';
+        require_once $phpmailer_dir . '/SMTP.php';
+        require_once $phpmailer_dir . '/Exception.php';
 
         $mail = new PHPMailer\PHPMailer\PHPMailer();
 
@@ -56,23 +65,55 @@ if (isset($_POST['submit'])) {
                 <i>Champions 11 Cricket League</i>
             ';
 
-           $mail->addReplyTo('info@c11cl.com', 'C11CL Support');
-
-
+            $mail->addReplyTo('info@c11cl.com', 'C11CL Support');
             $mail->send(); // Try sending mail
         } catch (Exception $e) {
-            // Log or echo error if needed: $mail->ErrorInfo
+            // Log or echo error if needed
         }
 
-        // Redirect to same page with success flag
-        $redirectURL = $_SERVER['HTTP_REFERER'] ?? '/';
-        $redirectURL .= (parse_url($redirectURL, PHP_URL_QUERY)) ? '&status=success' : '?status=success';
-        header("Location: $redirectURL");
-        exit();
+        if ($is_ajax) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['status' => 'success', 'message' => 'Thank you for subscribing! You will receive updates in your inbox.']);
+            if ($con) { $con->close(); }
+            exit();
+        } else {
+            // Redirect to same page with success flag
+            $redirectURL = $_SERVER['HTTP_REFERER'] ?? '/';
+            $redirectURL .= (parse_url($redirectURL, PHP_URL_QUERY)) ? '&status=success' : '?status=success';
+            header("Location: $redirectURL");
+            exit();
+        }
     } else {
-        echo "Database Error: " . $con->error;
+        $err = $con->error;
+        if (strpos($err, 'Duplicate entry') !== false) {
+            if ($is_ajax) {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['status' => 'success', 'message' => 'You are already subscribed to our newsletter! Thank you.']);
+                if ($con) { $con->close(); }
+                exit();
+            } else {
+                $redirectURL = $_SERVER['HTTP_REFERER'] ?? '/';
+                header("Location: $redirectURL");
+                exit();
+            }
+        } else {
+            if ($is_ajax) {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['status' => 'error', 'message' => 'Database Error: ' . $err]);
+                if ($con) { $con->close(); }
+                exit();
+            } else {
+                echo "Database Error: " . $err;
+            }
+        }
     }
 
-    $con->close();
+    if ($con) { $con->close(); }
+} else {
+    if ($is_ajax) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['status' => 'error', 'message' => 'Invalid Request']);
+        exit();
+    }
 }
 ?>

@@ -8,9 +8,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Security ke liye data clean karein
     $name = $con->real_escape_string($_POST['name']);
     $email = $con->real_escape_string($_POST['email']);
-    $phone = $con->real_escape_string($_POST['phone']);
+    $phone = trim($_POST['phone'] ?? '');
     $subject = $con->real_escape_string($_POST['subject']);
     $message = $con->real_escape_string($_POST['message']);
+
+    // Validate mobile number
+    if (!preg_match('/^[0-9]{10}$/', $phone)) {
+        echo json_encode(["status" => "error", "message" => "Mobile number must be exactly 10 digits."]);
+        exit();
+    }
+    $phone = $con->real_escape_string($phone);
 
     $sql = "INSERT INTO contact_queries (name, email, phone, subject, message)
             VALUES ('$name', '$email', '$phone', '$subject', '$message')";

@@ -6,6 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <style>
@@ -120,7 +121,7 @@
     justify-content: center !important;
     flex-wrap: nowrap !important;
 }
-#c11-site-header .c11h-nav > li { position: relative !important; }
+#c11-site-header .c11h-nav > li { position: relative !important; transition: transform 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) !important; }
 #c11-site-header .c11h-nav > li:hover,
 #c11-site-header .c11h-nav > li:focus-within {
     z-index: 999999 !important;
@@ -135,34 +136,46 @@
     font-weight: 800 !important;
     letter-spacing: 1.2px !important;
     text-transform: uppercase !important;
-    padding: 8px 10px !important;
-    border-radius: 4px !important;
-    transition: color 0.2s, background 0.2s !important;
+    padding: 8px 12px !important;
+    border-radius: 4px 4px 0 0 !important;
+    border-bottom: 2px solid transparent !important;
+    transition: color 0.25s cubic-bezier(0.165, 0.84, 0.44, 1),
+                background-color 0.25s cubic-bezier(0.165, 0.84, 0.44, 1),
+                border-color 0.25s cubic-bezier(0.165, 0.84, 0.44, 1),
+                transform 0.25s cubic-bezier(0.165, 0.84, 0.44, 1),
+                box-shadow 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
     white-space: nowrap !important;
 }
 #c11-site-header .c11h-nav > li > a i {
     font-size: 8px !important;
     opacity: 0.65 !important;
-    transition: transform 0.2s !important;
+    transition: transform 0.2s ease !important;
 }
 #c11-site-header .c11h-nav > li:hover > a {
     color: #ffffff !important;
-    background: rgba(220, 38, 24, 0.18) !important;
+    background: rgba(220, 38, 24, 0.15) !important;
+    border-color: #dc2618 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 24, 0.25) !important;
 }
 #c11-site-header .c11h-nav > li:hover > a i { transform: rotate(180deg) !important; }
-#c11-site-header .c11h-nav > li > a.c11h-active { color: #ffffff !important; }
+#c11-site-header .c11h-nav > li > a.c11h-active {
+    color: #ffffff !important;
+    border-color: #dc2618 !important;
+    background: rgba(220, 38, 24, 0.1) !important;
+}
 
 /* Dropdown */
 #c11-site-header .c11h-dropdown {
     position: absolute !important;
     top: 100% !important;
     left: 0 !important;
-    min-width: 200px !important;
-    background: #1e1e1e !important;
-    border: 1px solid rgba(255,255,255,0.09) !important;
-    border-top: 3px solid #dc2618 !important;
-    border-radius: 0 0 8px 8px !important;
-    box-shadow: 0 14px 32px rgba(0,0,0,0.55) !important;
+    min-width: 220px !important;
+    background: #000000 !important;
+    border: 2px solid #222222 !important;
+    border-top: 4px solid #dc2618 !important;
+    border-radius: 0 0 10px 10px !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6) !important;
     z-index: 99999 !important;
     overflow: hidden !important;
     
@@ -170,9 +183,9 @@
     opacity: 0 !important;
     visibility: hidden !important;
     transform: translateY(-8px) !important;
-    transition: opacity 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                visibility 0.22s !important;
+    transition: opacity 0.25s cubic-bezier(0.165, 0.84, 0.44, 1),
+                transform 0.25s cubic-bezier(0.165, 0.84, 0.44, 1),
+                visibility 0.25s !important;
     pointer-events: none !important;
 }
 /* Bridge to keep dropdown active when moving mouse across the 6px gap */
@@ -188,19 +201,22 @@
 }
 #c11-site-header .c11h-dropdown li a {
     display: block !important;
-    padding: 9px 16px !important;
-    color: #cccccc !important;
+    padding: 10px 18px !important;
+    color: #e2e8f0 !important;
     font-family: 'Poppins', sans-serif !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
-    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-    transition: color 0.2s, background 0.2s, padding-left 0.2s !important;
+    border-bottom: 1px solid rgba(191,209,255,0.08) !important;
+    border-left: 4px solid transparent !important;
+    transition: color 0.25s ease, background 0.25s ease, padding-left 0.25s ease, border-left-color 0.25s ease !important;
 }
 #c11-site-header .c11h-dropdown li:last-child a { border-bottom: none !important; }
-#c11-site-header .c11h-dropdown li a:hover {
+#c11-site-header .c11h-dropdown li a:hover,
+#c11-site-header .c11h-dropdown li a.c11h-active {
     color: #ffffff !important;
-    background: rgba(220, 38, 24, 0.2) !important;
-    padding-left: 22px !important;
+    background: rgba(220, 38, 24, 0.15) !important;
+    border-left-color: #dc2618 !important;
+    padding-left: 24px !important;
 }
 #c11-site-header .c11h-nav > li:hover .c11h-dropdown,
 #c11-site-header .c11h-dropdown:hover {
@@ -272,7 +288,7 @@
     left: 0 !important;
     width: min(320px, 85vw) !important;
     height: 100vh !important;
-    background: #1a1a1a !important;
+    background: #000000 !important;
     z-index: 99999 !important;
     display: flex !important;
     flex-direction: column !important;
@@ -289,7 +305,7 @@
     align-items: center !important;
     justify-content: space-between !important;
     padding: 18px 20px !important;
-    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    border-bottom: 1px solid rgba(191,209,255,0.15) !important;
     flex-shrink: 0 !important;
 }
 #c11-mob-drawer .c11d-header-title {
@@ -321,7 +337,7 @@
     flex: 1 !important;
 }
 #c11-mob-drawer .c11d-nav > li {
-    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+    border-bottom: 1px solid rgba(191,209,255,0.08) !important;
 }
 #c11-mob-drawer .c11d-nav > li > a {
     display: flex !important;
@@ -335,10 +351,15 @@
     letter-spacing: 1.2px !important;
     text-transform: uppercase !important;
     text-decoration: none !important;
-    transition: color 0.2s, background 0.2s !important;
+    border-left: 4px solid transparent !important;
+    transition: color 0.25s ease, background-color 0.25s ease, border-left-color 0.25s ease !important;
     cursor: pointer !important;
 }
-#c11-mob-drawer .c11d-nav > li > a:hover { color: #dc2618 !important; background: rgba(220,38,24,0.07) !important; }
+#c11-mob-drawer .c11d-nav > li > a:hover {
+    color: #ffffff !important;
+    background: rgba(220,38,24,0.12) !important;
+    border-left-color: #dc2618 !important;
+}
 #c11-mob-drawer .c11d-nav > li > a .c11d-chevron {
     font-size: 11px !important;
     opacity: 0.6 !important;
@@ -361,22 +382,39 @@
 #c11-mob-drawer .c11d-sub li a {
     display: block !important;
     padding: 11px 20px 11px 32px !important;
-    color: #aaaaaa !important;
+    color: #e2e8f0 !important;
     font-family: 'Poppins', sans-serif !important;
-    font-size: 12.5px !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
     text-decoration: none !important;
-    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
-    transition: color 0.2s, padding-left 0.2s !important;
+    border-bottom: 1px solid rgba(191,209,255,0.06) !important;
+    border-left: 4px solid transparent !important;
+    transition: color 0.25s ease, background-color 0.25s ease, padding-left 0.25s ease, border-left-color 0.25s ease !important;
 }
 #c11-mob-drawer .c11d-sub li:last-child a { border-bottom: none !important; }
-#c11-mob-drawer .c11d-sub li a:hover { color: #dc2618 !important; padding-left: 38px !important; }
+#c11-mob-drawer .c11d-sub li a:hover {
+    color: #ffffff !important;
+    background: rgba(220,38,24,0.12) !important;
+    border-left-color: #dc2618 !important;
+    padding-left: 36px !important;
+}
+#c11-mob-drawer .c11d-nav > li > a.c11h-active {
+    color: #ffffff !important;
+    background: rgba(220,38,24,0.12) !important;
+    border-left-color: #dc2618 !important;
+}
+#c11-mob-drawer .c11d-sub li a.c11h-active {
+    color: #ffffff !important;
+    background: rgba(220,38,24,0.12) !important;
+    border-left-color: #dc2618 !important;
+    padding-left: 36px !important;
+}
 
 /* Drawer footer CTA */
 #c11-mob-drawer .c11d-footer {
     padding: 20px !important;
     flex-shrink: 0 !important;
-    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    border-top: 1px solid rgba(191,209,255,0.15) !important;
 }
 #c11-mob-drawer .c11d-cta {
     display: flex !important;
@@ -394,9 +432,14 @@
     text-transform: uppercase !important;
     text-decoration: none !important;
     border-radius: 50px !important;
-    transition: background 0.25s !important;
+    transition: background 0.25s, transform 0.2s, box-shadow 0.25s !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 24, 0.45) !important;
 }
-#c11-mob-drawer .c11d-cta:hover { background: #b81e10 !important; }
+#c11-mob-drawer .c11d-cta:hover {
+    background: #b81e10 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(220, 38, 24, 0.6) !important;
+}
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 1100px) {
@@ -457,7 +500,7 @@
             <!-- Nav -->
             <ul class="c11h-nav" id="c11h-nav-menu">
 
-                <li><a href="<?php echo BASE_URL; ?>" class="c11h-active">Home</a></li>
+                <li><a href="<?php echo BASE_URL; ?>">Home</a></li>
 
                 <li>
                     <a href="#" aria-haspopup="true">About <i class="fas fa-chevron-down"></i></a>
@@ -660,6 +703,69 @@
             e.preventDefault();
             li.classList.toggle('c11d-open');
         });
+    });
+
+    // Dynamic Navigation Highlighting
+    function normalizePath(path) {
+        if (!path) return '';
+        var p = path.toLowerCase();
+        // Remove index.php or index.html at the end
+        p = p.replace(/(index\.php|index\.html)$/, '');
+        // Strip trailing slash if it is not just "/"
+        if (p.length > 1 && p.endsWith('/')) {
+            p = p.slice(0, -1);
+        }
+        return p;
+    }
+
+    var cleanPath = normalizePath(window.location.pathname);
+
+    // Main Nav Highlighting
+    var navLinks = document.querySelectorAll('#c11-site-header .c11h-nav a');
+    navLinks.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (!href || href === '#' || href.startsWith('javascript:')) return;
+        
+        var linkPath = normalizePath(link.pathname);
+        if (cleanPath === linkPath) {
+            link.classList.add('c11h-active');
+            
+            // If it is in a dropdown, highlight the parent dropdown trigger
+            var dropdown = link.closest('.c11h-dropdown');
+            if (dropdown) {
+                var parentTrigger = dropdown.previousElementSibling;
+                if (parentTrigger) {
+                    parentTrigger.classList.add('c11h-active');
+                }
+            }
+        }
+    });
+
+    // Mobile Drawer Highlighting
+    var drawerLinks = document.querySelectorAll('#c11-mob-drawer a');
+    drawerLinks.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (!href || href === '#' || href.startsWith('javascript:')) return;
+        
+        var linkPath = normalizePath(link.pathname);
+        if (cleanPath === linkPath) {
+            link.classList.add('c11h-active');
+            
+            // If it is inside a mobile submenu, auto-expand the parent li
+            var subMenu = link.closest('.c11d-sub');
+            if (subMenu) {
+                var parentLi = subMenu.closest('li');
+                if (parentLi) {
+                    parentLi.classList.add('c11d-open');
+                    
+                    // Also highlight the parent menu trigger
+                    var parentTrigger = parentLi.querySelector('a');
+                    if (parentTrigger) {
+                        parentTrigger.classList.add('c11h-active');
+                    }
+                }
+            }
+        }
     });
 })();
 </script>

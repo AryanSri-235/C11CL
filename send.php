@@ -5,8 +5,12 @@ error_reporting(E_ALL);
 
 session_start();
 
-// Handle ?id=... from the Mark Success button
+// Handle ?id=... from the Mark Success button (restricted to admin session)
 if (isset($_GET['id'])) {
+    if (!isset($_SESSION['password']) || !isset($_SESSION['uname'])) {
+        header("Location: Panel/login.php");
+        exit();
+    }
     $_SESSION['id'] = intval($_GET['id']);
     $_SESSION['complete_reg'] = true;
     header("Location: send.php"); // prevent duplicate form resubmission

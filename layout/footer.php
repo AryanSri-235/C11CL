@@ -660,4 +660,62 @@ font-weight: 800 !important;
             widgetWrapper.classList.remove('active-widget');
         }
     });
+
+    // Asynchronous Footer Newsletter Subscription Handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const subForm = document.querySelector('.c11f-sub-form');
+        if (subForm) {
+            subForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = subForm.querySelector('input[type="email"]');
+                const submitBtn = subForm.querySelector('input[type="submit"]');
+                const originalVal = submitBtn.value;
+                
+                submitBtn.value = 'SUBSCRIBING...';
+                submitBtn.disabled = true;
+                
+                const formData = new FormData();
+                formData.append('email', emailInput.value);
+                formData.append('submit', '1');
+                formData.append('ajax', '1');
+                
+                fetch('<?php echo BASE_URL; ?>Panel/email_submit.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    submitBtn.value = originalVal;
+                    submitBtn.disabled = false;
+                    if (data.status === 'success') {
+                        emailInput.value = '';
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Subscribed! 📩',
+                            text: data.message || 'You have successfully subscribed to C11CL updates.',
+                            confirmButtonColor: '#dc2618'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Subscription Failed',
+                            text: data.message || 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#dc2618'
+                        });
+                    }
+                })
+                .catch(err => {
+                    submitBtn.value = originalVal;
+                    submitBtn.disabled = false;
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Connection Error',
+                        text: 'Unable to connect to the server. Please try again.',
+                        confirmButtonColor: '#dc2618'
+                    });
+                });
+            });
+        }
+    });
 </script>

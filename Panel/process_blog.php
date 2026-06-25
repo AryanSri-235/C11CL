@@ -1,5 +1,11 @@
 <?php
 session_start();
+// Check if the user is authorized to perform administrative actions
+if (!isset($_SESSION['password']) || !isset($_SESSION['uname'])) {
+    http_response_code(403);
+    exit("Unauthorized access.");
+}
+
 // 1. Forceful Error Reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

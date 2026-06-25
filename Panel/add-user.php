@@ -1,8 +1,9 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+if (!isset($_SESSION['password']) || !isset($_SESSION['uname'])) {
+    header('location:../index.php');
+    exit();
 }
 ?>
 <?php

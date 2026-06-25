@@ -1,39 +1,47 @@
 <?php
-session_start();
-include 'db.php'; // Maan lete hain isme $con variable hai
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include 'head.php'; // Enforce authentication and RBAC checks
+include 'db.php'; 
 
 // 🔴 Error Reporting (Debugging ke liye)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-if (!isset($_SESSION['password'])) {
-    header('location:login.php');
-    exit();
-}
-
-// 🟢 1. DELETE LOGIC (Iske baad connection band nahi karna hai)
+// 🟢 1. DELETE LOGIC
 if (isset($_GET['delete_id'])) {
     $del_id = intval($_GET['delete_id']);
     
-    // Pehle image delete karein folder se
-    $img_res = $con->query("SELECT featured_img FROM blog WHERE id = $del_id");
-    $img_data = $img_res ? $img_res->fetch_assoc() : null;
-    if ($img_data && !empty($img_data['featured_img']) && file_exists($img_data['featured_img'])) {
-        unlink($img_data['featured_img']);
+    // Pehle image delete karein folder se securely
+    $img_stmt = $con->prepare("SELECT featured_img FROM blog WHERE id = ?");
+    if ($img_stmt) {
+        $img_stmt->bind_param("i", $del_id);
+        $img_stmt->execute();
+        $img_res = $img_stmt->get_result();
+        $img_data = $img_res ? $img_res->fetch_assoc() : null;
+        $img_stmt->close();
+        
+        if ($img_data && !empty($img_data['featured_img']) && file_exists($img_data['featured_img'])) {
+            unlink($img_data['featured_img']);
+        }
     }
 
-    // Database se row delete karein
-    $delete_query = "DELETE FROM blog WHERE id = $del_id";
-    if ($con->query($delete_query)) {
-        echo "success";
+    // Database se row delete karein securely
+    $delete_stmt = $con->prepare("DELETE FROM blog WHERE id = ?");
+    if ($delete_stmt) {
+        $delete_stmt->bind_param("i", $del_id);
+        if ($delete_stmt->execute()) {
+            echo "success";
+        } else {
+            echo "error";
+        }
+        $delete_stmt->close();
     } else {
         echo "error";
     }
-    // 🔴 IMPORTANT: Yahan $con->close() bilkul nahi likhna hai.
     exit(); 
 }
-
-
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -62,7 +70,7 @@ if (isset($_GET['delete_id'])) {
                         </thead>
                         <tbody>
                             <?php
-                            // 🟢 2. SELECT LOGIC (Yahan fresh connection use hoga)
+                            // 🟢 2. SELECT LOGIC securely
                             $sql = "SELECT id, title, short_desc, featured_img, status, publish_date FROM blog ORDER BY id DESC";
                             $result = $con->query($sql);
 
@@ -102,7 +110,6 @@ if (isset($_GET['delete_id'])) {
                                 </td>
                             </tr>
                             <?php
-                           
                                 }
                             } else {
                                 echo "<tr><td colspan='6' class='text-center py-4'>No blogs found in database.</td></tr>";
@@ -128,13 +135,11 @@ function ajaxDelete(id) {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Fetch API use kar rahe hain AJAX ke liye
             fetch('blog_list.php?delete_id=' + id)
                 .then(response => response.text())
                 .then(data => {
                     if (data.trim() === 'success') {
                         Swal.fire('Deleted!', 'Blog has been removed.', 'success');
-                        // Row ko table se turant gayab karein
                         document.getElementById('blog_row_' + id).remove();
                     } else {
                         Swal.fire('Error!', 'Could not delete from database.', 'error');
@@ -146,7 +151,5 @@ function ajaxDelete(id) {
 </script>
 
 <?php
- include 'head.php';
 include 'foot.php'; 
-
 ?>

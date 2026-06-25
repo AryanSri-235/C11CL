@@ -3,7 +3,7 @@ session_start();
 
 /* 🔒 Login check */
 if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+    header('location:../index.php');
     exit();
 }
 

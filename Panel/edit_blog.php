@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+    header('location:../index.php');
     exit();
 }
 

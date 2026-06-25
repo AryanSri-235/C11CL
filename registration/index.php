@@ -3681,8 +3681,23 @@
 													<div class="ekit-wid-con">
 														<div
 															class="ekit-heading elementskit-section-title-wraper center   ekit_heading_tablet-   ekit_heading_mobile-">
+															<div style="text-align: center;">
+																<span style="
+																	display: inline-block;
+																	background: #dc2618;
+																	color: #ffffff;
+																	font-size: 0.75rem;
+																	font-weight: 800;
+																	text-transform: uppercase;
+																	letter-spacing: 2px;
+																	padding: 6px 16px;
+																	border-radius: 50px;
+																	margin-bottom: 15px;
+																	box-shadow: 0 4px 12px rgba(220, 38, 24, 0.35);
+																">★ Official Registration Portal ★</span>
+															</div>
 															<h1 class="ekit-heading--title elementskit-section-title ">
-																Join the Journey to Cricketing Glory!</h1>
+																Join the Journey to <span style="background: linear-gradient(135deg, #dc2618 30%, #f43f5e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(220,38,24,0.3));">Cricketing Glory!</span></h1>
 															<div class='ekit-heading__description'>
 																<p>Register now for the Champions 11 Cricket League and
 																	take your first step towards becoming a cricket
@@ -3698,6 +3713,37 @@
 												<div class="elementor-widget-container">
 													<div class="elementor-shortcode">
 														<style>
+															@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+															.ekit-heading--title.elementskit-section-title {
+																font-family: 'Plus Jakarta Sans', 'Montserrat', 'Heebo', sans-serif !important;
+																font-weight: 800 !important;
+																font-size: 3rem !important;
+																text-transform: uppercase !important;
+																letter-spacing: 1.5px !important;
+																color: #ffffff !important;
+																text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+																background: linear-gradient(135deg, #ffffff 60%, #ffccd1 100%) !important;
+																-webkit-background-clip: text !important;
+																-webkit-text-fill-color: transparent !important;
+																margin-bottom: 12px !important;
+																text-align: center !important;
+															}
+
+															.ekit-heading__description, .ekit-heading__description p {
+																font-family: 'Lato', sans-serif !important;
+																font-size: 1.25rem !important;
+																font-weight: 500 !important;
+																color: #e2e8f0 !important;
+																text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+																letter-spacing: 0.5px !important;
+																max-width: 800px !important;
+																margin: 0 auto !important;
+																line-height: 1.6 !important;
+																opacity: 0.95 !important;
+																text-align: center !important;
+															}
+
 															.reg-form input[type=text],
 															input[type=tel],
 															input[type=email] {
@@ -3760,30 +3806,76 @@
 														</style>
 
 <style>
+    #xs_client_2 {
+        background-color: #0b1320 !important;
+        background-image: linear-gradient(rgba(11, 19, 32, 0.88), rgba(11, 19, 32, 0.92)), url('<?php echo BASE_URL; ?>wp-content/uploads/2025/05/4002b2785403caf56ca7effb619f3c14.jpg') !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        background-attachment: scroll !important;
+    }
+
     .reg-form input[type=text],
     .reg-form input[type=tel],
     .reg-form input[type=email],
     .reg-form select {
-        font-weight: 800;
-        border: 2px solid #b1abab;
-        border-radius: 6px;
-        width: 98%;
-        padding: 12px;
-        margin: 8px 0;
-        height: 50px;
+        font-weight: 600;
+        color: #333333;
+        background-color: #f9fafb;
+        border: 1.5px solid #d1d5db;
+        border-radius: 8px;
+        width: 100%;
+        padding: 12px 16px;
+        margin: 10px 0;
+        height: 52px;
         box-sizing: border-box;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
     }
     
+    .reg-form input[type=text]:focus,
+    .reg-form input[type=tel]:focus,
+    .reg-form input[type=email]:focus,
+    .reg-form select:focus {
+        border-color: #dc2618;
+        background-color: #ffffff;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(220, 38, 24, 0.15);
+    }
+
     .reg-form select:hover, 
     .reg-form input:hover {
-        border: 2px solid #2196F3;
+        border-color: #a1a1aa;
     }
 
     .reg-form {
-        border-radius: 5px;
-        background-color: transparent;
-        padding: 20px;
+        border-radius: 12px;
+        background-color: #ffffff;
+        border: 2px solid rgba(220, 38, 24, 0.25) !important;
+        box-shadow: 0 4px 24px rgba(220, 38, 24, 0.08) !important;
+        padding: 40px !important;
         position: relative;
+        max-width: 600px;
+        margin: 30px auto;
+        transition: border-color 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+        will-change: transform;
+    }
+    .reg-form:hover {
+        border-color: #dc2618 !important;
+        transform: translateY(-10px) !important;
+        box-shadow: 0 12px 30px rgba(220, 38, 24, 0.2) !important;
+    }
+
+    #stepasubmit {
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    }
+    #stepasubmit:hover {
+        background: linear-gradient(135deg, #dc2618 0%, #e31e24 100%) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 16px rgba(220, 38, 24, 0.45) !important;
+    }
+    #stepasubmit:active {
+        transform: translateY(0) !important;
     }
 
     /* --- Progress Loader Styling --- */
@@ -3796,7 +3888,7 @@
     }
     .spinner {
         border: 8px solid #f3f3f3;
-        border-top: 8px solid #2196F3;
+        border-top: 8px solid #dc2618;
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -3842,9 +3934,9 @@
         <input 
             style="width:58%;display:inline-block;margin-right:0px;" 
             type="tel" name="phone" id="phone_input"
-            placeholder="Mobile no." minlength="10" maxlength="13" required 
+            placeholder="Mobile no." minlength="10" maxlength="10" pattern="[0-9]{10}" required 
         />
-        <div id="phone-error" style="color:red; font-size:14px; display:none; margin-bottom:5px;">Please enter a valid mobile number (10–13 digits).</div>
+        <div id="phone-error" style="color:red; font-size:14px; display:none; margin-bottom:5px;">Please enter a valid 10-digit mobile number.</div>
 
         <input type="email" name="email" placeholder="Your email id" required />
 
@@ -3873,7 +3965,7 @@
             <option value="Karnataka">Karnataka</option>
             <option value="Madhya Pradesh">Madhya Pradesh</option>
             <option value="Maharashtra">Maharashtra</option>
-            <!--<option value="Nagaland">Nagaland</option>-->
+            <option value="Nagaland">Nagaland</option>
             <option value="Odisha">Odisha</option>
             <option value="Punjab">Punjab</option>
             <option value="Rajasthan">Rajasthan</option>
@@ -3890,22 +3982,22 @@
 
         <div id="referralWrapper">
             <input type="text" id="referral_code" name="ref" placeholder="Your Referral Code" />
-            <p style="color: #ffffff; font-size: clamp(12px, 2vw, 18px);">
+            <p style="color: #666666; font-size: clamp(12px, 2vw, 15px); font-weight: 500; margin-top: 5px;">
                 Have a referral code? Enter it here. If not, just leave this blank.
             </p>
         </div>
 
-        <div class="terms">
-            <div style="color: white; font-weight:800; border-radius:3px">
-                <input type="checkbox" required style="vertical-align:middle; color:#084AF3;">
-                I agree to the <a href="https://c11cl.com/terms-conditions/" target="_blank" style="color: white;text-decoration: underline;font-weight: 800;">Terms & Conditions</a>
+        <div class="terms" style="margin-top: 15px; margin-bottom: 20px;">
+            <div style="color: #333333; font-weight: 600; font-size: 15px;">
+                <input type="checkbox" required style="vertical-align: middle; margin-right: 8px; width: 16px; height: 16px; cursor: pointer;">
+                I agree to the <a href="https://c11cl.com/terms-conditions/" target="_blank" style="color: #dc2618; text-decoration: underline; font-weight: 700; transition: color 0.2s;">Terms & Conditions</a>
             </div>
         </div>
 
         <div class="btn" style="text-align: center; margin-top:15px">
             <button id="stepasubmit" name="submit" type="submit"
-                style="background-color: #2196F3; color: #fff; padding: 14px 35px; font-size: 16px; font-weight: 600;
-                border: none; border-radius: 50px; box-shadow: 0 6px 12px rgba(33, 150, 243, 0.3); cursor: pointer;
+                style="background: linear-gradient(135deg, #dc2618 0%, #a81c12 100%); color: #fff; padding: 14px 35px; font-size: 16px; font-weight: 600;
+                border: none; border-radius: 50px; box-shadow: 0 6px 12px rgba(220, 38, 24, 0.3); cursor: pointer;
                 transition: all 0.3s ease; letter-spacing: 0.5px;"
                 class="btn-submit registersubmit">
                <div class="submittext"><b>REGISTER NOW</b></div>
@@ -3970,7 +4062,7 @@ $(document).ready(function () {
         var sanitized = val.replace(/[^0-9]/g, '');
         $(this).val(sanitized);
 
-        if (sanitized.length > 0 && (sanitized.length < 10 || sanitized.length > 13)) {
+        if (sanitized.length > 0 && sanitized.length !== 10) {
             $('#phone-error').show();
         } else {
             $('#phone-error').hide();
@@ -3979,12 +4071,69 @@ $(document).ready(function () {
 
     // 5. Form Submission & Loader
     $("#registrationForm").on("submit", function (e) {
-        if (this.checkValidity()) {
-            $(this).fadeOut(300, function() {
-                $("#loader-overlay").fadeIn(300);
-            });
-            return true;
+        e.preventDefault();
+        
+        var phoneVal = $('#phone_input').val();
+        if (phoneVal.length !== 10) {
+            $('#phone-error').show();
+            return false;
         }
+        
+        if (!this.checkValidity()) {
+            return false;
+        }
+
+        var form = this;
+        var submitBtn = $(form).find('button[type="submit"]');
+        var originalBtnText = submitBtn.text();
+        
+        submitBtn.prop('disabled', true).text('Submitting...');
+        $("#loader-overlay").fadeIn(300);
+
+        var formData = new FormData(form);
+        formData.append('ajax', '1');
+        formData.append('submit', '1');
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            $("#loader-overlay").fadeOut(300);
+            submitBtn.prop('disabled', false).text(originalBtnText);
+            
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful! 🎉',
+                    text: data.message || 'Your application has been received.',
+                    confirmButtonColor: '#E31C14'
+                }).then(function() {
+                    window.location.href = '<?php echo BASE_URL; ?>';
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    text: data.message || 'Please try again.',
+                    confirmButtonColor: '#E31C14'
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            $("#loader-overlay").fadeOut(300);
+            submitBtn.prop('disabled', false).text(originalBtnText);
+            Swal.fire({
+                icon: 'error',
+                title: 'Connection Error',
+                text: 'Something went wrong. Please check your internet connection and try again.',
+                confirmButtonColor: '#E31C14'
+            });
+        });
     });
 });
 </script>

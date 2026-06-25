@@ -74,20 +74,17 @@ body {
 /* ── Section cards (each h5 block) ── */
 .c11p-section {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-left: 5px solid #0e1b30;
     border-radius: 12px;
+    border-left: 5px solid #0e1b30;
     box-shadow: 0 2px 16px rgba(0,0,0,0.06);
     padding: 24px 28px;
     margin-bottom: 20px;
-    transition: all 0.3s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
-
 .c11p-section:hover {
-    border-color: #dc2618 !important;
-    border-left-color: #dc2618 !important;
-    box-shadow: 0 12px 35px rgba(220,38,24,0.18);
-    transform: translateY(-5px);
+    border-left-color: #dc2618;
+    box-shadow: 0 8px 32px rgba(220,38,24,0.13);
+    transform: translateY(-3px);
 }
 
 /* Section heading row */

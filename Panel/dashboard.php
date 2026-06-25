@@ -3,7 +3,7 @@ session_start();
 
 /* 🔒 Login check */
 if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+    header('location:../index.php');
     exit();
 }
 
@@ -61,6 +61,7 @@ $leads_recent = [];
 $role_data = ['Batsman' => 0, 'Bowler' => 0, 'All Rounder' => 0, 'Wicketkeeper' => 0];
 $state_data = [];
 
+global $con;
 if ($con) {
     // 1. Phase 1 Stats
     $p1_stats_res = $con->query("SELECT 
@@ -309,7 +310,7 @@ include 'head.php';
         <!-- Welcome Banner / Header -->
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
             <div>
-                <h3 class="mb-1 font-weight-bold text-dark" style="font-weight: 700; font-size: 26px;">Young Stars Cricket League</h3>
+                <h3 class="mb-1 font-weight-bold text-dark" style="font-weight: 700; font-size: 26px;">Champions 11 Cricket League</h3>
                 <p class="text-secondary mb-0" style="font-size: 14px;">Master Administrative Panel & Candidates Distribution Dashboard</p>
             </div>
             <div>

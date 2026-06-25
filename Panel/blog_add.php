@@ -11,7 +11,7 @@ function showAlert($msg) {
 }
 
 if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+    header('location:../index.php');
     exit();
 }
 

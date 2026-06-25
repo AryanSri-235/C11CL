@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['password'])) {
-    header('location:login.php');
+    header('location:../index.php');
 } else {
 
 switch ($_SESSION['status']) {
@@ -11,7 +11,7 @@ switch ($_SESSION['status']) {
 						header('location: dashboard.php');
 						break;
 					default:
-						header('location: profile.php');
+						header('location: user-profile.php');
 						break;
 				}
 }

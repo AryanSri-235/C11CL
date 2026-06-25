@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['password']) && isset($_SESSION['uname'])) {
-    header('location:login.php');
+    header('location:../index.php');
 }
     // Access the username from the session
     $username = $_SESSION['uname'];

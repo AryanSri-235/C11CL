@@ -3872,7 +3872,7 @@
 
             <input type="text" name="city_manual" class="c11-input" placeholder="Your City Name" required>
 
-            <input type="tel" id="userPhone" name="phone" class="c11-input" placeholder="Mobile Number (WhatsApp)" required>
+            <input type="tel" id="userPhone" name="phone" class="c11-input" placeholder="Mobile Number (WhatsApp)" minlength="10" maxlength="10" pattern="[0-9]{10}" required>
             <span class="verify-link" onclick="sendOTP()">Get OTP for Verification</span>
 
             <div class="otp-group" id="otpBox">
@@ -3917,14 +3917,83 @@
 
 <script>
 function sendOTP() {
-    var phone = document.getElementById('userPhone').value;
-    if(phone.length >= 10) {
+    var phone = document.getElementById('userPhone').value.trim();
+    if(/^\d{10}$/.test(phone)) {
         document.getElementById('otpBox').style.display = 'block';
         alert('OTP sent to ' + phone + ' (Demo)');
     } else {
-        alert('Please enter a valid mobile number');
+        alert('Please enter a valid 10-digit mobile number');
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const regForm = document.getElementById('registrationForm');
+    if (regForm) {
+        regForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = regForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            const formData = new FormData(regForm);
+            const phoneVal = formData.get('phone').trim();
+            if (!/^\d{10}$/.test(phoneVal)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Mobile Number',
+                    text: 'Mobile number must be exactly 10 digits.',
+                    confirmButtonColor: '#CC0000'
+                });
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SUBMITTING...';
+            
+            formData.append('ajax', '1');
+            formData.append('submit', '1');
+            
+            fetch(regForm.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registration Successful! 🎉',
+                        text: data.message || 'Your application has been received.',
+                        confirmButtonColor: '#CC0000'
+                    }).then(function() {
+                        window.location.href = '<?php echo BASE_URL; ?>';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: data.message || 'Please try again.',
+                        confirmButtonColor: '#CC0000'
+                    });
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Something went wrong. Please check your internet connection.',
+                    confirmButtonColor: '#CC0000'
+                });
+            });
+        });
+    }
+});
 </script>
 		
 		

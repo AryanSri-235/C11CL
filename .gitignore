@@ -5,12 +5,15 @@ Thumbs.db
 *~
 .vscode/
 .idea/
-
+.env.php
 # ─── Logs ─────────────────────────────────────────────────────
 *.log
 error_log
 debug.log
-
+.env
+/vendor
+/node_modules
+*.log
 # ─── Secrets (config files with hardcoded credentials) ────────
 # IMPORTANT: keep these out of git. Commit a `*.example.php`
 # template instead if you want others to know the shape.
