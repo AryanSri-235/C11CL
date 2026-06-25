@@ -402,9 +402,9 @@ echo "<tr $rowStyle>
     </td>
 
     <td class='text-center'>
-        " . ($isSuccess 
-            ? "<span class='badge bg-success shadow-sm' style='padding:5px 10px; font-size:10px;'><i class='bx bx-check-double'></i> Success</span>" 
-            : "<a href='../send.php?id=" . $row['id'] . "' onclick='return confirm(\"Are you sure?\")' class='btn btn-xs btn-warning' style='font-size:10px; font-weight:800; padding:2px 8px; border-radius:4px; text-transform:uppercase;'>Mark Success</a>") . "
+        " . ($isSuccess
+            ? "<span style='background:#16a34a; color:#fff; padding:5px 12px; border-radius:6px; font-size:10px; font-weight:800; letter-spacing:0.5px;'><i class='bx bx-check-double'></i> SUCCESS</span>"
+            : "<a href='../send.php?id=" . $row['id'] . "' onclick='return confirm(\"Mark this player as Success?\")' style='background:#16a34a; color:#fff; padding:5px 12px; border-radius:6px; font-size:10px; font-weight:800; letter-spacing:0.5px; text-decoration:none; display:inline-block;'>MARK SUCCESS</a>") . "
     </td>
 
     <td class='text-end' style='width:50px;'>
@@ -433,7 +433,7 @@ echo "<tr $rowStyle>
     <div class="modal-dialog modal-lg modal-background" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Player Details</h5>
+                <h5 class="modal-title"><i class='bx bx-user-circle me-2' style='color:#2563eb'></i> Player Profile Details</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

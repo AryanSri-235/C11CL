@@ -8,15 +8,22 @@ if (isset($_POST['login'])) {
     $password = trim($_POST['password'] ?? '');
     
     if ($con) {
-        // Parameterized login check
-        $stmt = $con->prepare("SELECT * FROM user WHERE username = ? AND password = ?");
+        // Fetch user by username only, then verify password hash
+        $stmt = $con->prepare("SELECT * FROM user WHERE username = ?");
         if ($stmt) {
-            $stmt->bind_param("ss", $uname, $password);
+            $stmt->bind_param("s", $uname);
             $stmt->execute();
             $result = $stmt->get_result();
-            
-            if ($result && $result->num_rows > 0) {
-                $row = $result->fetch_assoc();
+
+            $row = ($result && $result->num_rows > 0) ? $result->fetch_assoc() : null;
+
+            // Support both bcrypt hashes (new) and plain text (legacy users)
+            $passwordValid = $row && (
+                password_verify($password, $row['password']) ||
+                $row['password'] === $password
+            );
+
+            if ($row && $passwordValid) {
                 if ($row['stoper'] == 'Stop') {
                     $denied = 'Access denied: your account has been suspended.';
                 } else {
@@ -74,7 +81,7 @@ if (isset($_POST['login'])) {
                     }
                     exit();
                 }
-            } else {
+            } elseif (!$row || !$passwordValid) {
                 $_SESSION['wrong'] = "WRONG USERNAME AND PASSWORD";
             }
             $stmt->close();

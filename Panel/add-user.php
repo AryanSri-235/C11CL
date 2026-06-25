@@ -52,19 +52,18 @@ if (isset($_POST['addaccount'])) {
             // ── File upload ──────────────────────────────────────────
             $image = '';
             if (!empty($_FILES['picture']['name'])) {
-                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                $max_size      = 2 * 1024 * 1024; // 2 MB
-                $file_tmp      = $_FILES['picture']['tmp_name'];
-                $file_size     = $_FILES['picture']['size'];
-                $file_mime     = mime_content_type($file_tmp);
-                $file_ext      = strtolower(pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION));
-                $allowed_exts  = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $max_size     = 2 * 1024 * 1024; // 2 MB
+                $file_tmp     = $_FILES['picture']['tmp_name'];
+                $file_size    = $_FILES['picture']['size'];
+                $file_ext     = strtolower(pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION));
+                $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $img_info     = getimagesize($file_tmp);
 
-                if (!in_array($file_mime, $allowed_types) || !in_array($file_ext, $allowed_exts)) {
+                if (!in_array($file_ext, $allowed_exts)) {
                     $error = 'Only JPG, PNG, GIF, or WEBP images are allowed.';
                 } elseif ($file_size > $max_size) {
                     $error = 'Image must be under 2 MB.';
-                } elseif (getimagesize($file_tmp) === false) {
+                } elseif ($img_info === false) {
                     $error = 'Uploaded file is not a valid image.';
                 } else {
                     $upload_dir = 'uploads/';
@@ -75,8 +74,7 @@ if (isset($_POST['addaccount'])) {
                     $safe_filename = uniqid('usr_', true) . '.' . $file_ext;
                     $target_path   = $upload_dir . $safe_filename;
 
-                    $compressed = compressImage($file_tmp, $target_path, 80);
-                    if ($compressed) {
+                    if (move_uploaded_file($file_tmp, $target_path)) {
                         $image = $target_path;
                     } else {
                         $error = 'Failed to upload profile image.';
@@ -108,24 +106,6 @@ if (isset($_POST['addaccount'])) {
     }
 }
 
-// ── Image compression helper ─────────────────────────────────────────
-function compressImage($source, $destination, $quality) {
-    $info = getimagesize($source);
-    if (!$info) return false;
-
-    switch ($info['mime']) {
-        case 'image/jpeg': $img = imagecreatefromjpeg($source); break;
-        case 'image/png':  $img = imagecreatefrompng($source);  break;
-        case 'image/gif':  $img = imagecreatefromgif($source);  break;
-        case 'image/webp': $img = imagecreatefromwebp($source); break;
-        default: return false;
-    }
-
-    if (!$img) return false;
-    $result = imagejpeg($img, $destination, $quality);
-    imagedestroy($img);
-    return $result ? $destination : false;
-}
 
 include 'head.php';
 ?>

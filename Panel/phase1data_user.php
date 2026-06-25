@@ -311,7 +311,7 @@ $stateColors = [
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Player Details</h5>
+                <h5 class="modal-title"><i class='bx bx-user-circle me-2' style='color:#2563eb'></i> Player Profile Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="modalContent"></div>
