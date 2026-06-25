@@ -1,256 +1,341 @@
 <?php
-
 session_start();
 if (!isset($_SESSION['password']) || !isset($_SESSION['uname'])) {
     header('location:../index.php');
     exit();
 }
-?>
-<?php
-// session_start();
 
 include 'db.php';
 
+$error   = '';
+$success = '';
+
 if (isset($_POST['addaccount'])) {
-    $name = $_POST['name'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $number = $_POST['number'];
-    $email = $_POST['email'];
-    $role = $_POST['role'];
-    $status = $_POST['status'];
-    $fb = $_POST['fb'];
-    $insta = $_POST['insta'];
-    $ref = $_POST['ref'];
+    $name     = trim($_POST['name']     ?? '');
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password']         ?? '';
+    $confirm  = $_POST['confirm_password'] ?? '';
+    $number   = trim($_POST['number']   ?? '');
+    $email    = trim($_POST['email']    ?? '');
+    $role     = $_POST['role']             ?? '';
+    $status   = $_POST['status']           ?? '';
+    $address  = trim($_POST['fb']       ?? '');
+    $insta    = trim($_POST['insta']    ?? '');
+    $ref      = trim($_POST['ref']      ?? '');
 
-    // File Upload Logic
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["picture"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    $max_file_size = 1000000; // 1 MB
-
-    // Check file size (max size allowed: 1 MB)
-    if ($_FILES["picture"]["size"] > $max_file_size) {
-        // echo "Sorry, your file is too large.";
-        echo "<script>alert('Sorry, your file is too large.')</script>";
-        $uploadOk = 0;
-    }
-
-    // Check if image file is a actual image or fake image
-    $check = getimagesize($_FILES["picture"]["tmp_name"]);
-    if ($check === false) {
-        //echo "File is not an image.";
-        echo "<script>alert('File is not an image.')</script>";
-        $uploadOk = 0;
-    }
-
-    // Allow certain file formats
-    $allowed_extensions = array("jpg", "jpeg", "png", "gif");
-    if (!in_array($imageFileType, $allowed_extensions)) {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-    }
-
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-        // echo "Sorry, your file was not uploaded.";
-        echo "<script>alert('Sorry, your file was not uploaded.')</script>";
+    // ── Backend validation ───────────────────────────────────────────
+    if (empty($name) || empty($username) || empty($password) || empty($email) || empty($role) || empty($status)) {
+        $error = 'All required fields must be filled in.';
+    } elseif ($password !== $confirm) {
+        $error = 'Passwords do not match.';
+    } elseif (strlen($password) < 8) {
+        $error = 'Password must be at least 8 characters.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Invalid email address.';
+    } elseif (!preg_match('/^[0-9]{10}$/', $number)) {
+        $error = 'Phone number must be exactly 10 digits.';
     } else {
-        // Compress image
-        $compressed_image = compressImage($_FILES["picture"]["tmp_name"], $target_file, 75); // Quality set to 75
-
-        if ($compressed_image) {
-            echo "The file " . htmlspecialchars(basename($target_file)) . " has been uploaded.";
-
-            // Update image path in the user table
-            $image = $target_file;
-            $sql = "INSERT INTO user (name, username, password, number, email, role, status, fb, insta, ref, picture)
-                    VALUES ('$name','$username','$password','$number', '$email','$role', '$status', '$fb','$insta','$ref','$image')";
-
-            if ($con->query($sql) === TRUE) {
-                $_SESSION['addaccount'] = "New user created successfully";
-                // Redirect to profile.php
-                // header('location:profile.php');
-            } else {
-                // echo "Error: " . $sql . "<br>" . $con->error;
-                echo "<script>alert('Sql Error...')</script>";
-            }
+        // ── Username uniqueness check ────────────────────────────────
+        $chk = $con->prepare("SELECT id FROM user WHERE username = ?");
+        $chk->bind_param('s', $username);
+        $chk->execute();
+        $chk_result = $chk->get_result();
+        if ($chk_result->num_rows > 0) {
+            $error = 'Username already exists. Please choose a different one.';
+            $chk->close();
         } else {
-            // echo "Sorry, there was an error uploading your file.";
-            echo "<script>alert('Sorry, there was an error uploading your file.')</script>";
+            $chk->close();
+
+            // ── Hash the password ────────────────────────────────────
+            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+            // ── File upload ──────────────────────────────────────────
+            $image = '';
+            if (!empty($_FILES['picture']['name'])) {
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $max_size      = 2 * 1024 * 1024; // 2 MB
+                $file_tmp      = $_FILES['picture']['tmp_name'];
+                $file_size     = $_FILES['picture']['size'];
+                $file_mime     = mime_content_type($file_tmp);
+                $file_ext      = strtolower(pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION));
+                $allowed_exts  = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (!in_array($file_mime, $allowed_types) || !in_array($file_ext, $allowed_exts)) {
+                    $error = 'Only JPG, PNG, GIF, or WEBP images are allowed.';
+                } elseif ($file_size > $max_size) {
+                    $error = 'Image must be under 2 MB.';
+                } elseif (getimagesize($file_tmp) === false) {
+                    $error = 'Uploaded file is not a valid image.';
+                } else {
+                    $upload_dir = 'uploads/';
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0755, true);
+                    }
+                    // Sanitized unique filename — never use original filename directly
+                    $safe_filename = uniqid('usr_', true) . '.' . $file_ext;
+                    $target_path   = $upload_dir . $safe_filename;
+
+                    $compressed = compressImage($file_tmp, $target_path, 80);
+                    if ($compressed) {
+                        $image = $target_path;
+                    } else {
+                        $error = 'Failed to upload profile image.';
+                    }
+                }
+            }
+
+            // ── Insert user if no upload error ───────────────────────
+            if (empty($error)) {
+                $stmt = $con->prepare(
+                    "INSERT INTO user (name, username, password, number, email, role, status, fb, insta, ref, picture)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                );
+                $stmt->bind_param(
+                    'sssssssssss',
+                    $name, $username, $hashed_password,
+                    $number, $email, $role, $status,
+                    $address, $insta, $ref, $image
+                );
+
+                if ($stmt->execute()) {
+                    $success = 'User <strong>' . htmlspecialchars($name) . '</strong> created successfully.';
+                } else {
+                    $error = 'Database error. Please try again.';
+                }
+                $stmt->close();
+            }
         }
     }
-    $con->close();
 }
 
-// Function to compress image
+// ── Image compression helper ─────────────────────────────────────────
 function compressImage($source, $destination, $quality) {
     $info = getimagesize($source);
+    if (!$info) return false;
 
-    if ($info['mime'] == 'image/jpeg')
-        $image = imagecreatefromjpeg($source);
+    switch ($info['mime']) {
+        case 'image/jpeg': $img = imagecreatefromjpeg($source); break;
+        case 'image/png':  $img = imagecreatefrompng($source);  break;
+        case 'image/gif':  $img = imagecreatefromgif($source);  break;
+        case 'image/webp': $img = imagecreatefromwebp($source); break;
+        default: return false;
+    }
 
-    elseif ($info['mime'] == 'image/gif')
-        $image = imagecreatefromgif($source);
-
-    elseif ($info['mime'] == 'image/png')
-        $image = imagecreatefrompng($source);
-
-    imagejpeg($image, $destination, $quality);
-
-    return $destination;
+    if (!$img) return false;
+    $result = imagejpeg($img, $destination, $quality);
+    imagedestroy($img);
+    return $result ? $destination : false;
 }
+
 include 'head.php';
 ?>
 
-<!-- Add JavaScript alert -->
+<?php if ($error): ?>
 <script>
-    <?php if(isset($_SESSION['addaccount'])) : ?>
-        alert("<?php echo $_SESSION['addaccount']; ?>");
-        <?php unset($_SESSION['addaccount']); ?>
-    <?php endif; ?>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({ icon: 'error', title: 'Error', html: '<?= addslashes($error) ?>' });
+    });
 </script>
+<?php endif; ?>
 
+<?php if ($success): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({ icon: 'success', title: 'User Created', html: '<?= addslashes($success) ?>' });
+    });
+</script>
+<?php endif; ?>
 
-
-<!--start page wrapper -->
 <div class="page-wrapper">
     <div class="page-content">
-        <!--breadcrumb-->
+
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <!-- ... -->
+            <div class="breadcrumb-title pe-3">Users</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="dashboard.php"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Add User</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
+
         <div class="row">
-            <div class="col-xl-6 mx-auto">
+            <div class="col-xl-8 mx-auto">
                 <div class="card">
                     <div class="card-body p-4">
-                        <h5 class="mb-4">Enter User Details</h5>
-                        <form id="myForm" method="POST" class="row g-3" enctype="multipart/form-data" onsubmit="return validateForm()">
-						<div class="col-md-6">
-										<label for="input1" class="form-label">Full Name</label>
-										<input type="text" name="name" class="form-control" id="input1" placeholder="Enter your name"required>
-									</div>
+                        <h5 class="mb-4">Add New User</h5>
 
-                                    <div class="col-md-6">
-										<label for="input1" class="form-label">User Id</label>
-										<input type="text" name="username" class="form-control" id="username" placeholder="enter user id"required>
-										<div id="usernameError" class="text-danger"></div> <!-- Placeholder for error message -->
-									</div>
-                                    <div class="col-md-6">
-        <label for="input5" class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" id="password" placeholder="Enter password"required>
-    </div>
-    
-    <div class="col-md-6">
-        <label for="input6" class="form-label">Confirm Password</label>
-        <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Confirm password">
-        <span id="password_error" style="color:red"></span>
-    </div>
-    <div class="col-md-6">
-    <label for="input3" class="form-label">Phone Number</label>
-    <input type="tel" name="number" class="form-control" id="input3" placeholder="Enter phone number" pattern="[0-9]{10}" title="Please enter a 10-digit phone number" required>
-</div>
-									<div class="col-md-6">
-										<label for="input4" class="form-label">Email</label>
-										<input type="email" name="email" class="form-control" id="input4" placeholder="enter mail id"required>
-									</div>
+                        <form id="addUserForm" method="POST" class="row g-3" enctype="multipart/form-data">
 
-									<div class="col-md-6">
-										<label for="input7" class="form-label">Select Role</label>
-										<select id="input7" name="role" class="form-select"required>
-											<option selected>Choose...</option>
-											<option value="owner" >Owner</option>
-											<option value="developer" >Developer</option>
-											<option value="manager">Manager</option>
-                                            <option value="team-leader">Team Leader</option>
-                                            <option value="sales-manger">Sales Manger</option>
-                                            <option value="sale-person">Sale Person</option>
-                                            <option value="event-manger">Event Manager</option>
-                                            <option value="accounted">Accountant</option>
-                                            
-										</select>
-									</div>
-                                    <div class="col-md-6">
-										<label for="input7" class="form-label">Select Authority</label>
-										<select id="input7" name="status" class="form-select"required>
-											<option selected>Choose...</option>
-											<option value="superadmin" >Super Admin</option>
-											<option value="admin" >Admin</option>
-											<option value="subadmin" >Sub Admin</option>
-											<option value="sale-leader" >Sales Person</option>
-                                            
-										</select>
-									</div>
-                                    <div class="col-md-12">
-										<label for="input3" class="form-label">Address</label>
-										<input type="text" name="fb" class="form-control" id="input3" placeholder="enter facebook id">
-									</div>
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" placeholder="Enter full name"
+                                       value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
+                            </div>
 
-                                    <div class="col-md-6">
-                                    <label for="basic-url" class="form-label">User Ref Code</label>
-								<div class="input-group mb-3"> 
-								<!--<span class="input-group-text" id="basic-addon3">YSCL</span>-->
-									<input type="text" name="ref" class="form-control" id="basic-url" aria-describedby="basic-addon3"required>
-								</div>
-</div>
-<div class="col-md-6">
-        <label for="image-uploadify" class="form-label">Profile Image (Max Size - 1MB)</label>
-        <input id="image-uploadify" name="picture" type="file" accept=".xlsx,.xls,image/*,.doc,audio/*,.docx,video/*,.ppt,.pptx,.txt,.pdf" multiple>
-    </div>
+                            <div class="col-md-6">
+                                <label class="form-label">User ID (Username) <span class="text-danger">*</span></label>
+                                <input type="text" name="username" class="form-control" id="username"
+                                       placeholder="Enter username"
+                                       value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
+                                <div id="usernameError" class="text-danger small mt-1"></div>
+                            </div>
 
-    <div class="col-md-12">
-        <div class="d-md-flex d-grid align-items-center gap-3">
-            <button type="submit" name="addaccount" class="btn btn-primary px-4">Submit</button>
-            <button type="button" class="btn btn-light px-4" onclick="resetForm()">Reset</button>
-        </div>
-    </div>
-</form>
+                            <div class="col-md-6">
+                                <label class="form-label">Password <span class="text-danger">*</span></label>
+                                <input type="password" name="password" class="form-control" id="password"
+                                       placeholder="Min. 8 characters" required minlength="8">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                <input type="password" name="confirm_password" class="form-control" id="confirm_password"
+                                       placeholder="Re-enter password" required>
+                                <div id="passwordError" class="text-danger small mt-1"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" name="number" class="form-control" placeholder="10-digit number"
+                                       pattern="[0-9]{10}" title="10-digit phone number"
+                                       value="<?= htmlspecialchars($_POST['number'] ?? '') ?>" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="form-control" placeholder="Enter email"
+                                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Role <span class="text-danger">*</span></label>
+                                <select name="role" class="form-select" required>
+                                    <option value="">Choose role...</option>
+                                    <?php
+                                    $roles = ['owner' => 'Owner', 'developer' => 'Developer', 'manager' => 'Manager',
+                                              'team-leader' => 'Team Leader', 'sales-manager' => 'Sales Manager',
+                                              'sale-person' => 'Sale Person', 'event-manager' => 'Event Manager',
+                                              'accountant' => 'Accountant'];
+                                    foreach ($roles as $val => $label):
+                                        $sel = (($_POST['role'] ?? '') === $val) ? 'selected' : '';
+                                    ?>
+                                        <option value="<?= $val ?>" <?= $sel ?>><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Authority Level <span class="text-danger">*</span></label>
+                                <select name="status" class="form-select" required>
+                                    <option value="">Choose authority...</option>
+                                    <?php
+                                    $authorities = ['superadmin' => 'Super Admin', 'admin' => 'Admin',
+                                                    'subadmin' => 'Sub Admin', 'sale-leader' => 'Sales Person'];
+                                    foreach ($authorities as $val => $label):
+                                        $sel = (($_POST['status'] ?? '') === $val) ? 'selected' : '';
+                                    ?>
+                                        <option value="<?= $val ?>" <?= $sel ?>><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Instagram Handle</label>
+                                <input type="text" name="insta" class="form-control" placeholder="@handle"
+                                       value="<?= htmlspecialchars($_POST['insta'] ?? '') ?>">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Referral Code <span class="text-danger">*</span></label>
+                                <input type="text" name="ref" class="form-control" placeholder="Enter ref code"
+                                       value="<?= htmlspecialchars($_POST['ref'] ?? '') ?>" required>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Address</label>
+                                <input type="text" name="fb" class="form-control" placeholder="Enter address"
+                                       value="<?= htmlspecialchars($_POST['fb'] ?? '') ?>">
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Profile Image <span class="text-muted">(JPG/PNG/GIF/WEBP, max 2 MB)</span></label>
+                                <input type="file" name="picture" class="form-control" id="pictureInput"
+                                       accept="image/jpeg,image/png,image/gif,image/webp">
+                                <div id="imagePreviewWrapper" class="mt-2 d-none">
+                                    <img id="imagePreview" src="#" alt="Preview"
+                                         style="max-height:120px;border-radius:8px;border:1px solid #ddd;">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="d-md-flex d-grid align-items-center gap-3">
+                                    <button type="submit" name="addaccount" class="btn btn-primary px-4">
+                                        <i class="bx bx-user-plus me-1"></i> Create User
+                                    </button>
+                                    <button type="reset" class="btn btn-light px-4"
+                                            onclick="document.getElementById('imagePreviewWrapper').classList.add('d-none')">
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
-<!-- confirm_password javascript code -->
-<script>
-    function validateForm() {
-        var password = document.getElementById("password").value;
-        var confirm_password = document.getElementById("confirm_password").value;
 
-        if (password != confirm_password) {
-            document.getElementById("password_error").innerHTML = "Passwords do not match";
-            return false;
-        } else {
-            document.getElementById("password_error").innerHTML = "";
-            return true;
-        }
-    }
-</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('#username').blur(function() { // Triggered when input field loses focus
-        var username = $(this).val();
-        $.ajax({
-            type: 'POST',
-            url: 'check_username.php', // PHP script to check username
-            data: { username: username },
-            success: function(response) {
-                if (response === 'exists') {
-                    $('#usernameError').text('Username already exists.');
-                    //$('#username').val(''); // Clear the input field
-                } else {
-                    $('#usernameError').text('');
-                }
-            }
-        });
+// Live password match check
+document.getElementById('confirm_password').addEventListener('input', function () {
+    const pw  = document.getElementById('password').value;
+    const err = document.getElementById('passwordError');
+    err.textContent = (this.value && this.value !== pw) ? 'Passwords do not match.' : '';
+});
+
+// Image preview
+document.getElementById('pictureInput').addEventListener('change', function () {
+    const wrapper = document.getElementById('imagePreviewWrapper');
+    const preview = document.getElementById('imagePreview');
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => { preview.src = e.target.result; wrapper.classList.remove('d-none'); };
+        reader.readAsDataURL(this.files[0]);
+    } else {
+        wrapper.classList.add('d-none');
+    }
+});
+
+// Client-side form validation before submit
+document.getElementById('addUserForm').addEventListener('submit', function (e) {
+    const pw  = document.getElementById('password').value;
+    const cpw = document.getElementById('confirm_password').value;
+    if (pw !== cpw) {
+        e.preventDefault();
+        document.getElementById('passwordError').textContent = 'Passwords do not match.';
+        return;
+    }
+    if (document.getElementById('usernameError').textContent) {
+        e.preventDefault();
+        Swal.fire({ icon: 'warning', title: 'Fix errors', text: 'Username is already taken.' });
+    }
+});
+
+// AJAX username uniqueness check
+$('#username').on('blur', function () {
+    const username = $(this).val().trim();
+    if (!username) return;
+    $.post('check_username.php', { username }, function (response) {
+        document.getElementById('usernameError').textContent =
+            (response.trim() === 'exists') ? 'Username already taken.' : '';
     });
 });
 </script>
 
-
-
-<!--end page wrapper -->
 <?php include 'foot.php'; ?>
-   
