@@ -13,24 +13,33 @@ if (!isset($_SESSION['password']) && isset($_SESSION['uname'])) {
 include 'db.php';
 
 if (isset($_POST['changepassword'])) {
-    
-    $oldpass = $_POST['oldpass'];
-    $newpass = $_POST['password'];
-    $sql = "SELECT * FROM user WHERE username = '$username' ORDER by id DESC LIMIT 1 ";
-    $result = $con->query($sql);
-	if ($result->num_rows > 0) {
-		$row = $result->fetch_assoc();
-		if($row['password'] != $oldpass) {
-		    $denied = '<span class="text-danger">Access denied Old Password Does Not Match</span>';
-		} else {
-		$sql = "UPDATE user SET password = '$newpass' WHERE username = '$username' ";
-		$con->query($sql);
-		    $success = '<span class="text-success">Your Password has been Updated Successfully<br></span> <a href="login.php" class="btn btn-light">Click Here to Login</a>';
-            
-	} }else {
-		$_SESSION['wrong'] = "WRONG USERNAME AND PASSWORD";
-	}
-    
+    $oldpass = $_POST['oldpass'] ?? '';
+    $newpass = $_POST['password'] ?? '';
+
+    $stmt = $con->prepare("SELECT password FROM user WHERE username = ? LIMIT 1");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $stored = $row['password'];
+        // Support bcrypt and legacy plain-text passwords
+        $oldpassValid = password_verify($oldpass, $stored) || ($stored === $oldpass);
+        if (!$oldpassValid) {
+            $denied = '<span class="text-danger">Access denied: Old password does not match</span>';
+        } else {
+            $hashed = password_hash($newpass, PASSWORD_BCRYPT);
+            $upd = $con->prepare("UPDATE user SET password = ? WHERE username = ?");
+            $upd->bind_param("ss", $hashed, $username);
+            $upd->execute();
+            $upd->close();
+            $success = '<span class="text-success">Password updated successfully.<br></span> <a href="login.php" class="btn btn-light">Click Here to Login</a>';
+        }
+    } else {
+        $_SESSION['wrong'] = "User not found.";
+    }
 }
 
 ?>

@@ -10,65 +10,65 @@ session_start();
 if(isset($_GET['username'])){
 	include 'db.php';
 	$uname = $_GET['username'];
-	$sql = "SELECT * FROM user WHERE username = '$uname' ";
-	$result = $con->query($sql);
+	$stmt = $con->prepare("SELECT * FROM user WHERE username = ? LIMIT 1");
+	$stmt->bind_param("s", $uname);
+	$stmt->execute();
+	$result = $stmt->get_result();
 	if ($result->num_rows > 0) {
-	  while($row = $result->fetch_assoc()) {
-		$id = $row["id"];
-				$name = $row["name"];
-				$username = $row["username"];
-				$password = $row["password"];
-				$number = $row["number"];
-				$email = $row["email"];
-				$role = $row["role"];
-				$status = $row["status"];
-				$fb = $row["fb"];
-				$insta = $row["insta"];
-				$ref = $row["ref"];
-				$picture = $row["picture"]; 
-	  }
+	  $row     = $result->fetch_assoc();
+	  $id      = $row["id"];
+	  $name    = $row["name"];
+	  $username= $row["username"];
+	  $number  = $row["number"];
+	  $email   = $row["email"];
+	  $role    = $row["role"];
+	  $status  = $row["status"];
+	  $fb      = $row["fb"];
+	  $insta   = $row["insta"];
+	  $ref     = $row["ref"];
+	  $picture = $row["picture"];
 	} else {
 	  echo "0 results";
 	}
-	$con->close();
+	$stmt->close();
 }
 ///////////////////////////////////////////////////////
 
 if (isset($_POST['delete'])) {
     include 'db.php';
-    $id = $_POST['id'];
-    $sql = "DELETE FROM user WHERE id = '$id' ";
-
-    if ($con->query($sql) === TRUE) {
+    $id = (int) $_POST['id'];
+    $stmt = $con->prepare("DELETE FROM user WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
         $_SESSION['delete-acc'] = "Record deleted successfully";
+        $stmt->close();
         header('location:profile.php');
+        exit();
     } else {
         echo "Error deleting record: " . $con->error;
+        $stmt->close();
     }
-    $con->close();
 }
 
 
 if (isset($_POST["updateaccount"])) {
     include 'db.php';
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $password = $_POST['password'];
-    $number = $_POST['number'];
-	$email = $_POST['email'];
-	$role = $_POST['role'];
-    $fb = $_POST['fb'];
-    $insta = $_POST['insta'];
+    $id     = (int) $_POST['id'];
+    $name   = trim($_POST['name']   ?? '');
+    $number = trim($_POST['number'] ?? '');
+    $email  = trim($_POST['email']  ?? '');
+    $role   = trim($_POST['role']   ?? '');
+    $fb     = trim($_POST['fb']     ?? '');
+    $insta  = trim($_POST['insta']  ?? '');
 
-	$sql = "UPDATE user SET name='$name', password='$password', number='$number',email='$email', role='$role',status='$status',fb='$fb',insta='$insta', ref='$ref',picture='$picture' WHERE id= '$id' ";
-
-if ($con->query($sql) === TRUE) {
-  $updated = "Record updated successfully";
-} else {
-  echo "Error updating record: " . $con->error;
-}
-
-$con->close();
+    $stmt = $con->prepare("UPDATE user SET name=?, number=?, email=?, role=?, fb=?, insta=? WHERE id=?");
+    $stmt->bind_param("ssssssi", $name, $number, $email, $role, $fb, $insta, $id);
+    if ($stmt->execute()) {
+        $updated = "Record updated successfully";
+    } else {
+        echo "Error updating record: " . $con->error;
+    }
+    $stmt->close();
 }
 ?>
 
@@ -235,14 +235,6 @@ $con->close();
 									</div>
 									<div class="col-sm-9 text-secondary">
 										<input type="text" name="number" class="form-control" value="<?php echo $number; ?>" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-sm-3">
-										<h6 class="mb-0">Password</h6>
-									</div>
-									<div class="col-sm-9 text-secondary">
-										<input type="text" name="password" class="form-control" value="<?php echo $password; ?>" />
 									</div>
 								</div>
 								<div class="row mb-3">

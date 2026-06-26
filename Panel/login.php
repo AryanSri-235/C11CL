@@ -41,7 +41,7 @@ if (isset($_POST['login'])) {
                     // Set sessions
                     $_SESSION['uname'] = $row['username'];
                     $_SESSION['name'] = $row['name'];
-                    $_SESSION['password'] = $row['password'];
+                    $_SESSION['password'] = 'Y';
                     $_SESSION['status'] = $row['status'];
                     $_SESSION['picture'] = $row['picture'];
                     $_SESSION['last-active'] = time();
@@ -89,28 +89,7 @@ if (isset($_POST['login'])) {
             $_SESSION['wrong'] = "Database Statement Error.";
         }
     } else {
-        // Fallback for local sandbox testing when database is offline
-        if ($uname === 'admin' && $password === 'admin123') {
-            $_SESSION['uname'] = 'admin';
-            $_SESSION['name'] = 'Administrator';
-            $_SESSION['password'] = 'admin123';
-            $_SESSION['status'] = 'superadmin';
-            $_SESSION['picture'] = '';
-            $_SESSION['last-active'] = time();
-            header('location: dashboard.php');
-            exit();
-        } else if ($uname === 'coach' && $password === 'coach123') {
-            $_SESSION['uname'] = 'coach';
-            $_SESSION['name'] = 'Coach Member';
-            $_SESSION['password'] = 'coach123';
-            $_SESSION['status'] = 'coach';
-            $_SESSION['picture'] = '';
-            $_SESSION['last-active'] = time();
-            header('location: user-profile.php');
-            exit();
-        } else {
-            $_SESSION['wrong'] = "Database Connection Offline. Try 'admin' / 'admin123' or 'coach' / 'coach123'.";
-        }
+        $_SESSION['wrong'] = "Database connection unavailable. Please try again later.";
     }
 }
 

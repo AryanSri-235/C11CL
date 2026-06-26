@@ -12,20 +12,26 @@ ini_set('display_errors', 1);
 
 // Handle Update (from Modal)
 if (isset($_POST['update_data'])) {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $state = $_POST['state'];
-    $city = $_POST['city'];
+    $id    = (int) $_POST['id'];
+    $name  = trim($_POST['name']  ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $state = trim($_POST['state'] ?? '');
+    $city  = trim($_POST['city']  ?? '');
 
-    $con->query("UPDATE regdata SET name='$name', email='$email', phone='$phone', state='$state', city='$city' WHERE id=$id");
+    $stmt = $con->prepare("UPDATE regdata SET name=?, email=?, phone=?, state=?, city=? WHERE id=?");
+    $stmt->bind_param("sssssi", $name, $email, $phone, $state, $city, $id);
+    $stmt->execute();
+    $stmt->close();
 }
 
-// Build SQL
+// Build SQL — validate date inputs before interpolating
 $search = $_POST['search_text'] ?? '';
-$datef = $_POST['datef'] ?? '';
-$datel = $_POST['datel'] ?? '';
+$datef  = $_POST['datef'] ?? '';
+$datel  = $_POST['datel'] ?? '';
+// Allow only YYYY-MM-DD format to prevent injection via date fields
+$datef = preg_match('/^\d{4}-\d{2}-\d{2}$/', $datef) ? $datef : '';
+$datel = preg_match('/^\d{4}-\d{2}-\d{2}$/', $datel) ? $datel : '';
 $conditions = [];
 
 if (!empty($search)) {

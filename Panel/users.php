@@ -35,23 +35,26 @@ if (!isset($_SESSION['password'])) {
                                     if ($result->num_rows > 0) {
                                         $count = 0;
                                         while ($row = $result->fetch_assoc()) {
-									$username	=	$row["username"];
+                                            $u_name     = htmlspecialchars($row["username"],     ENT_QUOTES, 'UTF-8');
+                                            $u_display  = htmlspecialchars($row["name"],         ENT_QUOTES, 'UTF-8');
+                                            $u_role     = htmlspecialchars($row["role"],         ENT_QUOTES, 'UTF-8');
+                                            $u_picture  = htmlspecialchars($row["picture"],      ENT_QUOTES, 'UTF-8');
+                                            $u_fb       = htmlspecialchars($row["fb"]   ?? '#',  ENT_QUOTES, 'UTF-8');
+                                            $u_insta    = htmlspecialchars($row["insta"] ?? '#',  ENT_QUOTES, 'UTF-8');
                                             echo '
 					<div class="col">
 						<div class="card radius-15">
 							<div class="card-body text-center">
 								<div class="p-4 border radius-15">
-									<img src="'. $row["picture"]. ' " width="110" height="110" class="rounded-circle shadow" alt="">
-									<h5 class="mb-0 mt-5">'. $row["name"] .'</h5>
-									<p class="mb-3">'. $row["role"] .'</p>
-                                   
+									<img src="' . $u_picture . '" width="110" height="110" class="rounded-circle shadow" alt="">
+									<h5 class="mb-0 mt-5">' . $u_display . '</h5>
+									<p class="mb-3">' . $u_role . '</p>
 									<div class="list-inline contacts-social mt-3 mb-3">
-                                         <a href='. $row["fb"] .' class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
-										<a href='. $row["insta"] .' class="list-inline-item bg-google text-white border-0"><i class="bx bxl-instagram"></i></a>
+										<a href="' . $u_fb . '" class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
+										<a href="' . $u_insta . '" class="list-inline-item bg-google text-white border-0"><i class="bx bxl-instagram"></i></a>
 										<a href="message.php" class="list-inline-item bg-linkedin text-white border-0"><i class="bx bxs-badge-check"></i></a>
 									</div>
-									<div class="d-grid"> <a href="profile.php?username='.$row["username"].'" class="btn btn-outline-primary radius-15">Profile</a>
-									</div>
+									<div class="d-grid"><a href="profile.php?username=' . $u_name . '" class="btn btn-outline-primary radius-15">Profile</a></div>
 								</div>
 							</div>
 						</div>

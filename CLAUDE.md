@@ -98,30 +98,33 @@ Upload ALL of these to InfinityFree to sync with local changes:
 |---|---|---|
 | 1 | `Panel/add-user.php` | Full rewrite: bcrypt password hashing, parameterized INSERT, secure file upload, confirm password validation, SweetAlert feedback, form repopulates on error |
 | 2 | `Panel/check_username.php` | **NEW FILE** — AJAX endpoint for live username availability check (session-gated, parameterized query) |
-| 3 | `Panel/login.php` | Updated to use `password_verify()` for bcrypt hashes; falls back to plain-text match for legacy users |
+| 3 | `Panel/login.php` | bcrypt login + remove hardcoded fallback creds (admin/admin123) + session stores `'Y'` not the hash |
 | 4 | `Panel/phase1data.php` | MARK SUCCESS button → green style matching live site; modal title → "Player Profile Details" |
 | 5 | `Panel/phase1data_user.php` | Modal title → "Player Profile Details" |
 | 6 | `Panel/debug_login.php` | TEMP file — diagnoses login issues. **Delete this after login is fixed.** |
+| 7 | `Panel/email_submit.php` | SMTP password moved to `.env.php` constants (SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT) |
+| 8 | `.env.php` | Added SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_PORT constants |
+| 9 | `Panel/profile.php` | Fixed SQL injection in SELECT/DELETE/UPDATE; removed password from update form |
+| 10 | `Panel/forgot-password.php` | Fixed SQL injection (parameterized SELECT) |
+| 11 | `Panel/password-change.php` | Fixed SQL injection; uses password_verify() + bcrypt on save |
+| 12 | `Panel/register_data.php` | Fixed SQL injection in UPDATE (edit modal); validate date inputs |
+| 13 | `Panel/users.php` | Fixed XSS: all output in card HTML now htmlspecialchars()-escaped |
+| 14 | `Panel/head.php` | Added HTTP security headers (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy) |
 
 ---
 
 ## Known Issues / In Progress
 
-### Login not working for new bcrypt users
+### Login not working for new bcrypt users (InfinityFree only)
 - **Symptom:** "Wrong username and password" even though `debug_login.php` shows `password_verify: PASS`
 - **Debug page:** `http://localhost:8000/Panel/debug_login.php?u=USERNAME&p=PASSWORD`
-- **Possible cause:** InfinityFree DB `user.password` column may be too short for bcrypt (needs VARCHAR(255))
-- **Fix if column too short:** Run in phpMyAdmin → `ALTER TABLE user MODIFY password VARCHAR(255);` then re-create the user
+- **Most likely cause:** InfinityFree DB `user.password` column is too short (needs VARCHAR(255))
+- **Fix:** Run in phpMyAdmin → `ALTER TABLE user MODIFY password VARCHAR(255);` then re-create the user via add-user.php
 - **Status:** Under investigation
 
-### Security issues still to fix (non-urgent)
-- `register_data.php` — SQL injection in UPDATE (edit modal)
-- `forgot-password.php` — SQL injection in SELECT + logic error (line 5: `&&` should be `||`)
-- `email_submit.php` — SQL injection + SMTP password hardcoded in source
+### Security issues still to fix (lower priority)
 - `create_blog.php` — SQL injection in category INSERT
 - `edit_blog.php` — SQL injection in SELECT
-- `users.php` — XSS in Facebook/Instagram link output
-- `login.php` — Hardcoded fallback credentials (admin/admin123) — remove before final production
 
 ---
 

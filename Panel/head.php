@@ -17,6 +17,12 @@ if (!isset($_SESSION['password']) || !isset($_SESSION['uname'])) {
     }
 }
 
+// Security headers
+header("X-Frame-Options: SAMEORIGIN");
+header("X-Content-Type-Options: nosniff");
+header("X-XSS-Protection: 1; mode=block");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+
 // 2. Session Timeout (8 Hours)
 if (isset($_SESSION['last-active'])) {
     if ((time() - $_SESSION['last-active']) > 28800) {

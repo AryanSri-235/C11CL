@@ -13,25 +13,24 @@ if (!isset($_SESSION['password']) && isset($_SESSION['uname'])) {
 include 'db.php';
 
 if (isset($_POST['forgotpassword'])) {
-    $email = $_POST['email'];
-    $number = $_POST['number'];
-    $sql = "SELECT * FROM user WHERE username = '$username' ORDER by id DESC LIMIT 1 ";
-    $result = $con->query($sql);
-	if ($result->num_rows > 0) {
-		$row = $result->fetch_assoc();
-		if($row['email'] != $email || $row['number'] != $number) {
-		    $denied = '<span class="text-danger">Access denied Email or Phone Number Does Not Match</span>';
-		} else {
-		//$sql = "UPDATE user SET password = '$newpass' WHERE username = '$username' ";
-		//$con->query($sql);
-        //$_SESSION['add_venue'] = "Venue Added";
-		 header('location: setnewpass.php');
-		  //  $success = '<span class="text-success">Your Password has been Updated Successfully<br></span> <a href="login.php" class="btn btn-light">Click Here to Login</a>';
-            
-	} }else {
-		$_SESSION['wrong'] = "WRONG USERNAME AND PASSWORD";
-	}
-    
+    $email  = trim($_POST['email']  ?? '');
+    $number = trim($_POST['number'] ?? '');
+    $stmt = $con->prepare("SELECT * FROM user WHERE username = ? ORDER BY id DESC LIMIT 1");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if ($row['email'] != $email || $row['number'] != $number) {
+            $denied = '<span class="text-danger">Access denied: Email or Phone Number does not match</span>';
+        } else {
+            header('location: setnewpass.php');
+            exit();
+        }
+    } else {
+        $_SESSION['wrong'] = "WRONG USERNAME AND PASSWORD";
+    }
 }
 
 

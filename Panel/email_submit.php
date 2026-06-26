@@ -37,15 +37,15 @@ if (isset($_POST['submit'])) {
         try {
             // SMTP settings
             $mail->isSMTP();
-            $mail->Host = 'smtp.hostinger.com';
+            $mail->Host = SMTP_HOST;
             $mail->SMTPAuth = true;
-            $mail->Username = 'info@c11cl.com';
-            $mail->Password = 'C11cl@#cricket2025';
+            $mail->Username = SMTP_USER;
+            $mail->Password = SMTP_PASS;
             $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
+            $mail->Port = SMTP_PORT;
 
             // Sender and receiver
-            $mail->setFrom('info@c11cl.com', 'Champions 11 Cricket League (C11CL)');
+            $mail->setFrom(SMTP_USER, 'Champions 11 Cricket League (C11CL)');
             $mail->addAddress($email); // Recipient
 
             // Email content
@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
                 <i>Champions 11 Cricket League</i>
             ';
 
-            $mail->addReplyTo('info@c11cl.com', 'C11CL Support');
+            $mail->addReplyTo(SMTP_USER, 'C11CL Support');
             $mail->send(); // Try sending mail
         } catch (Exception $e) {
             // Log or echo error if needed
