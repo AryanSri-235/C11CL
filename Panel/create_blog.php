@@ -11,82 +11,37 @@ if (!isset($_SESSION['password'])) {
 }
 
 
-/**
- * Compress the uploaded image to reduce file size
- * @param string $source Path to the source image
- * @param string $destination Path to save the compressed image
- * @param int $quality Compression quality (0-100)
- * @return bool True on success, False on failure
- */
-function compressImage($source, $destination, $quality) {
-    // Get image info
-    $imageInfo = getimagesize($source);
-    $mime = $imageInfo['mime'];
-
-    // Create image resource based on MIME type
-    switch ($mime) {
-        case 'image/jpeg':
-            $image = imagecreatefromjpeg($source);
-            break;
-        case 'image/png':
-            $image = imagecreatefrompng($source);
-            break;
-        case 'image/gif':
-            $image = imagecreatefromgif($source);
-            break;
-        default:
-            return false;
-    }
-
-    // Save the compressed image
-    if ($image) {
-        // Use imagejpeg for compression
-        imagejpeg($image, $destination, $quality);
-
-        // Free up memory
-        imagedestroy($image);
-
-        // Check the file size, recompress if > 1MB
-        if (filesize($destination) > 1048576) { // 1 MB in bytes
-            return compressImage($destination, $destination, $quality - 10);
-        }
-
-        return true;
-    }
-
-    return false;
-} 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addblog'])) {
-    $cat_name = $_POST['cat_name'];
-    $title = $_POST['title'];
-    // $cat_name = $_POST['cat_name'];
-    $blog_content = $_POST['blog_content'];
-    
+    $cat_name     = trim($_POST['cat_name']     ?? '');
+    $title        = trim($_POST['title']        ?? '');
+    $blog_content = $_POST['blog_content']      ?? '';
+
     date_default_timezone_set('Asia/Kolkata');
     $datetime = date("Y-m-d H:i:s");
-    
-    // Directory where the images will be stored
+
+    // Upload blog image
     $uploadDir = 'blogs_images/';
-    // Check and create directory if not exists
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
-    // File details
-    $file = $_FILES['blogimage'];
-    $fileName = basename($file['name']);
-    $targetFilePath = $uploadDir . uniqid() . '-' . $fileName;
-    // Validate file type
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($file['type'], $allowedTypes)) {
-        die("Invalid file type. Only JPG, PNG, and GIF are allowed.");
+
+    $file         = $_FILES['blogimage'];
+    $file_tmp     = $file['tmp_name'];
+    $file_ext     = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowedExts  = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    $img_info     = getimagesize($file_tmp); // false if not a real image
+
+    if (!in_array($file_ext, $allowedExts) || $img_info === false) {
+        die("Invalid file. Only JPG, PNG, GIF, or WEBP images are allowed.");
     }
-    // Compress and save the image
-    if (compressImage($file['tmp_name'], $targetFilePath, 90)) { // Compression quality: 90%
-        //echo "Image uploaded and compressed successfully: " . $targetFilePath;
-    } else {
-        // echo "Image upload failed.";
+    if ($file['size'] > 5 * 1024 * 1024) {
+        die("Image must be under 5 MB.");
     }
+
+    $safeFilename    = uniqid('blog_', true) . '.' . $file_ext;
+    $targetFilePath  = $uploadDir . $safeFilename;
+    move_uploaded_file($file_tmp, $targetFilePath);
 
 
             include 'db.php';

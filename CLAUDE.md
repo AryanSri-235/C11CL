@@ -110,6 +110,8 @@ Upload ALL of these to InfinityFree to sync with local changes:
 | 12 | `Panel/register_data.php` | Fixed SQL injection in UPDATE (edit modal); validate date inputs |
 | 13 | `Panel/users.php` | Fixed XSS: all output in card HTML now htmlspecialchars()-escaped |
 | 14 | `Panel/head.php` | Added HTTP security headers (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy) |
+| 15 | `Panel/create_blog.php` | Removed GD dependency (compressImage); now uses move_uploaded_file + getimagesize validation |
+| 16 | `Panel/edit_blog.php` | Parameterized SELECT queries; htmlspecialchars() on all form output to prevent XSS |
 
 ---
 
@@ -123,8 +125,7 @@ Upload ALL of these to InfinityFree to sync with local changes:
 - **Status:** Under investigation
 
 ### Security issues still to fix (lower priority)
-- `create_blog.php` — SQL injection in category INSERT
-- `edit_blog.php` — SQL injection in SELECT
+- None remaining — all known SQL injection and XSS issues have been fixed
 
 ---
 

@@ -13,11 +13,15 @@ if (!isset($_SESSION['password'])) {
 $success_flag = false;
 $error_msg = "";
 
-// 1. URL se ID get karna aur Data Fetch karna
+// 1. Fetch blog by ID
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
-    $res = $con->query("SELECT * FROM blog WHERE id = $id");
+    $id = (int) $_GET['id'];
+    $s = $con->prepare("SELECT * FROM blog WHERE id = ? LIMIT 1");
+    $s->bind_param("i", $id);
+    $s->execute();
+    $res  = $s->get_result();
     $blog = $res ? $res->fetch_assoc() : null;
+    $s->close();
     if (!$blog) { die("Blog not found!"); }
 } else {
     header('location:blog_list.php');
@@ -80,9 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_post'])) {
 
     if ($stmt->execute()) {
         $success_flag = true;
-        // Data refresh karein taaki form mein naya data dikhe
-        $res = $con->query("SELECT * FROM blog WHERE id = $id");
+        $s2 = $con->prepare("SELECT * FROM blog WHERE id = ? LIMIT 1");
+        $s2->bind_param("i", $id);
+        $s2->execute();
+        $res  = $s2->get_result();
         $blog = $res ? $res->fetch_assoc() : null;
+        $s2->close();
     } else {
         $error_msg = $stmt->error;
     }
@@ -121,7 +128,7 @@ include 'head.php';
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">URL Slug</label>
-                                <input type="text" name="slug" id="blog_slug" class="form-control" value="<?php echo $blog['slug']; ?>" readonly style="background:#f4f4f4">
+                                <input type="text" name="slug" id="blog_slug" class="form-control" value="<?php echo htmlspecialchars($blog['slug'], ENT_QUOTES, 'UTF-8'); ?>" readonly style="background:#f4f4f4">
                             </div>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
@@ -134,25 +141,25 @@ include 'head.php';
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Author Name</label>
-                                    <input type="text" name="author_name" class="form-control" value="<?php echo $blog['author']; ?>">
+                                    <input type="text" name="author_name" class="form-control" value="<?php echo htmlspecialchars($blog['author'], ENT_QUOTES, 'UTF-8'); ?>">
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Tags (comma separated)</label>
-                                    <input type="text" name="tags" class="form-control" value="<?php echo $blog['tags']; ?>" placeholder="cricket, news, trials">
+                                    <input type="text" name="tags" class="form-control" value="<?php echo htmlspecialchars($blog['tags'], ENT_QUOTES, 'UTF-8'); ?>" placeholder="cricket, news, trials">
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Short Description</label>
-                                <textarea name="short_desc" class="form-control" rows="2"><?php echo $blog['short_desc']; ?></textarea>
+                                <textarea name="short_desc" class="form-control" rows="2"><?php echo htmlspecialchars($blog['short_desc'], ENT_QUOTES, 'UTF-8'); ?></textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Main Content</label>
-                                <textarea name="content" id="editor"><?php echo $blog['content']; ?></textarea>
+                                <textarea name="content" id="editor"><?php echo htmlspecialchars($blog['content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Featured Image</label>
                                 <input type="file" name="featured_img" class="form-control mb-2">
-                                <img src="<?php echo $blog['featured_img']; ?>" width="120" class="rounded border shadow-sm">
+                                <img src="<?php echo htmlspecialchars($blog['featured_img'], ENT_QUOTES, 'UTF-8'); ?>" width="120" class="rounded border shadow-sm">
                             </div>
                         </div>
 
@@ -164,31 +171,31 @@ include 'head.php';
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label>Focus Keyword</label>
-                                    <input type="text" name="focus_keyword" class="form-control" value="<?php echo $blog['focus_keyword']; ?>">
+                                    <input type="text" name="focus_keyword" class="form-control" value="<?php echo htmlspecialchars($blog['focus_keyword'], ENT_QUOTES, 'UTF-8'); ?>">
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label>Meta Description</label>
-                                <textarea name="meta_desc" class="form-control" rows="3"><?php echo $blog['meta_desc']; ?></textarea>
+                                <textarea name="meta_desc" class="form-control" rows="3"><?php echo htmlspecialchars($blog['meta_desc'], ENT_QUOTES, 'UTF-8'); ?></textarea>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label>Canonical URL</label>
-                                    <input type="url" name="canonical_url" class="form-control" value="<?php echo $blog['canonical_url']; ?>">
+                                    <input type="url" name="canonical_url" class="form-control" value="<?php echo htmlspecialchars($blog['canonical_url'], ENT_QUOTES, 'UTF-8'); ?>">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label>Robots (e.g. index, follow)</label>
-                                    <input type="text" name="robots" class="form-control" value="<?php echo $blog['robots']; ?>">
+                                    <input type="text" name="robots" class="form-control" value="<?php echo htmlspecialchars($blog['robots'], ENT_QUOTES, 'UTF-8'); ?>">
                                 </div>
                             </div>
                             <hr>
                             <h6>Social Media (OG Tags)</h6>
                             <div class="mb-3"><label>OG Title</label><input type="text" name="og_title" class="form-control" value="<?php echo htmlspecialchars($blog['og_title']); ?>"></div>
-                            <div class="mb-3"><label>OG Description</label><textarea name="og_desc" class="form-control"><?php echo $blog['og_desc']; ?></textarea></div>
+                            <div class="mb-3"><label>OG Description</label><textarea name="og_desc" class="form-control"><?php echo htmlspecialchars($blog['og_desc'], ENT_QUOTES, 'UTF-8'); ?></textarea></div>
                             <div class="mb-3">
                                 <label>OG Image (Social Sharing Image)</label>
                                 <input type="file" name="og_img" class="form-control mb-2">
-                                <img src="<?php echo $blog['og_img']; ?>" width="120" class="rounded border shadow-sm">
+                                <img src="<?php echo htmlspecialchars($blog['og_img'], ENT_QUOTES, 'UTF-8'); ?>" width="120" class="rounded border shadow-sm">
                             </div>
                         </div>
 
@@ -216,7 +223,7 @@ include 'head.php';
                             </div>
                             <div class="mt-3">
                                 <label>Schema Markup (JSON-LD)</label>
-                                <textarea name="schema_markup" class="form-control" rows="4"><?php echo $blog['schema_markup']; ?></textarea>
+                                <textarea name="schema_markup" class="form-control" rows="4"><?php echo htmlspecialchars($blog['schema_markup'], ENT_QUOTES, 'UTF-8'); ?></textarea>
                             </div>
                         </div>
                     </div>
