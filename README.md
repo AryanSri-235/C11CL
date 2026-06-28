@@ -1,0 +1,3 @@
+Champions 11 Cricket League (C11CL)
+
+Champions 11 Cricket League (C11CL) is a premier grassroots cricket platform dedicated to identifying, nurturing, and promoting emerging cricket talent across India. Through nationwide trials, professional coaching, competitive league matches, and player auctions, C11CL provides aspiring cricketers with an opportunity to showcase their skills and progress toward higher levels of the sport. The league aims to bridge the gap between local talent and professional cricket by offering a transparent, competitive, and professionally managed ecosystem for players to develop and excel
