@@ -369,13 +369,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Sent!',
-                        text: data.message || 'Message sent successfully',
-                        confirmButtonColor: '#0e1b30'
+                        title: 'Message Sent!',
+                        text: data.message || 'We\'ll get back to you shortly.',
+                        confirmButtonColor: '#0e1b30',
+                        confirmButtonText: 'OK'
                     }).then(function() {
-                        window.location.href = '<?php echo BASE_URL; ?>';
+                        form.reset();
                     });
-                    form.reset();
                 } else {
                     Swal.fire({ icon: 'error', title: 'Oops!', text: data.message });
                 }

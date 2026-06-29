@@ -8,49 +8,39 @@ ini_set('display_errors', 1);
 <?php
 session_start();
 
+$mailSent = $_SESSION['mail_sent'] ?? false;
+$mailTo   = $_SESSION['mail_to']   ?? '';
+
 // Check if 'payreg' session variable is set
 if (isset($_SESSION['payreg'])) {
     include 'db.php';
 
-    $sql = "SELECT * FROM register WHERE reg = '{$_SESSION['payreg']}' AND status = 'Success' ";
+    // No status filter — Razorpay signature already verified the payment
+    $regVal = $con->real_escape_string($_SESSION['payreg']);
+    $sql = "SELECT * FROM register WHERE reg = '$regVal'";
     $result = $con->query($sql);
 
     if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $reg = $row["reg"];
-            $paydate = $row["paydate"];
-            $paytime = $row["paytime"];
-            $name = $row["name"];
-            $age = $row["age"];
-            $player = $row["player"];
-            $city = $row["city"];
-            $state = $row["state"];
-            $mobile = $row["mobile"];
-        }
+        $row     = $result->fetch_assoc();
+        $reg     = $row["reg"];
+        $paydate = $row["paydate"];
+        $paytime = $row["paytime"];
+        $name    = $row["name"];
+        $age     = $row["age"];
+        $player  = $row["player"];
+        $city    = $row["city"];
+        $state   = $row["state"];
+        $mobile  = $row["mobile"];
     } else {
-        echo "0 results";
-         header('location:failure.php');
-    exit();
+        header('Location: /failure.php');
+        exit();
     }
 } else {
-    header('location:failure.php');
+    header('Location: /failure.php');
     exit();
 }
 
-// bar code----------------------------------
-include 'phpqrcode/qrlib.php';
-$PNG_TEMP_DIR = 'temp/';
-
-if (!file_exists($PNG_TEMP_DIR)) {
-    mkdir($PNG_TEMP_DIR);
-}
-
-$filename = $PNG_TEMP_DIR . 'test.png'; // Corrected extension to .png
-
-$codeString = $reg;
-
-$filename = $PNG_TEMP_DIR . 'test' . md5($codeString) . '.png';
-QRcode::png($codeString, $filename);
+$qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=' . urlencode($reg) . '&size=150x150&margin=5';
 ?>
 
 <!DOCTYPE html>
@@ -62,6 +52,8 @@ QRcode::png($codeString, $filename);
   <title>C11CL - Registration Success</title>
   <link rel="icon" href="../Panel/assets/images/fevikon.png" type="image/png">
   <link href="/Panel/assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
   <style>
     body {
@@ -125,31 +117,6 @@ QRcode::png($codeString, $filename);
       100% { transform: translateY(0); opacity: 1; }
     }
 
-    .celebration-popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .celebration-content {
-      background: white;
-      padding: 30px;
-      text-align: center;
-      border-radius: 20px;
-      animation: confetti 0.7s ease-out;
-    }
-
-    .celebration-content h2 {
-      color: #28a745;
-    }
-
     @media (max-width: 576px) {
       .success-header h2 {
         font-size: 20px;
@@ -187,14 +154,6 @@ src="https://www.facebook.com/tr?id=727837786776844&ev=PageView&noscript=1"
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PHSBK2RF"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-  <!-- Celebration popup -->
-  <div class="celebration-popup" id="celebration">
-    <div class="celebration-content">
-      <img src="/Panel/assets/images/ok.png.webp" width="80" alt="Success">
-      <h2>Congratulations 🎉</h2>
-      <p>Your registration was successful!</p>
-    </div>
-  </div>
 
   <div class="container">
     <div class="card">
@@ -227,10 +186,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="qr-section text-center">
           <img src="https://c11cl.com/wp-content/uploads/2025/05/favicon-3.png" width="140" alt="Logo">
-        <?php echo '<img src="' . $filename . '" class="img-fluid rounded mb-2" width="120" alt="QR Code">'; ?>
+        <?php echo '<img src="' . $qrUrl . '" class="img-fluid rounded mb-2" width="120" alt="QR Code">'; ?>
         <br><br>
         <h5 class="fw-bold">C11CL Registration Slip.</h5>
         <a href="pdf.php?pdf=<?php echo $reg; ?>" class="btn btn-outline-primary rounded-pill mt-2">📄 Download Registration PDF</a>
+      </div>
+
+      <!-- Mail Status & Home Button -->
+      <div class="text-center px-4 py-3" style="border-top:1px solid #eee;">
+        <?php if ($mailSent): ?>
+          <div style="background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; padding:12px 16px; border-radius:8px; font-size:0.9rem; margin-bottom:14px;">
+            ✅ Confirmation email with your registration PDF has been sent to <strong><?php echo htmlspecialchars($mailTo, ENT_QUOTES, 'UTF-8'); ?></strong>
+          </div>
+        <?php else: ?>
+          <div style="background:#fef3c7; border:1px solid #fcd34d; color:#92400e; padding:12px 16px; border-radius:8px; font-size:0.9rem; margin-bottom:14px;">
+            📧 Confirmation email will be sent to your registered email address shortly.
+          </div>
+        <?php endif; ?>
+        <a href="https://c11cl.com/" class="btn fw-bold px-5 py-2" style="background:#dc2618; color:#fff; border-radius:8px; font-size:1rem; text-decoration:none;">
+          Go to Home
+        </a>
       </div>
 
      
@@ -280,18 +255,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <script src="/Panel/assets/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Hide celebration popup after 3 seconds
-    setTimeout(() => {
-      document.getElementById('celebration').style.display = 'none';
-    }, 3000);
-  </script>
-  
-   <script>
-    // Prevent back navigation and redirect to homepage
+    // Registration success popup with details + QR code
+    Swal.fire({
+      title: '<span style="color:#28a745;">&#127881; Registration Successful!</span>',
+      html: `
+        <div style="text-align:left; font-size:14px; line-height:2; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:12px;">
+          <p style="margin:0;"><strong>Name:</strong> <?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></p>
+          <p style="margin:0;"><strong>Age &amp; Role:</strong> <?php echo htmlspecialchars($age, ENT_QUOTES, 'UTF-8'); ?> yrs | <?php echo htmlspecialchars($player, ENT_QUOTES, 'UTF-8'); ?></p>
+          <p style="margin:0;"><strong>City:</strong> <?php echo htmlspecialchars($city, ENT_QUOTES, 'UTF-8'); ?>, <?php echo htmlspecialchars($state, ENT_QUOTES, 'UTF-8'); ?></p>
+          <p style="margin:0;"><strong>Mobile:</strong> <?php echo htmlspecialchars($mobile, ENT_QUOTES, 'UTF-8'); ?></p>
+        </div>
+        <div style="text-align:center; margin-bottom:10px;">
+          <p style="margin:0 0 4px; font-size:13px; color:#555;">Your Registration Number</p>
+          <div style="background:#fff3cd; border:2px dashed #ffc107; border-radius:10px; padding:8px 16px; display:inline-block;">
+            <span style="font-size:22px; font-weight:900; color:#dc2618; letter-spacing:2px;">
+              <?php echo htmlspecialchars($reg, ENT_QUOTES, 'UTF-8'); ?>
+            </span>
+          </div>
+          <p style="font-size:11px; color:#888; margin:4px 0 0;">Save this — use it for all trial entries &amp; communication</p>
+        </div>
+        <div style="text-align:center;">
+          <img src="<?php echo htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8'); ?>" width="130" style="border:3px solid #e0e0e0; border-radius:10px; padding:4px;" alt="QR Code">
+          <p style="font-size:11px; color:#888; margin:6px 0 0;">Scan this QR at your trial entry gate</p>
+        </div>
+      `,
+      confirmButtonText: 'View Full Details',
+      confirmButtonColor: '#dc2618',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      width: '380px',
+      showClass: { popup: 'animate__animated animate__fadeInDown animate__faster' },
+      hideClass: { popup: 'animate__animated animate__fadeOutUp animate__faster' }
+    });
+
+    // Prevent back navigation
     history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-      location.href = "https://www.c11cl.com";
-    };
+    window.onpopstate = function () { location.href = "https://www.c11cl.com"; };
   </script>
   <!-- Meta Pixel Code -->
 <script>

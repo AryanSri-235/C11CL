@@ -2,6 +2,12 @@
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(0);
+date_default_timezone_set('Asia/Kolkata');
+
+// Force HTTPS on InfinityFree (proxy may not set HTTPS server var)
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
 
 // We need to return JSON if AJAX is requested
 $is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
@@ -24,7 +30,8 @@ if (isset($_POST['submit'])) {
     }
 
     // Save email to database
-    $sql = "INSERT INTO email_subscriptions (email) VALUES ('$email')";
+    $now = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO email_subscriptions (email, subscribed_at) VALUES ('$email', '$now')";
     if ($con->query($sql) === TRUE) {
         // Include PHPMailer files
         $phpmailer_dir = file_exists(__DIR__ . '/PHPMailer/src/PHPMailer.php') ? __DIR__ . '/PHPMailer/src' : __DIR__ . '/../PHPMailer/src';

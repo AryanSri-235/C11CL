@@ -106,7 +106,7 @@ include 'head.php';
 </div>
                                             <div class="mb-0">
                                                 <label class="form-label">Short Intro (Excerpt)</label>
-                                                <textarea name="short_desc" class="form-control" rows="5" placeholder="Summarize the article..."></textarea>
+                                                <textarea name="excerpt" class="form-control" rows="5" placeholder="Summarize the article..."></textarea>
                                                 <span class="helper-text">Appears below the title in blog listings to grab user attention.</span>
                                             </div>
                                         </div>

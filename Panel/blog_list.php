@@ -1,47 +1,42 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(0);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-include 'head.php'; // Enforce authentication and RBAC checks
-include 'db.php'; 
 
-// 🔴 Error Reporting (Debugging ke liye)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// 🟢 1. DELETE LOGIC
+// DELETE must run before head.php (which outputs HTML)
 if (isset($_GET['delete_id'])) {
+    include 'db.php';
+    header('Content-Type: text/plain');
     $del_id = intval($_GET['delete_id']);
-    
-    // Pehle image delete karein folder se securely
+
     $img_stmt = $con->prepare("SELECT featured_img FROM blog WHERE id = ?");
     if ($img_stmt) {
-        $img_stmt->bind_param("i", $del_id);
+        $img_stmt->bind_param("s", $del_id);
         $img_stmt->execute();
         $img_res = $img_stmt->get_result();
         $img_data = $img_res ? $img_res->fetch_assoc() : null;
         $img_stmt->close();
-        
         if ($img_data && !empty($img_data['featured_img']) && file_exists($img_data['featured_img'])) {
             unlink($img_data['featured_img']);
         }
     }
 
-    // Database se row delete karein securely
     $delete_stmt = $con->prepare("DELETE FROM blog WHERE id = ?");
     if ($delete_stmt) {
-        $delete_stmt->bind_param("i", $del_id);
-        if ($delete_stmt->execute()) {
-            echo "success";
-        } else {
-            echo "error";
-        }
+        $delete_stmt->bind_param("s", $del_id);
+        echo $delete_stmt->execute() ? 'success' : 'error';
         $delete_stmt->close();
     } else {
-        echo "error";
+        echo 'error';
     }
-    exit(); 
+    exit();
 }
+
+include 'head.php';
+include 'db.php';
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -71,25 +66,25 @@ if (isset($_GET['delete_id'])) {
                         <tbody>
                             <?php
                             // 🟢 2. SELECT LOGIC securely
-                            $sql = "SELECT id, title, short_desc, featured_img, status, publish_date FROM blog ORDER BY id DESC";
+                            $sql = "SELECT id, title, excerpt, featured_img, status, publish_date FROM blog ORDER BY id DESC";
                             $result = $con->query($sql);
 
                             if ($result && $result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
-                                    $status_badge = ($row['status'] == 'Published') ? 'bg-success' : 'bg-warning';
+                                    $status_badge = (strtolower($row['status']) == 'published') ? 'bg-success' : 'bg-warning';
                             ?>
                             <tr id="blog_row_<?php echo $row['id']; ?>">
                                 <td><?php echo $row['id']; ?></td>
                                 <td>
-                                    <img src="<?php echo $row['featured_img']; ?>" 
+                                    <img src="/<?php echo ltrim(htmlspecialchars($row['featured_img'] ?? ''), '/'); ?>"
                                          class="rounded shadow-sm" width="100" height="60" 
                                          style="object-fit: cover;"
                                          onerror="this.src='https://via.placeholder.com/100x60?text=No+Img'">
                                 </td>
                                 <td>
                                     <div style="max-width: 400px;">
-                                        <h6 class="mb-1 text-primary"><?php echo substr($row['title'], 0, 60); ?>...</h6>
-                                        <p class="mb-0 text-muted small"><?php echo substr($row['short_desc'], 0, 100); ?>...</p>
+                                        <h6 class="mb-1 text-primary"><?php echo htmlspecialchars(substr($row['title'] ?? '', 0, 60)); ?>...</h6>
+                                        <p class="mb-0 text-muted small"><?php echo htmlspecialchars(substr($row['excerpt'] ?? '', 0, 100)); ?>...</p>
                                     </div>
                                 </td>
                                 <td>
@@ -97,7 +92,7 @@ if (isset($_GET['delete_id'])) {
                                         <?php echo $row['status']; ?>
                                     </span>
                                 </td>
-                                <td><?php echo date('d M Y', strtotime($row['publish_date'])); ?></td>
+                                <td><?php echo $row['publish_date'] ? date('d M Y', strtotime($row['publish_date'])) : 'N/A'; ?></td>
                                 <td>
                                     <div class="d-flex">
                                         <a href="edit_blog.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary me-2">

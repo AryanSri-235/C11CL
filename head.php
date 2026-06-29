@@ -1,5 +1,9 @@
 <?php
 if (!defined('BASE_URL')) {
+    // InfinityFree (and many shared hosts) sit behind a proxy — fix HTTPS detection
+    if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $_SERVER['HTTPS'] = 'on';
+    }
     // Detect protocol
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
     

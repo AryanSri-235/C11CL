@@ -36,8 +36,8 @@ $sql = "SELECT * FROM register WHERE 1";
 $params = [];
 $types = "";
 
-if (!empty($datef)) { $sql .= " AND DATE(`date`) >= ?"; $params[] = $datef; if(!$quick_filter) $filterNotice[] = "From $datef"; $filterApplied = true; }
-if (!empty($datel)) { $sql .= " AND DATE(`date`) <= ?"; $params[] = $datel; if(!$quick_filter) $filterNotice[] = "To $datel"; $filterApplied = true; }
+if (!empty($datef)) { $sql .= " AND DATE(`created_at`) >= ?"; $params[] = $datef; if(!$quick_filter) $filterNotice[] = "From $datef"; $filterApplied = true; }
+if (!empty($datel)) { $sql .= " AND DATE(`created_at`) <= ?"; $params[] = $datel; if(!$quick_filter) $filterNotice[] = "To $datel"; $filterApplied = true; }
 
 if (!empty($searchText)) {
     $sql .= " AND (name LIKE ? OR reg LIKE ? OR email LIKE ? OR mobile LIKE ? OR state LIKE ?)";

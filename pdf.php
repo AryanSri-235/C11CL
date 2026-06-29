@@ -1,186 +1,175 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Kolkata');
 
-if(isset($_SESSION['payreg'])){
-     //unset($_SESSION['payreg']);
-    }
-    
-// Include the mpdf library
-
-use Mpdf\Mpdf;
-
-if(isset($_GET["pdf"])){
-      include 'db.php';
-  $reg = $_GET["pdf"];
-    $sql = "SELECT * FROM register WHERE reg= '$reg' ";
-    $result = $con->query($sql);
-    if ($result->num_rows > 0) {
-      while($row = $result->fetch_assoc()) {
-      $name = $row["name"];
-      $age = $row["age"];
-      $sp = $row["player"];
-      $reg = $row["reg"];
-      $date = $row["paydate"];
-      $time = $row["paytime"];
-      }
-    }
-//  else {
-//       header('location:failure.php');
-//     }
+if (!isset($_GET['pdf'])) {
+    header('location:/');
+    exit;
 }
-// else{
-//           header('location:failure.php');
-//     }
 
-// qr code=====================================
-include 'phpqrcode/qrlib.php';
+include 'db.php';
 
-$PNG_TEMP_DIR = 'temp/';
-if (!file_exists($PNG_TEMP_DIR))
-    mkdir($PNG_TEMP_DIR);
-$filename = $PNG_TEMP_DIR . 'test.pmg';
+$reg  = $_GET['pdf'];
+$name = $age = $sp = $date = $time = '';
 
-//$codeString = $name."\n";
-//$codeString .= $age."\n";
-//$codeString .= $sp."\n";
-$codeString .= $reg."\n";
+if ($con) {
+    $stmt = $con->prepare("SELECT name, age, player, reg, paydate, paytime FROM register WHERE reg = ?");
+    if ($stmt) {
+        $stmt->bind_param('s', $reg);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            $name = $row['name']    ?? '';
+            $age  = $row['age']     ?? '';
+            $sp   = $row['player']  ?? '';
+            $reg  = $row['reg']     ?? $reg;
+            $date = $row['paydate'] ?? '';
+            $time = $row['paytime'] ?? '';
+        }
+        $stmt->close();
+    }
+}
 
-$filename = $PNG_TEMP_DIR . 'test' .
-    md5($codeString) . '.png';
-QRcode::png($codeString, $filename);
-
-// pdf s=============================================
-require_once('tcpdf/tcpdf.php');
-
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf->setPrintHeader(false);
-
-$pdf->SetTitle('C11CLRegistration PDF');
-
-
-$pdf->AddPage();
-
-// CSS-like styling using TCPDF methods
-$pdf->SetFont('helvetica', 'B', 15);
-$pdf->SetFillColor(200, 220, 255);
-$pdf->SetTextColor(50, 50, 50);
-$pdf->SetDrawColor(128, 0, 0);
-// $pdf->SetLineWidth(0.01);
-  // HTML content for the PDF
-
-$html = '
-<table cellpadding="5" cellspacing="0" border="0" width="100%">
-    <tr>
-        <td align="center">
-            <img src="uploads/img/pdf.png">
-        </td>
-    </tr>
-</table>
-
-<br>
-
-<table cellpadding="5" cellspacing="0" width="100%">
-    <tr>
-        <td width="50%">
-            <strong>To,</strong><br>
-            <strong>' . htmlspecialchars($name) . '</strong><br>
-            ' . htmlspecialchars($age) . ' Years | ' . htmlspecialchars($sp) . '<br>
-            ' . htmlspecialchars($date) . '<br>
-            ' . htmlspecialchars($time) . '
-        </td>
-        <td  align="right">
-            <img src="' . $filename . '" width="100" />
-        </td>
-    </tr>
-</table>
-
-<br><br>
-
-<table cellpadding="5" cellspacing="0" width="100%">
-    <!-- Title -->
-    <tr>
-        <td align="center" style="font-size:20pt; font-weight:bold; color:#0D1B2A;">
-             Congratulations!
-        </td>
-    </tr>
-
-    <!-- Sub Title -->
-    <tr>
-        <td align="center" style="font-size:13pt; font-weight:normal; color:#000000;">
-            You’ve successfully registered for <strong style="color:#0D1B2A;">Champions 11 Cricket League</strong>.
-        </td>
-    </tr>
-
-    <!-- Section Heading -->
-    <tr>
-        <td align="center" style="font-size:20pt; font-weight:bold; padding-top:15px; color:#000000;">
-            Your Trial Registration Number:
-        </td>
-    </tr>
-
-    <!-- Registration Code Badge -->
-    <tr>
-        <td align="center">
-            <div style="display:inline-block; background-color:#4CAF50; color:white; font-size:18pt; font-weight:bold; padding:12px 35px; border-radius:25px; border: 2px solid #388E3C;">
-                ' . strtoupper(htmlspecialchars($reg)) . '
-            </div>
-        </td>
-    </tr>
-
-    <!-- Info Message -->
-    <tr>
-        <td align="center" style="font-size:15pt; padding-top:25px; line-height:1.5;">
-            <strong style="color:#0D1B2A;">Trial Details:</strong> <br>
-            <span style="color:#000000;">Date, Time & Venue will be shared soon.</span><br><br>
-            Stay updated by following our official social media channels listed below.
-        </td>
-    </tr>
-</table>
-
-
-<br><br>
-
-<table align="center" cellpadding="5" cellspacing="0" border="0">
-    <tr>
-        <td align="center"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="20"><br>
-        <a href="https://www.instagram.com/c11clofficial/">Instagram</a></td>
-
-        <td align="center"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="20"><br>
-        <a href="https://www.facebook.com/profile.php?id=61575926537950">Facebook</a></td>
-
-        <td align="center"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968830.png" width="20"><br>
-        <a href="https://x.com/champions11cl">Twitter</a></td>
-
-        <td align="center"><img src="https://cdn-icons-png.flaticon.com/512/145/145807.png" width="20"><br>
-        <a href="https://www.linkedin.com/company/champions11cricketleague/">LinkedIn</a></td>
-
-        <td align="center"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="20"><br>
-        <a href="https://www.youtube.com/@champions11cricketleague">YouTube</a></td>
-    </tr>
-</table>
-
-<br><br>
-
-<hr>
-
-<br>
-
-<table cellpadding="5" cellspacing="0" width="100%">
-    <tr>
-        <td align="center" style="font-size:17pt; font-weight:bold;">
-            www.c11cl.com &nbsp;&nbsp; | &nbsp;&nbsp; info@c11cl.com &nbsp;&nbsp; | &nbsp;&nbsp; +91 9599505213
-        </td>
-    </tr>
-</table>
-
-';
-
-
-
-// Write the HTML content to PDF
-$pdf->writeHTML($html);
-
-// Output the PDF to browser (inline display)
-$pdf->Output('C11CL Registration.pdf','D');
-
+$qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=' . urlencode($reg) . '&size=150x150&margin=5';
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C11CL Registration - <?= htmlspecialchars($reg) ?></title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f0f0f0; }
+
+  .print-btn {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    background: #dc2618;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  .print-btn:hover { background: #b81e12; }
+
+  .page {
+    width: 794px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 40px 50px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 3px solid #dc2618; padding-bottom: 20px; }
+  .header img { height: 80px; }
+  .header-qr img { width: 110px; height: 110px; border: 2px solid #e0e0e0; border-radius: 6px; }
+
+  .to-block { margin-bottom: 25px; }
+  .to-block p { font-size: 14px; color: #333; line-height: 1.8; }
+  .to-block .label { font-weight: bold; color: #000; }
+
+  .congrats-box { text-align: center; margin: 30px 0; }
+  .congrats-box h1 { font-size: 32px; font-weight: 900; color: #dc2618; margin-bottom: 8px; }
+  .congrats-box p { font-size: 15px; color: #444; }
+
+  .reg-badge { text-align: center; margin: 25px 0; }
+  .reg-badge .label { font-size: 14px; color: #666; margin-bottom: 8px; }
+  .reg-badge .code {
+    display: inline-block;
+    background: #4CAF50;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 12px 40px;
+    border-radius: 30px;
+    border: 2px solid #388E3C;
+    letter-spacing: 2px;
+  }
+
+  .info-msg { text-align: center; margin: 20px 0; font-size: 14px; color: #444; line-height: 1.8; }
+  .info-msg strong { color: #000; }
+
+  .social-row { display: flex; justify-content: center; gap: 20px; margin: 25px 0; flex-wrap: wrap; }
+  .social-row a { font-size: 13px; color: #2563eb; text-decoration: none; font-weight: bold; }
+  .social-row a:hover { text-decoration: underline; }
+
+  .footer-bar { border-top: 2px solid #dc2618; padding-top: 14px; text-align: center; font-size: 13px; color: #555; margin-top: 20px; }
+
+  @media print {
+    body { background: #fff; }
+    .print-btn { display: none !important; }
+    .page { width: 100%; margin: 0; padding: 30px 40px; box-shadow: none; }
+    a { color: #000 !important; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">&#11015; Download / Print PDF</button>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <img src="uploads/img/pdf.png" alt="C11CL Logo" onerror="this.style.display='none'">
+    </div>
+    <div class="header-qr">
+      <img src="<?= htmlspecialchars($qrUrl) ?>" alt="QR Code">
+    </div>
+  </div>
+
+  <!-- To Block -->
+  <div class="to-block">
+    <p><span class="label">To,</span></p>
+    <p><strong><?= htmlspecialchars($name) ?></strong></p>
+    <p><?= htmlspecialchars($age) ?> Years &nbsp;|&nbsp; <?= htmlspecialchars($sp) ?></p>
+    <?php if ($date): ?>
+    <p><?= htmlspecialchars($date) ?> &nbsp;|&nbsp; <?= htmlspecialchars($time) ?></p>
+    <?php else: ?>
+    <p style="color:#888;">Date &amp; Time: To be announced</p>
+    <?php endif; ?>
+  </div>
+
+  <!-- Congratulations -->
+  <div class="congrats-box">
+    <h1>Congratulations!</h1>
+    <p>You've successfully registered for <strong>Champions 11 Cricket League</strong>.</p>
+  </div>
+
+  <!-- Registration Badge -->
+  <div class="reg-badge">
+    <div class="label">Your Trial Registration Number:</div>
+    <div class="code"><?= strtoupper(htmlspecialchars($reg)) ?></div>
+  </div>
+
+  <!-- Info Message -->
+  <div class="info-msg">
+    <strong>Trial Details:</strong><br>
+    Date, Time &amp; Venue will be shared soon.<br><br>
+    Stay updated by following our official social media channels listed below.
+  </div>
+
+  <!-- Social Links -->
+  <div class="social-row">
+    <a href="https://www.instagram.com/c11cl_official/" target="_blank">Instagram</a>
+    <a href="https://www.facebook.com/profile.php?id=61575926537950" target="_blank">Facebook</a>
+    <a href="https://x.com/champions11cl" target="_blank">Twitter / X</a>
+    <a href="https://www.linkedin.com/company/champions11cricketleague/" target="_blank">LinkedIn</a>
+    <a href="https://www.youtube.com/@C11CLOfficial" target="_blank">YouTube</a>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    www.c11cl.com &nbsp;&nbsp;|&nbsp;&nbsp; info@c11cl.com &nbsp;&nbsp;|&nbsp;&nbsp; +91 9599505213
+  </div>
+
+</div>
+
+</body>
+</html>

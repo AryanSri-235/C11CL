@@ -3806,13 +3806,33 @@
 														</style>
 
 <style>
-    #xs_client_2 {
+    /* Force dark hero — override Elementor's #f7f9fb and its undefined CSS variable overlay */
+    #xs_client_2,
+    #xs_client_2:not(.elementor-motion-effects-element-type-background) {
         background-color: #0b1320 !important;
-        background-image: linear-gradient(rgba(11, 19, 32, 0.88), rgba(11, 19, 32, 0.92)), url('<?php echo BASE_URL; ?>wp-content/uploads/2025/05/4002b2785403caf56ca7effb619f3c14.jpg') !important;
+        background-image: linear-gradient(rgba(11,19,32,0.72), rgba(11,19,32,0.80)),
+                          url('https://images.augustman.com/wp-content/uploads/sites/3/2023/04/20190504/untitled-design-2023-04-16t071319-214.jpeg') !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
         background-attachment: scroll !important;
+    }
+    /* Inner wrapper must be transparent so parent dark bg shows */
+    #xs_client_2 .e-con-inner {
+        background: transparent !important;
+    }
+    /* Kill Elementor ::before overlay (we handle it in background-image gradient above) */
+    #xs_client_2::before {
+        display: none !important;
+    }
+    /* Fix text colors — CSS variables --e-global-color-astglobalcolor5 are not defined on InfinityFree */
+    #xs_client_2 .elementskit-section-title,
+    #xs_client_2 .elementskit-section-title-wraper .elementskit-section-title {
+        color: #ffffff !important;
+    }
+    #xs_client_2 .elementskit-section-title-wraper p,
+    #xs_client_2 .ekit-heading p {
+        color: rgba(255,255,255,0.82) !important;
     }
 
     .reg-form input[type=text],
@@ -4106,14 +4126,7 @@ $(document).ready(function () {
             submitBtn.prop('disabled', false).text(originalBtnText);
             
             if (data.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Registration Successful! 🎉',
-                    text: data.message || 'Your application has been received.',
-                    confirmButtonColor: '#E31C14'
-                }).then(function() {
-                    window.location.href = '<?php echo BASE_URL; ?>';
-                });
+                window.location.href = data.redirect || '/success.php';
             } else {
                 Swal.fire({
                     icon: 'error',

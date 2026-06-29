@@ -22,7 +22,7 @@ $rows = [];
 $total_count = 0;
 
 if ($con) {
-    $sql = "SELECT * FROM job_applications WHERE 1";
+    $sql = "SELECT * FROM careers_applications WHERE 1";
     $params = [];
     $types = "";
 
@@ -117,7 +117,6 @@ if ($con) {
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Position</th>
-                                <th>Cover Letter</th>
                                 <th>CV</th>
                                 <th>Submitted At</th>
                             </tr>
@@ -126,18 +125,17 @@ if ($con) {
                         <?php if (count($rows) > 0): ?>
                             <?php $count = 0; foreach ($rows as $row): ?>
                                 <?php
-                                    $cvFile = htmlspecialchars($row['cv_file'] ?? '');
-                                    $cvButton = $cvFile ? "<a class='btn btn-sm btn-primary px-3' href='/uploads/cv/$cvFile' target='_blank' style='font-size:11px; font-weight:700;'><i class='bx bx-file'></i> View CV</a>" : "<span class='text-muted'>N/A</span>";
+                                    $cvPath = $row['cv_path'] ?? '';
+                                    $cvButton = $cvPath ? "<a class='btn btn-sm btn-primary px-3' href='/" . htmlspecialchars($cvPath) . "' target='_blank' style='font-size:11px; font-weight:700;'><i class='bx bx-file'></i> View CV</a>" : "<span class='text-muted'>N/A</span>";
                                 ?>
                                 <tr>
                                     <td class="text-center text-muted"><?= ++$count ?></td>
-                                    <td class="fw-bold text-dark"><?= htmlspecialchars($row['name'] ?? '') ?></td>
+                                    <td class="fw-bold text-dark"><?= htmlspecialchars($row['fullname'] ?? '') ?></td>
                                     <td><?= htmlspecialchars($row['email'] ?? '') ?></td>
                                     <td class="fw-bold text-dark"><?= htmlspecialchars($row['phone'] ?? '') ?></td>
                                     <td><span class="badge bg-secondary" style="font-size: 12px; font-weight:600;"><?= htmlspecialchars($row['position'] ?? '') ?></span></td>
-                                    <td style="max-width: 250px; white-space: normal;"><?= htmlspecialchars($row['cover_letter'] ?? '') ?></td>
                                     <td><?= $cvButton ?></td>
-                                    <td><?= date('d M Y, h:i A', strtotime($row['submitted_at'])) ?></td>
+                                    <td><?= $row['submitted_at'] ? date('d M Y, h:i A', strtotime($row['submitted_at'])) : 'N/A' ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -163,7 +161,7 @@ function exportToExcel() {
         }
 
         let workbookData = [];
-        workbookData.push(["#", "Name", "Email", "Phone", "Position", "Cover Letter", "CV File", "Submitted At"]);
+        workbookData.push(["#", "Name", "Email", "Phone", "Position", "CV File", "Submitted At"]);
 
         const rows = document.querySelectorAll("#datatable-buttons tbody tr");
         rows.forEach((row, index) => {
@@ -177,8 +175,7 @@ function exportToExcel() {
                 cells[3].innerText.trim(),
                 cells[4].innerText.trim(),
                 cells[5].innerText.trim(),
-                cells[6].innerText.trim(),
-                cells[7].innerText.trim()
+                cells[6].innerText.trim()
             ]);
         });
 

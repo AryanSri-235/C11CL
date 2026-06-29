@@ -47,6 +47,18 @@ include_once 'db.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Show any fatal error as a visible banner
+register_shutdown_function(function() {
+    $e = error_get_last();
+    if ($e && in_array($e['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        echo '<div style="position:fixed;bottom:0;left:0;right:0;background:#dc2618;color:#fff;padding:16px;z-index:9999;font-family:monospace;font-size:13px;">';
+        echo '<strong>FATAL ERROR:</strong> ' . htmlspecialchars($e['message']);
+        echo ' &nbsp;|&nbsp; File: ' . htmlspecialchars(basename($e['file']));
+        echo ' &nbsp;|&nbsp; Line: ' . $e['line'];
+        echo '</div>';
+    }
+});
+
 // ==========================================
 // 📊 STATS EXTRACTION ENGINE
 // ==========================================
@@ -471,7 +483,7 @@ include 'head.php';
                                                     <span class="badge bg-light text-dark border"><?= htmlspecialchars($c['state'] ?? 'N/A') ?></span>
                                                 </td>
                                                 <td style="font-size: 13px; color: #64748b;">
-                                                    <?= date('d M Y, h:i A', strtotime($c['created_at'])) ?>
+                                                    <?= $c['created_at'] ? date('d M Y, h:i A', strtotime($c['created_at'])) : 'N/A' ?>
                                                 </td>
                                                 <td>
                                                     <?php if ($c['status'] === 'Success'): ?>
@@ -530,7 +542,7 @@ include 'head.php';
                                                 </td>
                                                 <td class="font-weight-bold">₹<?= number_format($c['amount'] ?? 0, 2) ?></td>
                                                 <td style="font-size: 13px; color: #64748b;">
-                                                    <?= date('d M Y, h:i A', strtotime($c['created_at'])) ?>
+                                                    <?= $c['created_at'] ? date('d M Y, h:i A', strtotime($c['created_at'])) : 'N/A' ?>
                                                 </td>
                                                 <td>
                                                     <?php if ($c['status'] === 'Success'): ?>
@@ -584,7 +596,7 @@ include 'head.php';
                                                 </td>
                                                 <td><?= htmlspecialchars($c['city'] ?? 'N/A') ?></td>
                                                 <td style="font-size: 13px; color: #64748b;">
-                                                    <?= date('d M Y, h:i A', strtotime($c['created_at'])) ?>
+                                                    <?= $c['created_at'] ? date('d M Y, h:i A', strtotime($c['created_at'])) : 'N/A' ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

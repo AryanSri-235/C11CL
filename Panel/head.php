@@ -206,7 +206,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 		<div class='sidebar-wrapper' data-simplebar='true'>
 			<div class='sidebar-header'>
 				<div>
-					<img src='assets/images/logo-icon.png' class='logo-icon' alt='logo icon'>
+					<img src='assets/images/CLLCL.jpg' class='logo-icon' alt='logo icon' style='filter:none!important;width:60px;height:auto;'>
 				</div>
 				<div>
 					<h4 class='logo-text'></h4>
@@ -215,21 +215,49 @@ if (isset($is_backend_script) && $is_backend_script) {
 				</div>
 			</div>
 			<!--navigation-->
+			<?php
+			/* ── Role groups for sidebar visibility ── */
+			$r = $currentRole;
+			$canCore      = in_array($r, ['developer','superadmin','admin']);
+			$canSalesView = in_array($r, ['developer','superadmin','admin','sales-manager','sale-person','subadmin']);
+			$canCRM       = in_array($r, ['developer','superadmin','admin','sales-manager','marketing','operation-team']);
+			$canFinance   = in_array($r, ['developer','superadmin','admin']);
+			$canCoach     = in_array($r, ['developer','superadmin','admin','coach','operation-team']);
+			$canAnalytics = in_array($r, ['developer','superadmin','admin','sales-manager','marketing']);
+			$canCMS       = in_array($r, ['developer','superadmin','marketing']);
+			$canCMSAdmin  = in_array($r, ['developer','superadmin']);
+			$canUsers     = in_array($r, ['developer','superadmin','admin']);
+			?>
 			<ul class='metismenu' id='menu'>
-			     <li class='menu-label'>CORE ENGINE</li>
-<?php if ($currentRole !== 'coach'): ?>
+
+			<?php if ($canCore || $canSalesView): ?>
+				<li class='menu-label'>CORE ENGINE</li>
+
+				<?php if ($canCore): ?>
+                <li>
+					<a href='dashboard.php'>
+						<div class='parent-icon'><i class='bx bx-log-in-circle'></i></div>
+						<div class='menu-title'>Dashboard</div>
+					</a>
+				</li>
 				<li>
 					<a href='phase1data.php'>
 						<div class='parent-icon'><i class='bx bx-log-in-circle'></i></div>
 						<div class='menu-title'>Phase 1 Data</div>
 					</a>
 				</li>
+				<?php endif; ?>
+
+				<?php if ($canSalesView): ?>
 				<li>
 					<a href='phase1data_user.php'>
 						<div class='parent-icon'><i class='bx bx-phone-call'></i></div>
-						<div class='menu-title'>Phase 1 Data</div>
+						<div class='menu-title'>Player Registrations</div>
 					</a>
 				</li>
+				<?php endif; ?>
+
+				<?php if ($canCore): ?>
 				<li>
 					<a href='phase2data.php'>
 						<div class='parent-icon'><i class='bx bx-check-double'></i></div>
@@ -248,8 +276,13 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<div class='menu-title'>Razorpay Payments</div>
 					</a>
 				</li>
+				<?php endif; ?>
+			<?php endif; ?>
 
+			<?php if ($canCRM || $canCoach || $canAnalytics): ?>
 				<li class='menu-label'>CRM Operations</li>
+
+				<?php if ($canCRM): ?>
 				<li>
 					<a href='coming-soon.php'>
 						<div class='parent-icon'><i class='bx bx-calendar-check'></i></div>
@@ -269,20 +302,27 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<li><a href='sponsorship_data.php'><i class='bx bx-radio-circle'></i>Sponsorship Data</a></li>
 					</ul>
 				</li>
+				<?php endif; ?>
+
+				<?php if ($canFinance): ?>
 				<li>
 					<a href='coming-soon.php'>
 						<div class='parent-icon'><i class='bx bx-money'></i></div>
 						<div class='menu-title'>Expense Management</div>
 					</a>
 				</li>
+				<?php endif; ?>
 
+				<?php if ($canCoach): ?>
 				<li>
 					<a href='javascript:;' class='has-arrow'>
 						<div class='parent-icon'><i class='bx bx-run'></i></div>
 						<div class='menu-title'>Coach & Academy</div>
 					</a>
 					<ul>
+						<?php if ($canCore): ?>
 						<li><a href='partners_data.php'><i class='bx bx-radio-circle'></i>Academy Partners</a></li>
+						<?php endif; ?>
 						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Coach Panel</a></li>
 						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Coach Profiles</a></li>
 						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Coach Attendance</a></li>
@@ -290,7 +330,9 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Player Card Updates</a></li>
 					</ul>
 				</li>
+				<?php endif; ?>
 
+				<?php if ($canAnalytics): ?>
 				<li>
 					<a href='javascript:;' class='has-arrow'>
 						<div class='parent-icon'><i class='bx bx-bar-chart-alt-2'></i></div>
@@ -298,10 +340,16 @@ if (isset($is_backend_script) && $is_backend_script) {
 					</a>
 					<ul>
 						<li><a href='report.php'><i class='bx bx-radio-circle'></i>Dashboard Graph</a></li>
+						<?php if ($canCore): ?>
+						<li><a href='abandoned_leads_view.php'><i class='bx bx-radio-circle'></i>Digital Footprints</a></li>
 						<li><a href='users-status.php'><i class='bx bx-radio-circle'></i>Active Users Logs</a></li>
+						<?php endif; ?>
 					</ul>
 				</li>
+				<?php endif; ?>
+			<?php endif; ?>
 
+			<?php if ($canCMS): ?>
 				<li class='menu-label'>CMS AREA</li>
 				<li>
 					<a href='blog_list.php'>
@@ -315,6 +363,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<div class='menu-title'>Add Blog</div>
 					</a>
 				</li>
+				<?php if ($canCMSAdmin): ?>
 				<li>
 					<a href='coming-soon.php'>
 						<div class='parent-icon'><i class='bx bx-file'></i></div>
@@ -327,12 +376,14 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<div class='menu-title'>Site Settings</div>
 					</a>
 				</li>
+				<?php endif; ?>
 				<li>
 					<a href='coming-soon.php'>
 						<div class='parent-icon'><i class='bx bx-images'></i></div>
 						<div class='menu-title'>Manage Gallery</div>
 					</a>
 				</li>
+				<?php if ($canCore): ?>
 				<li>
 					<a href='coming-soon.php'>
 						<div class='parent-icon'><i class='bx bx-trophy'></i></div>
@@ -342,9 +393,11 @@ if (isset($is_backend_script) && $is_backend_script) {
 				<li>
 					<a href='coming-soon.php'>
 						<div class='parent-icon'><i class='bx bx-broadcast'></i></div>
-						<div class='menu-title'>Manage Announcement.php</div>
+						<div class='menu-title'>Manage Announcements</div>
 					</a>
 				</li>
+				<?php endif; ?>
+			<?php endif; ?>
 
 				<li class='menu-label'>CONTROLS</li>
 				<li>
@@ -353,11 +406,11 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<div class='menu-title'>Users Settings</div>
 					</a>
 					<ul>
-						<li><a href='user-profile.php'><i class='bx bx-radio-circle'></i>Profile</a></li>
-						<?php if (in_array($currentRole, ['superadmin', 'admin', 'developer'])): ?>
-							<li><a href='users.php'><i class='bx bx-radio-circle'></i>Users</a></li>
-							<li><a href='add-user.php'><i class='bx bx-radio-circle'></i>Add User</a></li>
-							<li><a href='users-status.php'><i class='bx bx-radio-circle'></i>Users Status</a></li>
+						<li><a href='user-profile.php'><i class='bx bx-radio-circle'></i>My Profile</a></li>
+						<?php if ($canUsers): ?>
+						<li><a href='users.php'><i class='bx bx-radio-circle'></i>All Users</a></li>
+						<li><a href='add-user.php'><i class='bx bx-radio-circle'></i>Add User</a></li>
+						<li><a href='users-status.php'><i class='bx bx-radio-circle'></i>Users Status</a></li>
 						<?php endif; ?>
 					</ul>
 				</li>
@@ -367,36 +420,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 						<div class='menu-title'>Sign Out Portal</div>
 					</a>
 				</li>
-<?php else: ?>
-				<!-- Coach Section -->
-				<li>
-					<a href='javascript:;' class='has-arrow' aria-expanded='true'>
-						<div class='parent-icon'><i class='bx bx-run'></i></div>
-						<div class='menu-title'>Coach & Academy</div>
-					</a>
-					<ul class='mm-collapse mm-show'>
-						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Coach Panel</a></li>
-						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Coach Profiles</a></li>
-						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Coach Attendance</a></li>
-						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Player Attendance</a></li>
-						<li><a href='coming-soon.php'><i class='bx bx-radio-circle'></i>Player Card Updates</a></li>
-					</ul>
-				</li>
 
-				<li class='menu-label'>CONTROLS</li>
-				<li>
-					<a href='user-profile.php'>
-						<div class='parent-icon'><i class='bx bx-user'></i></div>
-						<div class='menu-title'>My Profile</div>
-					</a>
-				</li>
-				<li>
-					<a href='login.php?logout'>
-						<div class='parent-icon'><i class='bx bx-log-out-circle'></i></div>
-						<div class='menu-title'>Sign Out Portal</div>
-					</a>
-				</li>
-<?php endif; ?>
 			</ul>
 			<!--end navigation-->
 		</div>
@@ -503,7 +527,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 									<div class='app-container p-2 my-2'>
 										<div class='row gx-0 gy-2 row-cols-3 justify-content-center p-2'>
 											<div class='col'>
-												<a href='https://www.facebook.com/'target="blank">
+												<a href='https://www.facebook.com/profile.php?id=61575926537950' target="blank">
 													<div class='app-box text-center'>
 														<div class='app-icon'>
 															<img src='assets/images/app/facebook.jpeg' width='30'
@@ -516,7 +540,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 												</a>
 											</div>
 											<div class='col'>
-												<a href='https://www.instagram.com/'target="blank">
+												<a href='https://www.instagram.com/c11cl_official/' target="blank">
 													<div class='app-box text-center'>
 														<div class='app-icon'>
 															<img src='assets/images/app/instagram.jpeg' width='30'
@@ -529,7 +553,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 												</a>
 											</div>
 											<div class='col'>
-												<a href='https://www.youtube.com/channel/UCFKA83F43qh9CiC53vwxh5Q'target="blank">
+												<a href='https://www.youtube.com/@C11CLOfficial' target="blank">
 													<div class='app-box text-center'>
 														<div class='app-icon'>
 															<img src='assets/images/app/youtube.png' width='30' alt=''>
@@ -566,7 +590,7 @@ if (isset($is_backend_script) && $is_backend_script) {
 												</a>
 											</div>
 											<div class='col'>
-												<a href='https://in.linkedin.com/' target="blank">
+												<a href='https://www.linkedin.com/company/champions11cricketleague/' target="blank">
 													<div class='app-box text-center'>
 														<div class='app-icon'>
 															<img src='assets/images/app/linkedin.png' width='30' alt=''>

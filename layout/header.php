@@ -173,8 +173,7 @@
     min-width: 220px !important;
     background: #000000 !important;
     border: 2px solid #222222 !important;
-    border-top: 4px solid #dc2618 !important;
-    border-radius: 0 0 10px 10px !important;
+    border-radius: 8px !important;
     box-shadow: 0 12px 30px rgba(0,0,0,0.6) !important;
     z-index: 99999 !important;
     overflow: hidden !important;
@@ -487,7 +486,7 @@
 
             <!-- Logo -->
             <a href="<?php echo BASE_URL; ?>" class="c11h-logo" aria-label="C11CL Home">
-                <img src="<?php echo BASE_URL; ?>wp-content/uploads/2025/05/favicon-3.png"
+                <img src="/wp-content/uploads/2025/05/favicon-3.png"
                      alt="C11CL — Champions 11 Cricket League"
                      width="58" height="58">
             </a>
@@ -591,6 +590,7 @@
 <div id="c11-mob-drawer-overlay"></div>
 <div id="c11-mob-drawer" role="dialog" aria-modal="true" aria-label="Site navigation">
     <div class="c11d-header">
+        <img src="/wp-content/uploads/2025/05/favicon-3.png" alt="C11CL" style="height:36px;width:36px;object-fit:contain;">
         <span class="c11d-header-title">C11CL Menu</span>
         <button class="c11d-close" id="c11d-close" aria-label="Close menu">&times;</button>
     </div>

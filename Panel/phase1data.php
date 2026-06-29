@@ -121,8 +121,8 @@ $sql = "SELECT * FROM register WHERE 1";
 $params = [];
 $types = "";
 
-if (!empty($datef)) { $sql .= " AND DATE(`date`) >= ?"; $params[] = $datef; if(!$quick_filter) $filterNotice[] = "From $datef"; $filterApplied = true; }
-if (!empty($datel)) { $sql .= " AND DATE(`date`) <= ?"; $params[] = $datel; if(!$quick_filter) $filterNotice[] = "To $datel"; $filterApplied = true; }
+if (!empty($datef)) { $sql .= " AND DATE(`created_at`) >= ?"; $params[] = $datef; if(!$quick_filter) $filterNotice[] = "From $datef"; $filterApplied = true; }
+if (!empty($datel)) { $sql .= " AND DATE(`created_at`) <= ?"; $params[] = $datel; if(!$quick_filter) $filterNotice[] = "To $datel"; $filterApplied = true; }
 
 if (!empty($searchText)) {
     $sql .= " AND (name LIKE ? OR reg LIKE ? OR email LIKE ? OR mobile LIKE ? OR state LIKE ? OR ref LIKE ? OR player LIKE ?)";
@@ -401,10 +401,10 @@ echo "<tr $rowStyle>
         <span class='badge bg-light text-dark border'>" . ($regCount > 0 ? $regCount - 1 : 0) . "</span>
     </td>
 
-    <td class='text-center'>
+    <td class='text-center' id='status-cell-" . $row['id'] . "'>
         " . ($isSuccess
-            ? "<span style='background:#16a34a; color:#fff; padding:5px 12px; border-radius:6px; font-size:10px; font-weight:800; letter-spacing:0.5px;'><i class='bx bx-check-double'></i> SUCCESS</span>"
-            : "<a href='../send.php?id=" . $row['id'] . "' onclick='return confirm(\"Mark this player as Success?\")' style='background:#16a34a; color:#fff; padding:5px 12px; border-radius:6px; font-size:10px; font-weight:800; letter-spacing:0.5px; text-decoration:none; display:inline-block;'>MARK SUCCESS</a>") . "
+            ? "<span class='success-badge' style='background:#16a34a; color:#fff; padding:5px 12px; border-radius:6px; font-size:10px; font-weight:800; letter-spacing:0.5px;'><i class='bx bx-check-double'></i> SUCCESS</span>"
+            : "<button onclick='markSuccess(" . $row['id'] . ", this)' style='background:#16a34a; color:#fff; padding:5px 12px; border-radius:6px; font-size:10px; font-weight:800; letter-spacing:0.5px; border:none; cursor:pointer;'>MARK SUCCESS</button>") . "
     </td>
 
     <td class='text-end' style='width:50px;'>
@@ -594,6 +594,46 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // ── MARK SUCCESS ──
+    window.markSuccess = function(id, btn) {
+        if (!confirm('Mark this player as Success? This cannot be undone.')) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
+        fetch('mark_success.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success' || data.status === 'already') {
+                // Replace button with green SUCCESS badge in-place
+                const cell = document.getElementById('status-cell-' + id);
+                if (cell) {
+                    cell.innerHTML = "<span style='background:#16a34a;color:#fff;padding:5px 12px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:0.5px;'><i class='bx bx-check-double'></i> SUCCESS</span>";
+                }
+                // Also hide the trash icon for this row
+                const trashBtn = document.querySelector('.delete-btn[data-id="' + id + '"]');
+                if (trashBtn) trashBtn.closest('td').innerHTML = "<span class='text-muted' style='font-size:10px;'>-</span>";
+
+                if (data.status === 'success') {
+                    Swal.fire({ icon: 'success', title: 'Marked as Success!', text: (data.name || 'Player') + ' (' + (data.reg || '') + ') has been marked as Success.', confirmButtonColor: '#16a34a', timer: 3000, timerProgressBar: true });
+                }
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'MARK SUCCESS';
+                Swal.fire({ icon: 'error', title: 'Failed', text: data.message || 'Something went wrong.', confirmButtonColor: '#dc2618' });
+            }
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'MARK SUCCESS';
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Connection failed. Please try again.', confirmButtonColor: '#dc2618' });
+        });
+    };
 
     // New logic for Delete button (unchanged)
     let playerIdToDelete;
@@ -865,4 +905,5 @@ function exportToExcel() {
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php include 'searchbar.php'; ?>

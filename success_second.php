@@ -1,7 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 session_start();
+
+$mailSent2 = $_SESSION['mail_sent2'] ?? false;
+$mailTo2   = $_SESSION['mail_to2']   ?? '';
 
 // Check if 'payreg2' session variable is set
 if (isset($_SESSION['payreg2'])) {
@@ -120,6 +122,22 @@ QRcode::png($reg2, $filename);
         <a href="pdf2.php?reg2=<?php echo urlencode($reg2); ?>" class="btn btn-outline-primary rounded-pill">📄 Download Registration PDF</a>
       </div>
 
+      <!-- Mail Status & Home Button -->
+      <div class="text-center px-4 py-3" style="border-top:1px solid #eee;">
+        <?php if ($mailSent2): ?>
+          <div style="background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; padding:12px 16px; border-radius:8px; font-size:0.9rem; margin-bottom:14px;">
+            ✅ Confirmation email with your Phase 2 registration PDF has been sent to <strong><?php echo htmlspecialchars($mailTo2, ENT_QUOTES, 'UTF-8'); ?></strong>
+          </div>
+        <?php else: ?>
+          <div style="background:#fef3c7; border:1px solid #fcd34d; color:#92400e; padding:12px 16px; border-radius:8px; font-size:0.9rem; margin-bottom:14px;">
+            📧 Confirmation email will be sent to your registered email address shortly.
+          </div>
+        <?php endif; ?>
+        <a href="https://c11cl.com/" class="btn fw-bold px-5 py-2" style="background:#dc2618; color:#fff; border-radius:8px; font-size:1rem; text-decoration:none;">
+          Go to Home
+        </a>
+      </div>
+
       <!-- Social Links -->
       <div class="text-center py-3">
         <p class="mb-2 fw-bold">Stay Connected</p>
@@ -198,10 +216,9 @@ QRcode::png($reg2, $filename);
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // Celebration Hide
-    setTimeout(() => { 
-        document.getElementById('celebration').classList.add('animate__animated', 'animate__fadeOut');
-        setTimeout(() => { document.getElementById('celebration').style.display = 'none'; }, 1000);
+    // Hide celebration popup after 3 seconds
+    setTimeout(() => {
+        document.getElementById('celebration').style.display = 'none';
     }, 3000);
 
     // Form Submit via AJAX

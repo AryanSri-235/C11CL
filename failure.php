@@ -98,7 +98,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             Don’t worry — no amount has been charged.<br>
             You can try again or contact our support for help.
         </div>
-        <a href="https://c11cl.com/registration/" class="retry-btn">Try Again</a>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+            <a href="/registration/" class="retry-btn">Register Again</a>
+            <a href="/" class="retry-btn" style="background-color:#0e1b30;">Go to Home</a>
+        </div>
     </div>
 
 </body>

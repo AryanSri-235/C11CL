@@ -1,14 +1,13 @@
 <?php
-// Enable error reporting
-error_reporting(E_ALL); // Report all PHP errors
-ini_set('display_errors', '1'); // Display errors on the screen
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+ini_set('display_errors', '0');
 
 ?><?php                        
 session_start();
 include '../db.php';
 
 if (!isset($_SESSION['payreg'])) {
-    header('location:../failure.php');
+    header('Location: /failure.php');
     exit(); // Added exit after header redirect
 }
     
@@ -56,7 +55,7 @@ $sqlupdate = "UPDATE register SET date = '$date', amount = '$pmt', regCount = '$
 
 //    echo "Payment Amount: $pmt"; 
 } else {
-    header('location:../failure.php');
+    header('Location: /failure.php');
     exit(); // Added exit after header redirect
 }
 

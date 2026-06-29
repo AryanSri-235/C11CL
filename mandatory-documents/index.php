@@ -522,98 +522,184 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <?php include "../head.php"; ?>
 
 <style>
-.md-page-wrap {
-    font-family: 'Lato', sans-serif;
-    background-color: #f7f7f8;
-    background-image: repeating-linear-gradient(45deg, rgba(0,34,68,0.03) 0px, rgba(0,34,68,0.03) 1px, transparent 1px, transparent 10px);
-    min-height: 60vh;
-    padding: 60px 20px 80px;
-}
-.md-inner { max-width: 900px; margin: 0 auto; }
-.md-hero {
-    background: linear-gradient(135deg, #002244 0%, #003366 100%);
-    border-radius: 12px;
-    padding: 50px 48px;
-    margin-bottom: 36px;
-    position: relative;
+.md-page-wrap { font-family: 'Lato', sans-serif; background: #f7f7f8; min-height: 60vh; padding: 0 20px 80px; }
+.md-inner { max-width: 1200px; margin: 0 auto; }
+
+/* Breadcrumb */
+.md-breadcrumb { padding: 22px 0 0; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #888; }
+.md-breadcrumb a { color: #888; text-decoration: none; }
+.md-breadcrumb a:hover { color: #dc2618; }
+.md-breadcrumb .sep { color: #dc2618; margin: 0 8px; font-size: 0.8rem; }
+.md-breadcrumb .current { color: #dc2618; }
+
+/* Page title */
+.md-page-title { font-family: 'Heebo', 'Barlow Condensed', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: #0e1b30; text-transform: uppercase; margin: 14px 0 20px; line-height: 1; letter-spacing: -0.5px; }
+.md-title-sep { border: none; border-top: 1px solid #ddd; margin: 0 0 36px; }
+
+/* Intro */
+.md-intro-text { font-size: 1rem; color: #333; line-height: 1.8; margin: 0 0 8px; }
+.md-email-row { display: flex; align-items: center; gap: 8px; margin-bottom: 40px; }
+.md-email-dot { width: 10px; height: 10px; background: #1a6fd4; border-radius: 50%; flex-shrink: 0; }
+.md-email-row a { color: #1a6fd4; font-size: 0.97rem; text-decoration: none; font-weight: 500; }
+.md-email-row a:hover { text-decoration: underline; }
+
+/* Cards */
+.md-card {
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 18px rgba(0,0,0,0.07);
+    margin-bottom: 28px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,34,68,0.18);
+    border-left: 5px solid #002244 !important;
+    border-top: 1px solid #eee;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    transition: border-left-color 0.28s ease, transform 0.28s ease, box-shadow 0.28s ease;
+    will-change: transform;
 }
-.md-hero::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 220px; height: 220px;
-    background: rgba(204,0,0,0.12);
-    border-radius: 50%;
+.md-card:hover {
+    border-left-color: #dc2618 !important;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 32px rgba(0,0,0,0.12);
 }
-.md-hero-label { color: #CC0000; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 10px; }
-.md-hero h1 { color: #fff; font-family: 'Heebo', sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; text-transform: uppercase; margin: 0 0 12px; line-height: 1.15; }
-.md-hero h1 span { color: #CC0000; }
-.md-hero-sub { color: rgba(255,255,255,0.72); font-size: 0.95rem; margin: 0; }
-.md-breadcrumb { color: rgba(255,255,255,0.5); font-size: 0.78rem; margin-bottom: 16px; }
-.md-breadcrumb a { color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; }
-.md-breadcrumb span { margin: 0 6px; }
-.md-card { background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,34,68,0.09); margin-bottom: 28px; overflow: hidden; border: 2px solid #bfd1ff !important; transition: border-color 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important; will-change: transform; }
-.md-card:hover { border-color: #dc2618 !important; transform: translateY(-10px) !important; box-shadow: 0 12px 30px rgba(0,34,68,0.15) !important; }
-.md-card-header { display: flex; align-items: center; gap: 14px; padding: 22px 28px 18px; border-bottom: 1px solid #f0f0f0; border-left: 5px solid #002244; }
-.md-card-header.crimson { border-left-color: #CC0000; }
-.md-card-icon { font-size: 1.6rem; }
-.md-card-header h2 { font-family: 'Heebo', sans-serif; font-size: 1.1rem; font-weight: 800; color: #002244; margin: 0; text-transform: uppercase; }
-.md-card-body { padding: 24px 28px; color: #444; font-size: 0.97rem; line-height: 1.75; }
-.md-card-body p { margin: 0 0 14px; }
-.md-card-body p:last-child { margin-bottom: 0; }
-.md-card-body ol, .md-card-body ul { padding-left: 22px; margin: 0; }
-.md-card-body li { margin-bottom: 10px; }
-.md-card-body li strong { color: #002244; }
-.md-card-body a { color: #CC0000; }
-.md-note { background: #fff8f8; border: 1px solid #ffd5d5; border-left: 5px solid #CC0000; border-radius: 8px; padding: 18px 24px; margin-top: 20px; color: #555; font-size: 0.93rem; line-height: 1.7; }
-.md-quote-section { text-align: center; padding: 36px 20px; background: #002244; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,34,68,0.14); }
-.md-quote-section p { color: rgba(255,255,255,0.85); font-size: 1.05rem; font-style: italic; margin: 0; line-height: 1.65; }
+.md-card-header { display: flex; align-items: center; gap: 12px; padding: 20px 28px 16px; border-bottom: 1px solid #f0f0f0; }
+.md-card-icon { font-size: 1.3rem; line-height: 1; }
+.md-card-header h2 { font-family: 'Heebo', sans-serif; font-size: 0.95rem; font-weight: 800; color: #0e1b30; margin: 0; text-transform: uppercase; letter-spacing: 1.5px; }
+.md-card-body { padding: 24px 28px; color: #444; font-size: 0.97rem; line-height: 1.8; }
+
+/* Checklist */
+.md-checklist { list-style: none; padding: 0; margin: 0; }
+.md-checklist > li { display: flex; gap: 10px; margin-bottom: 16px; }
+.md-checklist > li:last-child { margin-bottom: 0; }
+.md-check { color: #dc2618; font-weight: 700; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.md-checklist > li > .md-li-content strong { color: #0e1b30; }
+.md-sublist { list-style: none; padding: 6px 0 0 0; margin: 0; }
+.md-sublist li { display: flex; align-items: flex-start; gap: 8px; color: #555; font-size: 0.93rem; margin-bottom: 5px; }
+.md-sub-bullet { color: #aaa; font-size: 0.6rem; margin-top: 5px; flex-shrink: 0; }
+.md-sub-check { color: #dc2618; font-size: 0.8rem; flex-shrink: 0; margin-top: 3px; }
+
+/* Note / Disclaimer card red left border */
+.md-card.md-card-red { border-left-color: #dc2618 !important; }
+.md-card.md-card-red:hover { border-left-color: #a11000 !important; }
+
 @media (max-width: 600px) {
-    .md-hero { padding: 32px 20px; }
     .md-card-header, .md-card-body { padding-left: 18px; padding-right: 18px; }
 }
 </style>
 
 <div class="md-page-wrap">
     <div class="md-inner">
-        <div class="md-hero">
-            <div class="md-breadcrumb"><a href="/">Home</a><span>&raquo;</span>Mandatory Documents</div>
-            <p class="md-hero-label">Champions 11 Cricket League</p>
-            <h1>Mandatory Documents <span>Required</span> for Trials</h1>
-            <p class="md-hero-sub">Carry all original documents for venue verification.</p>
+
+        <div class="md-breadcrumb">
+            <a href="/">Home</a>
+            <span class="sep">&#8250;</span>
+            <span class="current">Mandatory Documents</span>
         </div>
+
+        <h1 class="md-page-title">Mandatory Documents</h1>
+        <hr class="md-title-sep">
+
+        <p class="md-intro-text">To ensure smooth participation in the <strong>Champions 11 Cricket League (C11CL) Selection Trials</strong>, all registered players are <strong>required to submit the following documents</strong> both <strong>physically at the trial venue</strong> and <strong>via email at</strong>:</p>
+        <div class="md-email-row">
+            <div class="md-email-dot"></div>
+            <a href="mailto:info@c11cl.com">info@c11cl.com</a>
+        </div>
+
         <div class="md-card">
             <div class="md-card-header">
-                <span class="md-card-icon">&#128278;</span>
+                <span class="md-card-icon">&#128196;</span>
                 <h2>Required Documents</h2>
             </div>
             <div class="md-card-body">
-                <p>To ensure smooth participation in the <strong>Champions 11 Cricket League (C11CL) Selection Trials</strong>, all registered players are <strong>required to submit the following documents</strong> both <strong>physically at the trial venue</strong> and <strong>via email at</strong>:<br>&#128231; <strong><a href="mailto:info@c11cl.com">info@c11cl.com</a></strong></p>
-                <ol>
-                    <li><strong>Proof of Date of Birth</strong><ul><li>Issued by a municipal corporation/competent government authority</li><li>Or certificate from school/educational board with clear mention of DOB</li></ul></li>
-                    <li><strong>Payment Receipt</strong><ul><li>Confirmation of trial/registration fee payment</li></ul></li>
-                    <li><strong>Recent Passport-Size Photograph</strong><ul><li>Clear, front-facing, latest colored photograph</li></ul></li>
-                    <li><strong>Valid ID Proof</strong> (any one of the following):<ul><li>Aadhar Card</li><li>School ID Card</li><li>Passport</li><li>Driving License (DL)</li></ul></li>
-                    <li><strong>Contact Number</strong><ul><li>Active mobile number for communication</li></ul></li>
-                    <li><strong>Residential Address with Pin Code</strong><ul><li>Complete and accurate address details</li></ul></li>
-                </ol>
-                <div class="md-note">&#9888;&#65039; <strong>Note:</strong> Participants who fail to submit any of the above documents <strong>will not be allowed</strong> to take part in the selection trials. Make sure to <strong>carry hard copies</strong> of all required documents at the trial venue and <strong>email scanned copies</strong> to <strong><a href="mailto:info@c11cl.com">info@c11cl.com</a></strong> in advance.</div>
+                <ul class="md-checklist">
+                    <li>
+                        <span class="md-check">&#10003;</span>
+                        <div class="md-li-content">
+                            <strong>Proof of Date of Birth:</strong>
+                            <ul class="md-sublist">
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Issued by a municipal corporation/competent government authority</li>
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Or certificate from school/educational board with clear mention of DOB</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="md-check">&#10003;</span>
+                        <div class="md-li-content">
+                            <strong>Payment Receipt:</strong>
+                            <ul class="md-sublist">
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Confirmation of trial/registration fee payment</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="md-check">&#10003;</span>
+                        <div class="md-li-content">
+                            <strong>Recent Passport-Size Photograph:</strong>
+                            <ul class="md-sublist">
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Clear, front-facing, latest colored photograph</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="md-check">&#10003;</span>
+                        <div class="md-li-content">
+                            <strong>Valid ID Proof (any one of the following):</strong>
+                            <ul class="md-sublist">
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Aadhar Card</li>
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> School ID Card</li>
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Passport</li>
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Driving License (DL)</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="md-check">&#10003;</span>
+                        <div class="md-li-content">
+                            <strong>Contact Number:</strong>
+                            <ul class="md-sublist">
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Active mobile number for communication</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="md-check">&#10003;</span>
+                        <div class="md-li-content">
+                            <strong>Residential Address with Pin Code:</strong>
+                            <ul class="md-sublist">
+                                <li><span class="md-sub-bullet">&#9702;</span><span class="md-sub-check">&#10003;</span> Complete and accurate address details</li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
+
+        <div class="md-card md-card-red">
+            <div class="md-card-header">
+                <span class="md-card-icon">&#9888;&#65039;</span>
+                <h2>Important Note</h2>
+            </div>
+            <div class="md-card-body">
+                <p style="margin:0;">Participants who fail to submit any of the above documents <strong>will not be allowed</strong> to take part in the selection trials. Make sure to <strong>carry hard copies</strong> of all required documents at the trial venue and <strong>email scanned copies</strong> to <a href="mailto:info@c11cl.com"><strong>info@c11cl.com</strong></a> in advance.</p>
+            </div>
+        </div>
+
         <div class="md-card">
-            <div class="md-card-header crimson">
-                <span class="md-card-icon">&#128683;</span>
+            <div class="md-card-header">
+                <span class="md-card-icon">&#128737;&#65039;</span>
                 <h2>Important Disclaimer</h2>
             </div>
             <div class="md-card-body">
-                <p>If there is any <strong>discrepancy in the date of birth</strong> you mentioned in the registration form and the one mentioned in your submitted proof, your entry will be <strong>immediately disqualified</strong>, and the <strong>registration fee will be forfeited</strong>.<br><strong>No refund</strong> will be issued under any circumstances.</p>
+                <p style="margin:0;">If there is any <strong>discrepancy in the date of birth</strong> you mentioned in the registration form and the one mentioned in your submitted proof, your entry will be <strong>immediately disqualified</strong>, and the <strong>registration fee will be forfeited</strong>. <strong>No refund</strong> will be issued under any circumstances.</p>
             </div>
         </div>
-        <div class="md-quote-section">
-            <p>&#8220;Discipline, preparation, and honesty off the field are just as important as performance on it.&#8221;</p>
+
+        <div class="md-card md-card-red" style="text-align:center; padding: 8px 0;">
+            <div class="md-card-body" style="font-style:italic; color:#444; font-size:1rem;">
+                &#8220;Discipline, preparation, and honesty off the field are just as important as performance on it.&#8221;
+            </div>
         </div>
+
     </div>
 </div>
 

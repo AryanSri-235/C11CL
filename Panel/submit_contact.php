@@ -1,8 +1,8 @@
 <?php
-header('Content-Type: application/json'); // JSON response ke liye
-include "db.php"; 
+header('Content-Type: application/json');
+date_default_timezone_set('Asia/Kolkata');
+include "db.php";
 
-// AJAX mein $_POST['submit'] nahi milta, isliye request method check karenge
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Security ke liye data clean karein
@@ -19,8 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $phone = $con->real_escape_string($phone);
 
-    $sql = "INSERT INTO contact_queries (name, email, phone, subject, message)
-            VALUES ('$name', '$email', '$phone', '$subject', '$message')";
+    $now = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO contact_queries (name, email, phone, subject, message, created_at)
+            VALUES ('$name', '$email', '$phone', '$subject', '$message', '$now')";
 
     if ($con->query($sql) === TRUE) {
        echo json_encode([

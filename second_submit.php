@@ -1,38 +1,47 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 session_start();
 
-echo "Step 1: Script started<br>";
+$isAjax = !empty($_POST['ajax']);
+
+function jsonResponse($status, $message) {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => $status, 'message' => $message]);
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['reg'])) {
     include "db.php";
-    echo "Step 2: DB connected<br>";
 
-    $reg = trim($_POST['reg']);
-    echo "Step 3: Got reg = $reg<br>";
+    $reg = trim(strtoupper($_POST['reg']));
 
-    // Fetch first phase record securely
-    $sqlFetch = "SELECT name, age, mobile, email, player, state, city, ref 
-                 FROM register 
+    // Fetch Phase 1 record — must exist AND be shortlisted (status = 'Success')
+    $sqlFetch = "SELECT name, age, mobile, email, player, state, city, ref, status
+                 FROM register
                  WHERE reg = ? LIMIT 1";
     $stmtFetch = $con->prepare($sqlFetch);
     if (!$stmtFetch) {
-        die("Preparation Error in Fetch: " . $con->error);
+        if ($isAjax) jsonResponse('error', 'Database error. Please try again.');
+        header('Location: /careers/?error=db'); exit();
     }
     $stmtFetch->bind_param('s', $reg);
     $stmtFetch->execute();
     $resFetch = $stmtFetch->get_result();
 
     if (!$resFetch || $resFetch->num_rows === 0) {
-        $stmtFetch->close();
-        die("Error: पहले phase में यह registration नहीं मिला!");
+        $stmtFetch->close(); $con->close();
+        if ($isAjax) jsonResponse('error', 'Registration ID not found. Please check and try again.');
+        header('Location: /careers/?error=notfound'); exit();
     }
-    echo "Step 4: Found first phase record<br>";
 
     $row = $resFetch->fetch_assoc();
     $stmtFetch->close();
+
+    // Only shortlisted Phase 1 candidates (status = 'Success') can proceed to Phase 2
+    if ($row['status'] !== 'Success') {
+        $con->close();
+        if ($isAjax) jsonResponse('error', 'You are not shortlisted for Phase 2. Only shortlisted Phase 1 candidates can register.');
+        header('Location: /careers/?error=notshortlisted'); exit();
+    }
 
     $name   = ucwords(strtolower($row['name']));
     $age    = $row['age'];
@@ -51,21 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['reg'])) {
     if ((substr($mobile, 0, 2) === '91') && preg_match('/^\d{12}$/', $mobile)) {
         $mobile = substr($mobile, 2);
     }
-
-    // Clear ref if it contains email character
     if (strpos($ref, '@') !== false) {
         $ref = '';
     }
 
-    echo "Step 5: Sanitized mobile = $mobile, email = $email<br>";
-
-    // Check if second phase record already exists securely
-    $sqlCheck = "SELECT reg2, status FROM `register-second` 
-                 WHERE mobile = ? AND email = ? 
+    // Check if Phase 2 record already exists (Pending → resume payment)
+    $sqlCheck = "SELECT reg2, status FROM `register-second`
+                 WHERE mobile = ? AND email = ?
                  ORDER BY id DESC LIMIT 1";
     $stmtCheck = $con->prepare($sqlCheck);
     if (!$stmtCheck) {
-        die("Preparation Error in Check: " . $con->error);
+        $con->close();
+        if ($isAjax) jsonResponse('error', 'Database error. Please try again.');
+        header('Location: /careers/?error=db'); exit();
     }
     $stmtCheck->bind_param('ss', $mobile, $email);
     $stmtCheck->execute();
@@ -73,68 +80,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['reg'])) {
 
     if ($resultCheck && $resultCheck->num_rows > 0) {
         $rowCheck = $resultCheck->fetch_assoc();
-        echo "Step 6: Found existing second phase record<br>";
         if ($rowCheck['status'] === 'Pending') {
             $_SESSION['payreg2'] = $rowCheck['reg2'];
-            $stmtCheck->close();
-            $con->close();
-            echo "Redirecting to ../payment2/pay.php<br>";
-            header('Location: ../payment2/pay.php');
-            exit();
+            $stmtCheck->close(); $con->close();
+            if ($isAjax) jsonResponse('success', 'Application submitted successfully! Our team will reach out to you shortly.');
+            header('Location: /payment2/pay.php'); exit();
+        } elseif ($rowCheck['status'] === 'Success') {
+            $stmtCheck->close(); $con->close();
+            if ($isAjax) jsonResponse('error', 'You have already completed Phase 2 registration.');
+            header('Location: /careers/?error=alreadypaid'); exit();
         }
     }
     $stmtCheck->close();
 
-    // Generate new reg2 safely
+    // Generate new reg2
+    date_default_timezone_set("Asia/Kolkata");
     $sqlLast = "SELECT reg2 FROM `register-second` ORDER BY id DESC LIMIT 1";
     $resultLast = $con->query($sqlLast);
     if ($resultLast && $resultLast->num_rows > 0) {
         $rowLast = $resultLast->fetch_assoc();
-        $lastNumber = substr($rowLast['reg2'], -5);
-        $count = (int)$lastNumber + 1;
+        $count = (int)substr($rowLast['reg2'], -5) + 1;
     } else {
         $count = 1;
     }
-    $count = sprintf('%05d', $count);
-    $reg2 = "C11CL2" . date("dmy") . $count;
-
-    echo "Step 7: Generated reg2 = $reg2<br>";
+    $reg2 = "C11CL2" . date("dmy") . sprintf('%05d', $count);
 
     $created_at = date('Y-m-d H:i:s');
-    $mailsent = 0;
-    $wasent = 0;
-    $regCount = 1;
 
-    // Insert second phase record securely
-    $sqlInsert = "INSERT INTO `register-second` 
-    (name, reg, reg2, age, mobile, email, player, state, city, ref, paydate, paytime, created_at, mailsent, up, wasent, regCount, status) 
-    VALUES 
-    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, 'Pending')";
-    
+    $sqlInsert = "INSERT INTO `register-second`
+    (name, reg, reg2, age, mobile, email, player, state, city, ref, paydate, paytime, created_at, mailsent, up, wasent, regCount, status)
+    VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, 0, 0, 0, 1, 'Pending')";
+
     $stmtInsert = $con->prepare($sqlInsert);
     if (!$stmtInsert) {
-        die("Preparation Error in Insert: " . $con->error);
+        $con->close();
+        if ($isAjax) jsonResponse('error', 'Database error. Please try again.');
+        header('Location: /careers/?error=db'); exit();
     }
 
-    $stmtInsert->bind_param('sssssssssssssii', 
-        $name, $reg, $reg2, $age, $mobile, $email, $player, $state, $city, $ref, 
-        $created_at, $mailsent, $created_at, $wasent, $regCount
+    $stmtInsert->bind_param('ssssssssssss',
+        $name, $reg, $reg2, $age, $mobile, $email, $player, $state, $city, $ref,
+        $created_at, $created_at
     );
 
     if ($stmtInsert->execute()) {
         $stmtInsert->close();
         $con->close();
-        echo "Step 8: Insert successful, redirecting...<br>";
         $_SESSION['payreg2'] = $reg2;
-        header('Location: ../payment2/pay.php');
-        exit();
+        if ($isAjax) jsonResponse('success', 'Application submitted successfully! Our team will reach out to you shortly.');
+        header('Location: /payment2/pay.php'); exit();
     } else {
-        $err = $stmtInsert->error;
         $stmtInsert->close();
         $con->close();
-        die("Insert Error: " . $err);
+        if ($isAjax) jsonResponse('error', 'Could not submit application. Please try again.');
+        header('Location: /careers/?error=db'); exit();
     }
 } else {
-    echo "No form submission detected or reg missing!";
+    if ($isAjax) jsonResponse('error', 'Invalid request.');
+    header('Location: /careers/'); exit();
 }
 ?>

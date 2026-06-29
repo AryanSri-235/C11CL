@@ -11,96 +11,126 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        .payments-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 50px;
-            align-items: start;
-            margin-bottom: 40px;
+        /* Page title hero */
+        .pay-page-title {
+            text-align: center;
+            padding: 48px 20px 32px;
         }
-        .payments-info-panel h2 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.2rem;
+        .pay-page-title h1 {
+            font-family: 'Barlow Condensed', 'Heebo', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
             font-weight: 900;
             color: #0e1b30;
             text-transform: uppercase;
-            margin: 0 0 15px;
+            margin: 0 0 14px;
+            line-height: 1.05;
+            letter-spacing: -0.5px;
         }
-        .payments-info-panel h2 span {
+        .pay-page-title h1 span { color: #dc2618; }
+        .pay-title-line {
+            width: 60px; height: 4px;
+            background: #dc2618;
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        /* Two-column grid */
+        .payments-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.05fr;
+            gap: 40px;
+            align-items: start;
+            margin-bottom: 40px;
+        }
+
+        /* Left: image + features */
+        .pay-img-card {
+            background: #f3f6fc;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .pay-img-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .pay-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .pay-feature-icon-wrap {
+            width: 44px; height: 44px;
+            background: #fff5f5;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid #ffeded;
             color: #dc2618;
+            font-size: 1.1rem;
         }
-        .payments-info-panel p {
-            color: #4b5563;
-            font-size: 1.05rem;
-            line-height: 1.7;
-            margin: 0 0 30px;
-        }
-        .support-desk-box {
-            background: #0e1b30;
-            color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            border-left: 5px solid #dc2618;
-            box-shadow: 0 10px 30px rgba(14,27,48,0.15);
-        }
-        .support-desk-box p {
-            margin: 0;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            opacity: 0.8;
-            letter-spacing: 2px;
-        }
-        .support-desk-box h3 {
-            margin: 8px 0 0;
-            font-size: 1.8rem;
-            font-weight: 700;
+        .pay-feature-text h4 {
             font-family: 'Barlow Condensed', sans-serif;
-            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0e1b30;
+            margin: 0 0 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .pay-feature-text p {
+            font-size: 0.88rem;
+            color: #6b7280;
+            margin: 0;
+            line-height: 1.5;
         }
 
         /* Form styling */
         .payments-form-wrap {
             background: #ffffff;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border: 1px solid #edf2f7;
-            border-top: 6px solid #dc2618;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+            border: 1px solid #e5e7eb;
         }
         .payments-form-wrap h3 {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 900;
             color: #0e1b30;
-            margin: 0 0 25px;
+            margin: 0 0 28px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
         .payments-form-wrap label {
             display: block;
-            font-size: 0.8rem;
-            color: #4b5563;
+            font-size: 0.72rem;
+            color: #0e1b30;
             margin-bottom: 6px;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
         .payments-form-wrap input[type="text"],
         .payments-form-wrap input[type="tel"] {
             width: 100%;
             box-sizing: border-box;
-            padding: 14px 15px;
-            border: 2px solid #f3f4f6;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
             outline: none;
             background: #f9fafb;
             font-family: inherit;
             font-size: 0.95rem;
-            margin-bottom: 20px;
-            transition: border-color 0.3s;
+            margin-bottom: 22px;
+            transition: border-color 0.25s;
+            color: #374151;
         }
         .payments-form-wrap input:focus {
             border-color: #dc2618;
+            background: #fff;
         }
         .verify-btn {
             width: 100%;
@@ -108,15 +138,14 @@
             background: #dc2618;
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
             text-transform: uppercase;
             font-family: 'Barlow Condensed', sans-serif;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 14px rgba(220, 38, 24, 0.3);
-            transition: background 0.3s, transform 0.2s;
+            letter-spacing: 1.5px;
+            transition: background 0.25s, transform 0.2s;
         }
         .verify-btn:hover {
             background: #0e1b30;
@@ -231,42 +260,70 @@
     </div>
 </div>
 
+<div class="pay-page-title">
+    <h1>Pay Your <span>Fees Easily</span></h1>
+    <div class="pay-title-line"></div>
+</div>
+
 <div class="c11p-content">
-    
+
     <div class="payments-grid">
-        
-        <div class="payments-info-panel">
-            <span style="color: #dc2618; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-family: 'Barlow Condensed', sans-serif;">Secure Portal</span>
-            <h2>Pay Your <br><span>Fees Easily.</span></h2>
-            <p>Enter your registration number to check pending fees and complete your payment securely. We’ve made the process simple and transparent for all our players.</p>
-            
-            <div class="support-desk-box">
-                <p>Support Desk</p>
-                <h3>+91 9773665300</h3>
+
+        <!-- Left: image + feature bullets -->
+        <div>
+            <div class="pay-img-card">
+                <img src="../wp-content/uploads/2025/06/Banner-3-1-1.png" alt="C11CL Cricket League">
+            </div>
+
+            <div class="pay-feature">
+                <div class="pay-feature-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="pay-feature-text">
+                    <h4>Secure Payments</h4>
+                    <p>Your transactions are encrypted and 100% secure.</p>
+                </div>
+            </div>
+
+            <div class="pay-feature">
+                <div class="pay-feature-icon-wrap"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                <div class="pay-feature-text">
+                    <h4>Transparent Pricing</h4>
+                    <p>No hidden charges. Pay exactly what’s shown at registration.</p>
+                </div>
+            </div>
+
+            <div class="pay-feature">
+                <div class="pay-feature-icon-wrap"><i class="fa-solid fa-bolt"></i></div>
+                <div class="pay-feature-text">
+                    <h4>Instant Confirmation</h4>
+                    <p>Get your payment receipt and registration slip immediately.</p>
+                </div>
             </div>
         </div>
 
+        <!-- Right: form -->
         <div class="payments-form-wrap">
-            <h3>Enter Details</h3>
+            <h3>Enter Registration Details</h3>
             <form id="verificationForm">
                 <div>
                     <label>Full Name</label>
-                    <input type="text" name="name" id="input_name" placeholder="As per registration" required>
+                    <input type="text" name="name" id="input_name" placeholder="Enter Your Name" required>
                 </div>
 
                 <div>
                     <label>Registered Phone</label>
-                    <input type="tel" name="phone" id="input_phone" placeholder="10-digit mobile no." required minlength="10" maxlength="10" pattern="[0-9]{10}">
+                    <input type="tel" name="phone" id="input_phone" placeholder="9XXXXXXXXX" required minlength="10" maxlength="10" pattern="[0-9]{10}">
                     <div id="phone-error" style="color:red; font-size:12px; display:none; margin-bottom:15px; font-weight: 600;">Please enter a valid 10-digit mobile number.</div>
                 </div>
 
                 <div>
                     <label>Registration ID</label>
-                    <input type="text" name="reg" id="input_reg" placeholder="C11-XXXX" required>
+                    <input type="text" name="reg" id="input_reg" placeholder="C11XXXX" required
+                           style="text-transform:uppercase; letter-spacing:1px;"
+                           oninput="this.value = this.value.toUpperCase()">
                 </div>
 
                 <button type="submit" id="verifyBtn" class="verify-btn">
-                    Verify & Proceed
+                    Verify &amp; Proceed
                 </button>
             </form>
         </div>

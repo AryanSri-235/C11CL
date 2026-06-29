@@ -1,0 +1,271 @@
+{
+    "time": "2026-06-26 11:31:32",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL26062600027",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}{
+    "time": "2026-06-26 11:39:14",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL26062600028",
+    "order_id_sess": "order_T6FK5yiHKTKtfv",
+    "order_id_post": "order_T6FK5yiHKTKtfv",
+    "payment_id_post": "pay_T6FKRJU5vMHYvj",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+{
+    "time": "2026-06-28 02:35:44",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600033",
+    "order_id_sess": "order_T6t8JbDlw4Nmdz",
+    "order_id_post": "order_T6t8JbDlw4Nmdz",
+    "payment_id_post": "pay_T6t8XGiKI9V0VF",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 02:38:39",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600034",
+    "order_id_sess": "order_T6tBSOkXb86Lx4",
+    "order_id_post": "order_T6tBSOkXb86Lx4",
+    "payment_id_post": "pay_T6tBZsDFjmbUs5",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 02:43:16",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600035",
+    "order_id_sess": "order_T6tG8VIg2Ryra1",
+    "order_id_post": "order_T6tG8VIg2Ryra1",
+    "payment_id_post": "pay_T6tGYwkhs28otJ",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 02:46:09",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600036",
+    "order_id_sess": "order_T6tJBjH5BtWrO0",
+    "order_id_post": "order_T6tJBjH5BtWrO0",
+    "payment_id_post": "pay_T6tJcwHJNEVt7P",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 03:07:21",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600037",
+    "order_id_sess": "order_T6tfmdDCvAw8AA",
+    "order_id_post": "order_T6tfmdDCvAw8AA",
+    "payment_id_post": "pay_T6tfwdIoyHGBzK",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 03:12:43",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600037",
+    "order_id_sess": "order_T6tlSAw5bFd7OK",
+    "order_id_post": "order_T6tlSAw5bFd7OK",
+    "payment_id_post": "pay_T6tlawHGJhi8n0",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 03:35:04",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600038",
+    "order_id_sess": "order_T6u99Kbs4OhYP9",
+    "order_id_post": "order_T6u99Kbs4OhYP9",
+    "payment_id_post": "pay_T6u9GAwQOi6fiz",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-28 06:04:34",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL28062600039",
+    "order_id_sess": "order_T6wgpKJ4n6sqi0",
+    "order_id_post": "order_T6wgpKJ4n6sqi0",
+    "payment_id_post": "pay_T6whErT2Dpl47q",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---
+{
+    "time": "2026-06-29 03:42:20",
+    "has_payment_id": true,
+    "has_session_payreg": true,
+    "has_order_id_sess": true,
+    "has_order_id_post": true,
+    "payreg": "C11CL29062600040",
+    "order_id_sess": "order_T7Inl1lPL9c788",
+    "order_id_post": "order_T7Inl1lPL9c788",
+    "payment_id_post": "pay_T7Invym6f4mu68",
+    "post_keys": [
+        "shopping_order_id",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature"
+    ]
+}
+---
+SIG_VERIFY: PASSED
+---
+DB_QUERY: rows=1 con_err=
+---
+DB_STATUS: Pending
+---
+UPDATE: FAILED - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Paymentid' in 'field list'
+---

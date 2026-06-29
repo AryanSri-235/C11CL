@@ -8,7 +8,7 @@ include '../db.php';
 
 // अगर session में reg2 नहीं है तो failure page भेज दो
 if (!isset($_SESSION['payreg2'])) {
-    header('location:../failure.php');
+    header('Location: /failure.php');
     exit();
 }
 
@@ -33,8 +33,7 @@ if ($result->num_rows > 0) {
     $date     = date('Y-m-d H:i:s', strtotime($row['date'] ?? ''));
     $date1    = date('Y-m-d H:i:s', strtotime('-20 seconds'));
     
-// Payment amount fixed to ₹1
-$pmt = 8999;
+$pmt = 8900;
 
     
     // अगर status pending है तो update करो
@@ -49,7 +48,7 @@ $pmt = 8999;
         $con->query($sqlupdate);
     }
 } else {
-    header('location:../failure.php');
+    header('Location: /failure.php');
     exit();
 }
 

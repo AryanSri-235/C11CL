@@ -76,11 +76,15 @@ if(isset($_POST['submit'])){
     $registrationID = $reg;
     
     if (isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $isLocal = ($host === 'localhost' || strpos($host, 'localhost:') === 0 || $host === '127.0.0.1');
+        $redirect = $isLocal ? '/payment/pay.php' : '/success.php';
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
-            'status' => 'success',
-            'message' => 'Registration Successful! Your ID is ' . $reg,
-            'reg' => $reg
+            'status'   => 'success',
+            'message'  => 'Registration Successful! Your ID is ' . $reg,
+            'reg'      => $reg,
+            'redirect' => $redirect
         ]);
         exit;
     }

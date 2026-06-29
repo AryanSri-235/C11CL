@@ -1,7 +1,11 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ============================================================
+// MAIL TOGGLE — set to true once Hostinger SMTP is ready
+// ============================================================
+define('MAIL_ENABLED_2', false);
+// ============================================================
+
+ini_set('display_errors', 0);
 
 session_start();
 
@@ -51,6 +55,21 @@ if (isset($_SESSION['complete_reg2'])) {
     $phone = $row["mobile"];
     $reg2 = $row["reg2"];
     $mailsent = $row["mailsent"];
+
+    if (!MAIL_ENABLED_2) {
+        // Mail disabled — skip QR/PDF/email, go straight to success
+        $_SESSION['mail_sent2'] = false;
+        $_SESSION['mail_to2']   = $email ?? '';
+        if (isset($_SESSION['id'])) {
+            unset($_SESSION['id']);
+            header('location:Panel/phase2data.php');
+        } elseif (isset($_SESSION['remsgphase2'])) {
+            header("Location: dashboard/phase2-players-data.php?id={$_SESSION['remsgphase2']}");
+        } else {
+            header('location:success_second.php');
+        }
+        exit();
+    }
 
     // Format phone
     if (preg_match('/^\d{10}$/', $phone)) {
@@ -190,12 +209,12 @@ $html = '
 
     $mail = new PHPMailer\PHPMailer\PHPMailer();
     $mail->isSMTP();
-    $mail->Host = 'smtp.hostinger.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'info@c11cl.com';
-    $mail->Password = 'C11CLinfo@2025';
+    $mail->Host       = defined('SMTP_HOST') ? SMTP_HOST : 'smtp.hostinger.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = defined('SMTP_USER') ? SMTP_USER : 'info@c11cl.com';
+    $mail->Password   = defined('SMTP_PASS') ? SMTP_PASS : '';
     $mail->SMTPSecure = 'tls';
-    $mail->Port = 587;
+    $mail->Port       = defined('SMTP_PORT') ? SMTP_PORT : 587;
 
     $mail->setFrom('info@c11cl.com', 'Champions 11 Cricket League');
     $mail->addAddress($email, $name);
@@ -209,22 +228,31 @@ $html = '
     ";
     $mail->addStringAttachment($pdfcontent, 'C11CL_Phase2.pdf', 'base64', 'application/pdf');
 
-    if ($mail->send()) {
-        $mailsent++;
-        $con->query("UPDATE `register-second` SET mailsent = $mailsent, status = 'Success' WHERE reg2 = '$reg2'");
-
-        if (isset($_SESSION['id'])) {
-            unset($_SESSION['id']);
-            header('location:Panel/phase2data.php');
-        } elseif (isset($_SESSION['remsgphase2'])) {
-            header("Location: dashboard/phase2-players-data.php?id={$_SESSION['remsgphase2']}");
-        } elseif (isset($_SESSION['payreg2'])) {
-            header('location:success_second.php');
+    if (MAIL_ENABLED_2) {
+        if ($mail->send()) {
+            $mailsent++;
+            $con->query("UPDATE `register-second` SET mailsent = $mailsent WHERE reg2 = '$reg2'");
+            $_SESSION['mail_sent2'] = true;
+            $_SESSION['mail_to2']   = $email;
+        } else {
+            error_log('C11CL Phase2 PHPMailer Error: ' . $mail->ErrorInfo);
+            $_SESSION['mail_sent2'] = false;
         }
-        exit();
     } else {
-        echo 'Email Error: ' . $mail->ErrorInfo;
+        $_SESSION['mail_sent2'] = false;
+        $_SESSION['mail_to2']   = $email ?? '';
     }
+
+    // Always redirect — check user payment flow first, then admin flows
+    if (isset($_SESSION['payreg2'])) {
+        header('Location: /success_second.php');
+    } elseif (isset($_SESSION['id'])) {
+        unset($_SESSION['id']);
+        header('Location: /Panel/phase2data.php');
+    } elseif (isset($_SESSION['remsgphase2'])) {
+        header("Location: /dashboard/phase2-players-data.php?id={$_SESSION['remsgphase2']}");
+    }
+    exit();
 } else {
     exit("Direct access not allowed.");
 }

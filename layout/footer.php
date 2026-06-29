@@ -406,7 +406,7 @@ font-weight: 800 !important;
 
                 <div class="c11f-col-title">Subscribe Now</div>
                 <p class="c11f-sub-text">Don't miss our future updates! Get Subscribed Today!</p>
-                <form class="c11f-sub-form" method="POST" action="<?php echo BASE_URL; ?>Panel/email_submit.php">
+                <form class="c11f-sub-form" method="POST" action="/email_subscribe.php">
                     <input type="email" name="email" placeholder="Enter your email address" required>
                     <input type="submit" name="submit" value="SUBSCRIBE NOW">
                 </form>
@@ -679,7 +679,7 @@ font-weight: 800 !important;
                 formData.append('submit', '1');
                 formData.append('ajax', '1');
                 
-                fetch('<?php echo BASE_URL; ?>Panel/email_submit.php', {
+                fetch('/email_subscribe.php', {
                     method: 'POST',
                     body: formData
                 })
