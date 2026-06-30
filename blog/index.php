@@ -59,6 +59,18 @@ include "../db.php";
         }
         .blog-heading .red { color: #dc2618; }
 
+        /* Red subtitle below heading */
+        .blog-red-sub {
+            text-align: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #dc2618;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px;
+        }
+
         /* Red underline bar */
         .blog-divider {
             width: 56px;
@@ -228,11 +240,12 @@ include "../db.php";
     </div>
 
     <!-- Heading -->
-    <h1 class="blog-heading">Our Cricket <span class="red">Blogs</span></h1>
+    <h1 class="blog-heading">Latest News &amp; <span class="red">Blogs</span></h1>
+    <p class="blog-red-sub">Stay Updated With C11CL</p>
     <div class="blog-divider"></div>
 
     <!-- Description -->
-    <p class="blog-desc">Stay updated with the latest articles, match previews, player spotlights, and insights from Champions 11 Cricket League.</p>
+    <p class="blog-desc">Stay updated with all the important announcements, match updates, and behind-the-scenes highlights from Champions 11 Cricket League.</p>
 
     <?php
     /* ── Fetch published posts ── */

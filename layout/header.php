@@ -585,6 +585,7 @@
     </nav>
 
 </div><!-- /#c11-site-header -->
+<div style="width:100%;height:4px;background:#dc2618;"></div>
 
 <!-- MOBILE SLIDE-IN DRAWER (matches live c11cl.com menu) -->
 <div id="c11-mob-drawer-overlay"></div>

@@ -39,11 +39,12 @@ if (isset($_SESSION['last-active'])) {
 }
 $_SESSION['last-active'] = time();
 
-// 3. Role Switcher Logic
+// 3. Role Switcher Logic (only developer and superadmin can switch roles)
 if (isset($_GET['switch_role'])) {
+    $currentUserRole = $_SESSION['status'] ?? '';
     $newRole = $_GET['switch_role'];
     $validRoles = ['developer', 'superadmin', 'admin', 'subadmin', 'marketing', 'sales-manager', 'sale-person', 'operation-team', 'coach'];
-    if (in_array($newRole, $validRoles)) {
+    if (in_array($currentUserRole, ['developer', 'superadmin']) && in_array($newRole, $validRoles)) {
         $_SESSION['status'] = $newRole;
         
         $roleDesignations = [
@@ -88,6 +89,9 @@ $rolePermissions = [
     'users-status.php'          => ['superadmin', 'admin'],
     'user-profile.php'          => ['superadmin', 'admin', 'developer', 'sale-leader', 'coach', 'subadmin', 'marketing', 'sales-manager', 'sale-person', 'operation-team'],
     'coming-soon.php'           => ['superadmin', 'admin', 'developer', 'sale-leader', 'coach', 'subadmin', 'marketing', 'sales-manager', 'sale-person', 'operation-team'],
+    'manage_gallery.php'        => ['superadmin', 'admin', 'developer'],
+    'manage_matches.php'        => ['superadmin', 'admin', 'developer'],
+    'manage_announcements.php'  => ['superadmin', 'admin', 'developer'],
     'contact_data.php'          => ['superadmin', 'admin', 'developer'],
     'mobile_data.php'           => ['superadmin', 'admin', 'developer'],
     'job_data.php'              => ['superadmin', 'admin', 'developer'],
@@ -378,20 +382,20 @@ if (isset($is_backend_script) && $is_backend_script) {
 				</li>
 				<?php endif; ?>
 				<li>
-					<a href='coming-soon.php'>
+					<a href='manage_gallery.php'>
 						<div class='parent-icon'><i class='bx bx-images'></i></div>
 						<div class='menu-title'>Manage Gallery</div>
 					</a>
 				</li>
 				<?php if ($canCore): ?>
 				<li>
-					<a href='coming-soon.php'>
+					<a href='manage_matches.php'>
 						<div class='parent-icon'><i class='bx bx-trophy'></i></div>
 						<div class='menu-title'>Match Management</div>
 					</a>
 				</li>
 				<li>
-					<a href='coming-soon.php'>
+					<a href='manage_announcements.php'>
 						<div class='parent-icon'><i class='bx bx-broadcast'></i></div>
 						<div class='menu-title'>Manage Announcements</div>
 					</a>

@@ -560,9 +560,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 class="hfeed site" id="page">
 <?php include "../head.php"; ?>
 		
-<div style="font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; background-color: #ffffff; color: #1a1a1a; line-height: 1.6;">
+<div style="font-family: 'Poppins', sans-serif; background-color: #ffffff; color: #1a1a1a; line-height: 1.6;">
 
    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
     /* Mobile-specific responsive styles */
     @media (max-width: 767px) {
         .mobile-league-title {
@@ -593,7 +594,7 @@ class="hfeed site" id="page">
     }
 </style>
 
-<div class="elementor-widget-container" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 25px 15px 5px; text-align: center;">
+<div class="elementor-widget-container" style="font-family: 'Poppins', sans-serif; max-width: 900px; margin: 0 auto; padding: 25px 15px 5px; text-align: center;">
     
     <!-- 1. Premium Sports-Line League Name -->
     <!--<h2 class="mobile-league-title" style="font-size: 0.85rem; font-weight: 700; color: #111; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 8px 0; display: flex; align-items: center; justify-content: center; gap: 12px;">-->
@@ -606,13 +607,13 @@ class="hfeed site" id="page">
 
 </div>
 
-<div style="padding: 10px 20px 60px; text-align: center; background: #ffffff; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<div style="padding: 10px 20px 60px; text-align: center; background: #ffffff; font-family: 'Poppins', sans-serif;">
     <div class="elementor-widget-container">
         <!-- 3. Red Accent Tag -->
         <span class="mobile-tag" style="color: #e31e24; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem;">Join the League</span>
         
         <!-- 4. Main Page Heading -->
-        <h1 class="mobile-main-heading" style="font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; margin: 15px 0; color: #000; text-transform: uppercase; letter-spacing: -1px; line-height: 1.1;">
+        <h1 class="mobile-main-heading" style="font-family: 'Barlow Condensed', sans-serif; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; margin: 15px 0; color: #0e1b30; text-transform: uppercase; letter-spacing: 1px; line-height: 1.05;">
             Who Can <span style="color: #e31e24;">Register?</span>
         </h1>
          <!-- 2. Ultra-Sleek Breadcrumb (Below League Name) -->

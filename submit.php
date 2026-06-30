@@ -76,9 +76,7 @@ if(isset($_POST['submit'])){
     $registrationID = $reg;
     
     if (isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) {
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $isLocal = ($host === 'localhost' || strpos($host, 'localhost:') === 0 || $host === '127.0.0.1');
-        $redirect = $isLocal ? '/payment/pay.php' : '/success.php';
+        $redirect = '/payment/pay.php';
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
             'status'   => 'success',
@@ -152,28 +150,27 @@ if(isset($_POST['submit'])){
         <div id="redirect-container">
             <div style="font-size: 50px; margin-bottom: 10px;">✅</div>
             <span class="loader-text">Registration Successful!</span>
-            <p class="status-msg">Your details have been saved. You will be redirected to the homepage shortly.</p>
-            
+            <p class="status-msg">Your details have been saved. You will be redirected to the payment page shortly.</p>
+
             <div class="progress-container">
                 <div id="bar"></div>
             </div>
-            
-            <p style="font-size: 12px; color: #94a3b8;">Redirecting to homepage in 3 seconds...</p>
+
+            <p style="font-size: 12px; color: #94a3b8;">Redirecting to payment in 3 seconds...</p>
         </div>
 
         <script>
-            // Progress Bar and Auto Redirect logic
             let width = 0;
             const bar = document.getElementById('bar');
             const interval = setInterval(function() {
                 if (width >= 100) {
                     clearInterval(interval);
-                    window.location.href = "/";
+                    window.location.href = "/payment/pay.php";
                 } else {
-                    width += 1; 
+                    width += 1;
                     bar.style.width = width + '%';
                 }
-            }, 30); // 30ms * 100 = 3000ms (3 seconds)
+            }, 30);
         </script>
     <?php endif; ?>
 </div>

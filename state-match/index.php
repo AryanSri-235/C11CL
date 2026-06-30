@@ -557,12 +557,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 class="hfeed site" id="page">
 <?php include "../head.php"; ?>
 		
-	<div style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #ffffff; color: #333; line-height: 1.6;">
+	<div style="font-family: 'Poppins', sans-serif; background-color: #ffffff; color: #333; line-height: 1.6;">
+    <style>@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');</style>
 
     <div style="padding: 60px 20px; text-align: center; background: #fff; border-bottom: 1px solid #eee;">
-        
-        
-        <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; color: #000; text-transform: uppercase; margin: 0;">
+
+
+        <h1 style="font-family: 'Barlow Condensed', sans-serif; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; color: #0e1b30; text-transform: uppercase; margin: 0; letter-spacing: 1px; line-height: 1.05;">
             State-Level <span style="color: #e31e24;">T20 Matches</span>
         </h1>
         <nav style="margin-bottom: 25px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">

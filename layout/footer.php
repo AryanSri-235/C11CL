@@ -1,7 +1,7 @@
 <?php
 // C11CL Global Footer Component — Scoped CSS, matches live production site
 ?>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ================================================================
@@ -76,9 +76,9 @@ gap: 70px !important;
 /* ---- COLS 2 & 3: Link Columns ---- */
 #c11-site-footer .c11f-col-title {
     color: #ffffff !important;
-    font-family: 'Poppins', sans-serif !important;
-    font-size: 15px !important;
-font-weight: 800 !important;
+    font-family: 'Barlow Condensed', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 900 !important;
     letter-spacing: 1.5px !important;
     text-transform: uppercase !important;
     margin-bottom: 18px !important;
@@ -346,6 +346,7 @@ font-weight: 800 !important;
 }
 </style>
 
+<div style="width:100%;height:4px;background:#dc2618;"></div>
 <div id="c11-site-footer">
 
     <!-- MAIN FOOTER -->

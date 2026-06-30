@@ -1,5 +1,11 @@
-<?php 
-$page_title = "T20 Matches"; 
+<?php
+$page_title = "T20 Matches";
+include '../db.php';
+$matches = [];
+if ($con) {
+    $res = $con->query("SELECT * FROM matches ORDER BY sort_order ASC, id ASC");
+    if ($res) { while ($row = $res->fetch_assoc()) { $matches[] = $row; } }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en-US">
@@ -240,81 +246,25 @@ $page_title = "T20 Matches";
 
     <div class="t20-schedule-list">
 
-        <!-- Noida Match -->
+        <?php foreach ($matches as $m): ?>
         <div class="t20-match-row">
             <div class="t20-row-venue">
                 <div class="t20-venue-icon"><i class="fa-solid fa-location-dot"></i></div>
-                <h3>Noida</h3>
+                <h3><?php echo htmlspecialchars($m['city']); ?></h3>
             </div>
             <div class="t20-row-ground">
                 <i class="fa-solid fa-hotel" style="margin-top: 4px;"></i>
                 <div>
-                    The SoulSport Ground
-                    <span>Official Phase-2 Matches</span>
+                    <?php echo htmlspecialchars($m['ground_name']); ?>
+                    <span><?php echo htmlspecialchars($m['subtitle']); ?></span>
                 </div>
             </div>
             <div class="t20-row-date-zone">
-                <span class="t20-live-tag">Fixtures Confirmed</span>
-                <h4 class="t20-date-display">26 May – 30 May</h4>
+                <span class="t20-live-tag"><?php echo htmlspecialchars($m['status_label']); ?></span>
+                <h4 class="t20-date-display"><?php echo htmlspecialchars($m['date_display']); ?></h4>
             </div>
         </div>
-
-        <!-- Mumbai Match -->
-        <div class="t20-match-row">
-            <div class="t20-row-venue">
-                <div class="t20-venue-icon"><i class="fa-solid fa-location-dot"></i></div>
-                <h3>Mumbai</h3>
-            </div>
-            <div class="t20-row-ground">
-                <i class="fa-solid fa-hotel" style="margin-top: 4px;"></i>
-                <div>
-                    Ghevra Cricket Ground
-                    <span>Official Phase-2 Matches</span>
-                </div>
-            </div>
-            <div class="t20-row-date-zone">
-                <span class="t20-live-tag">Fixtures Confirmed</span>
-                <h4 class="t20-date-display">1 June – 5 June</h4>
-            </div>
-        </div>
-
-        <!-- Ahmedabad Match -->
-        <div class="t20-match-row">
-            <div class="t20-row-venue">
-                <div class="t20-venue-icon"><i class="fa-solid fa-location-dot"></i></div>
-                <h3>Ahmedabad</h3>
-            </div>
-            <div class="t20-row-ground">
-                <i class="fa-solid fa-hotel" style="margin-top: 4px;"></i>
-                <div>
-                    Shivay, The Cricketing Hub, Karai
-                    <span>Official Phase-2 Matches</span>
-                </div>
-            </div>
-            <div class="t20-row-date-zone">
-                <span class="t20-live-tag">Fixtures Confirmed</span>
-                <h4 class="t20-date-display">8 June – 12 June</h4>
-            </div>
-        </div>
-
-        <!-- Hyderabad Match -->
-        <div class="t20-match-row">
-            <div class="t20-row-venue">
-                <div class="t20-venue-icon"><i class="fa-solid fa-location-dot"></i></div>
-                <h3>Hyderabad</h3>
-            </div>
-            <div class="t20-row-ground">
-                <i class="fa-solid fa-hotel" style="margin-top: 4px;"></i>
-                <div>
-                    Hyderabad Cricket Ground
-                    <span>Official Phase-2 Matches</span>
-                </div>
-            </div>
-            <div class="t20-row-date-zone">
-                <span class="t20-live-tag">Fixtures Confirmed</span>
-                <h4 class="t20-date-display">15 June – 17 June</h4>
-            </div>
-        </div>
+        <?php endforeach; ?>
 
     </div>
 

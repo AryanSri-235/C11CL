@@ -542,7 +542,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div
 class="hfeed site" id="page">
 <?php include "../head.php"; ?>
-	<div style="font-family: 'Inter', -apple-system, sans-serif; background-color: #ffffff; color: #000; margin: 0; padding: 0; width: 100%;">
+	<div style="font-family: 'Poppins', sans-serif; background-color: #ffffff; color: #000; margin: 0; padding: 0; width: 100%;">
+    <style>@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');</style>
 
     <div style="width: 100%; height: 8px; background: #e31e24;"></div>
 
@@ -556,7 +557,7 @@ class="hfeed site" id="page">
         <span style="color: #888;">National League</span>
     </nav>
     <!-- End Breadcrumb -->
-            <h1 style="font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 900; line-height: 0.9; margin: 20px 0; letter-spacing: -3px; text-transform: uppercase;">
+            <h1 style="font-family: 'Barlow Condensed', sans-serif; font-size: clamp(2.4rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.0; margin: 20px 0; letter-spacing: 1px; text-transform: uppercase; color: #0e1b30;">
                 The Ultimate <br><span style="color: #e31e24;">Championship.</span>
             </h1>
             <p style="font-size: 1.2rem; color: #444; line-height: 1.6; max-width: 550px;">

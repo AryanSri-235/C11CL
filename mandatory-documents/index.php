@@ -522,7 +522,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <?php include "../head.php"; ?>
 
 <style>
-.md-page-wrap { font-family: 'Lato', sans-serif; background: #f7f7f8; min-height: 60vh; padding: 0 20px 80px; }
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+.md-page-wrap { font-family: 'Poppins', sans-serif; background: #f7f7f8; min-height: 60vh; padding: 0 20px 80px; }
 .md-inner { max-width: 1200px; margin: 0 auto; }
 
 /* Breadcrumb */
@@ -533,7 +534,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 .md-breadcrumb .current { color: #dc2618; }
 
 /* Page title */
-.md-page-title { font-family: 'Heebo', 'Barlow Condensed', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: #0e1b30; text-transform: uppercase; margin: 14px 0 20px; line-height: 1; letter-spacing: -0.5px; }
+.md-page-title { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; color: #0e1b30; text-transform: uppercase; margin: 14px 0 20px; line-height: 1.05; letter-spacing: 1px; }
 .md-title-sep { border: none; border-top: 1px solid #ddd; margin: 0 0 36px; }
 
 /* Intro */
